@@ -55,7 +55,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.1.43</version>
+            <version>1.2.25.sec10</version>
         </dependency>
 
         <!-- 添加Sqlite依赖（可选：如果不需要使用印章功能的话，不需要添加此依赖 ）-->
