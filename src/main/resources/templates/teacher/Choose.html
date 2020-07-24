@@ -1,13 +1,47 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>老师批改</title>
-        <script type="text/javascript" src="jquery.min.js"></script>
-     	<script type="text/javascript" src="pageoffice.js" id="po_js_main"></script>
+<head>
+    <title>老师批改</title>
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="pageoffice.js" id="po_js_main"></script>
+    <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
 
-    </head>
-    <body>
-
-    </body>
+</head>
+<body id="changeBody">
+<table class="table">
+    <thead>
+    <tr>
+        <th>学生姓名</th>
+        <th>作文名</th>
+        <th>状态</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="essay : ${essays}">
+        <td th:text="${essay.student.name}"></td>
+        <td th:text="${essay.name}"></td>
+        <td th:text="${essay.status}"></td>
+        <td><button type="button" class="btn btn-info btn-sm"
+                    th:onclick="'javascript:updateEssay(\''+${essay.name}+'\',\''+${essay.student.name}+'\');'">
+            批改</button></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+<script>
+    function updateEssay(essayName,stuName){
+        $.ajax({
+            url:'/index',
+            type: 'post',
+            data: {essayName: essayName,stuName: stuName},
+            dataType: 'html',
+            success: function (data) {
+                $("#changeBody").html(data);
+            }
+        })
+    }
+</script>
 </html>

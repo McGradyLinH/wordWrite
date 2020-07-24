@@ -3,6 +3,7 @@ package com.test.domain;
 public class Essay {
     private String name;
     private Integer status;
+    private Student student;
 
     public String getName() {
         return name;
@@ -18,5 +19,13 @@ public class Essay {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
     }
 }

@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
-        <title>学生写作</title>
+        <title>老师批改</title>
         <script type="text/javascript" src="jquery.min.js"></script>
      	<script type="text/javascript" src="pageoffice.js" id="po_js_main"></script>
 
     </head>
     <body>
-        <h1 th:inline="text">学生写作</h1>
-        <a href="javascript:POBrowser.openWindowModeless('/toWrite','width=1200px;height=800px;');">开始写作 </a>
+        <h1 th:inline="text">老师批改</h1>
+        <a href="javascript:POBrowser.openWindowModeless('/word?index=1','width=1200px;height=800px;');">开始批改1 </a>
+        <a href="javascript:POBrowser.openWindowModeless('/word?index=2','width=1200px;height=800px;');">开始批改2 </a>
+        <a href="javascript:POBrowser.openWindowModeless('/word?index=3','width=1200px;height=800px;');">开始批改3 </a>
+        <a href="javascript:POBrowser.openWindowModeless('/word?index=4','width=1200px;height=800px;');">开始批改4 </a>
     </body>
 </html>
