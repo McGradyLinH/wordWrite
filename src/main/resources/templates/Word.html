@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head>
         <title>Hello World!</title>
         <script type="text/javascript">
@@ -18,7 +17,7 @@
         
     </head>
     <body>
-        <h1 th:inline="text">Hello.v.2</h1>
+        <h1 th:inline="text" th:text="${name}">Hello</h1>
         
         <div style="width:1000px;height:700px;" th:utext="${pageoffice}"></div>
     </body>

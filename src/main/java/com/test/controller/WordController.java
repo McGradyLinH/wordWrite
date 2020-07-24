@@ -1,13 +1,13 @@
 package com.test.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.context.annotation.Bean;
+import com.test.domain.Essay;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -18,12 +18,10 @@ import com.zhuozhengsoft.pageoffice.*;
  */
 @RestController
 public class WordController {
-    @Value("${posyspath}")
-    private String poSysPath;
-
     @GetMapping(value = "/index")
-    public ModelAndView showIndex() {
-        ModelAndView mv = new ModelAndView("Index");
+    public ModelAndView showIndex(Map<String,Object> map) {
+        ModelAndView mv = new ModelAndView("teacher/Choose");
+        List<Essay> list = new ArrayList<>();
         return mv;
     }
 
@@ -44,7 +42,7 @@ public class WordController {
 //		poCtrl.addCustomToolButton("盖章","AddSeal",2);//添加自定义盖章按钮
         poCtrl.setSaveFilePage("/save");//设置处理文件保存的请求方法
         //打开word
-        poCtrl.webOpen("c:\\word\\" + docName + "" + index + ".doc", OpenModeType.docAdmin, "张三");
+        poCtrl.webOpen("c:\\word\\" + docName + "_" + index + ".doc", OpenModeType.docAdmin, "张三");
         map.put("pageoffice", poCtrl.getHtmlCode("PageOfficeCtrl1"));
         ModelAndView mv = new ModelAndView("Word");
         return mv;
@@ -57,24 +55,7 @@ public class WordController {
         fs.close();
     }
 
-    /**
-     * 添加PageOffice的服务器端授权程序Servlet（必须）
-     *
-     * @return
-     */
-    @Bean
-    public ServletRegistrationBean servletRegistrationBean() {
-        com.zhuozhengsoft.pageoffice.poserver.Server poserver = new com.zhuozhengsoft.pageoffice.poserver.Server();
-        poserver.setSysPath(poSysPath);//设置PageOffice注册成功后,license.lic文件存放的目录
-        ServletRegistrationBean srb = new ServletRegistrationBean(poserver);
-        srb.addUrlMappings("/poserver.zz");
-        srb.addUrlMappings("/posetup.exe");
-        srb.addUrlMappings("/pageoffice.js");
-        srb.addUrlMappings("/jquery.min.js");
-        srb.addUrlMappings("/pobstyle.css");
-        srb.addUrlMappings("/sealsetup.exe");
-        return srb;
-    }
+
 
     /**
      * 添加印章管理程序Servlet（可选）
