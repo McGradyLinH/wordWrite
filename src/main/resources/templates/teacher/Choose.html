@@ -4,7 +4,6 @@
 <head>
     <title>老师批改</title>
     <script type="text/javascript" src="jquery.min.js"></script>
-    <script type="text/javascript" src="pageoffice.js" id="po_js_main"></script>
     <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
     <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
 
@@ -24,19 +23,23 @@
         <td th:text="${essay.student.name}"></td>
         <td th:text="${essay.name}"></td>
         <td th:text="${essay.status}"></td>
-        <td><button type="button" class="btn btn-info btn-sm"
-                    th:onclick="'javascript:updateEssay(\''+${essay.name}+'\',\''+${essay.student.name}+'\');'">
-            批改</button></td>
+        <td>
+            <button type="button" class="btn btn-info btn-sm"
+                    th:onclick="updateEssay([[${essay.name}]],[[${essay.student.name}]])">
+                批改
+            </button>
+        </td>
+
     </tr>
     </tbody>
 </table>
 </body>
 <script>
-    function updateEssay(essayName,stuName){
+    function updateEssay(essayName, stuName) {
         $.ajax({
-            url:'/index',
-            type: 'post',
-            data: {essayName: essayName,stuName: stuName},
+            url: '/index',
+            type: 'get',
+            data: {essayName: essayName, stuName: stuName},
             dataType: 'html',
             success: function (data) {
                 $("#changeBody").html(data);

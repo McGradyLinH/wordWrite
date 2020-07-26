@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>学生写作</title>
+    <link th:href="@{css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+    <!--     	<script type="text/javascript" src="pageoffice.js" id="po_js_main"></script>-->
+
+</head>
+<body>
+<h1 th:inline="text">学生写作</h1>
+<button id="controlWrite">开始写作</button>
+<br>
+<h3 id="selectTitle"></h3>
+<form th:action="@{/saveWrite}" method="post" id="writeArea" style="display: none;">
+    <input type="hidden" id="titleName" name="titleName"/>
+    <label>
+<textarea name="content" cols="20" rows="8" style="width: 1000px;height: 800px;" wrap="hard">
+</textarea>
+    </label>
+    <button type="submit" class="btn-primary">提交</button>
+</form>
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">题目选择</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="title"></label><input type="text" placeholder="题目" class="form-control"
+                                                  id="title" list="title_list" autocomplete="off"/>
+                <!-- 选择内容 -->
+                <datalist id="title_list">
+                </datalist>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveTitle()">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var titles;
+    $(document).ready(function () {
+        $("#controlWrite").click(function () {
+            if ($("#controlWrite").text() === '开始写作') {
+                $(".modal").modal();
+            } else {
+                $("#selectTitle").html('');
+                $("#titleName").val('');
+                $("#controlWrite").text('开始写作');
+                $("#writeArea").css('display', 'none');
+            }
+        });
+
+        $.ajax({
+            url: '/titles',
+            type: 'get',
+            success: function (data) {
+                titles = data;
+                for (let i = 0; i < data.length; i++) {
+                    let add_options = '<option value="' + data[i].titleCode + '">' + data[i].titleName + '</option>';
+                    $('datalist#title_list').append(add_options);
+                }
+            }
+        });
+    });
+
+    function saveTitle() {
+        let titleCode = $("#title").val();
+        titleName(titleCode);
+        $(".modal").modal('hide');
+        $("#writeArea").css('display', 'block');
+        $("#controlWrite").text('放弃写作');
+    }
+
+    function titleName(titleCode) {
+        for (let i = 0; i < titles.length; i++) {
+            if (titles[i].titleCode == titleCode) {
+                $("#titleName").val(titles[i].titleName);
+                $("#selectTitle").html(titles[i].titleName);
+                break;
+            }
+        }
+    }
+</script>
+</html>

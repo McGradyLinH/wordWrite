@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.dao.StudentDao">
+
+    <resultMap type="com.test.domain.PlatformUser" id="student">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="stuName" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="role" column="role" jdbcType="INTEGER"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="surplus" column="surplus" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="essay" type="com.test.domain.Essay">
+        <result property="id" column="id" jdbcType="INTEGER"></result>
+        <result property="name" column="essayName" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <collection property="student" ofType="com.test.domain.PlatformUser">
+            <result property="id" column="id" jdbcType="INTEGER"/>
+            <result property="name" column="stuName" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="role" column="role" jdbcType="INTEGER"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="surplus" column="surplus" jdbcType="INTEGER"/>
+        </collection>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryByPhone" resultMap="student">
+        select * from platformUser where phone = #{_parameter}
+    </select>
+
+    <!--查询单个-->
+    <select id="queryEssayList" resultMap="essay">
+        select * from essay e left join platformUser t on e.stuid=t.id where status = #{_parameter}
+    </select>
+
+    <insert id="insertEssay" parameterType="essay" useGeneratedKeys="true" keyProperty="id">
+        insert into essay (essayName,status,stuid) values (#{name},1,#{student.id})
+    </insert>
+
+</mapper>
