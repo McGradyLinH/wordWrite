@@ -1,6 +1,6 @@
 package com.test.config;
 
-import com.test.domain.Student;
+import com.test.domain.PlatformUser;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -14,7 +14,7 @@ public class MyInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
         Object loginName = session.getAttribute("loginUser");
-        if (loginName instanceof Student){
+        if (loginName instanceof PlatformUser){
             return true;
         }
         response.sendRedirect("/login");
