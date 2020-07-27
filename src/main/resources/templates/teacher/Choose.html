@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>老师批改</title>
     <script type="text/javascript" src="jquery.min.js"></script>
@@ -21,7 +20,7 @@
     <tr th:each="essay : ${essays}">
         <!--/*@thymesVar id="essay" type="com.test.domain.Essay"*/-->
         <td th:text="${essay.student.name}"></td>
-        <td th:text="${essay.name}"></td>
+        <td th:text="${essay.title.getTitleName()}"></td>
         <td th:text="${essay.status}"></td>
         <td>
             <button type="button" class="btn btn-info btn-sm"

@@ -1,5 +1,6 @@
 package com.test.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,17 @@ import com.zhuozhengsoft.pageoffice.*;
 public class WordController {
     @Autowired
     private StudentService studentService;
+
+    @GetMapping("/choose")
+    public ModelAndView choose(Map<String, Object> map, HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("teacher/Choose");
+        //登录老师
+        PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
+        Integer role = teacher.getRole();
+        List<Essay> list1 = studentService.queryEssayList(role);
+        map.put("essays", list1);
+        return modelAndView;
+    }
 
     /**
      * 去到批改文章的页面
@@ -73,24 +85,25 @@ public class WordController {
 
     /**
      * 修改文章的状态
+     *
      * @param essay 要修改的文章
      * @return
      */
     @PutMapping("/essay")
-    public String updateEssay(HttpSession session,Essay essay) {
+    public String updateEssay(HttpSession session, Essay essay) {
         //文件名称
         String docName = (String) session.getAttribute("docName");
         //登录老师
         PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
         essay.setName(docName);
         Integer role = teacher.getRole();
-        if (role == 2){
+        if (role == 2) {
             essay.setEnTeacher(teacher);
-        }else
+        } else
             essay.setCNTeacher(teacher);
         System.out.println(teacher);
         int i = studentService.updateEssay(essay);
-        if (i > 0){
+        if (i > 0) {
             return "success";
         }
         return "fail";

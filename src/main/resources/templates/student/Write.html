@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>学生写作</title>
+    <link th:href="@{css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+    <!--     	<script type="text/javascript" src="pageoffice.js" id="po_js_main"></script>-->
+
+</head>
+<body>
+<h1 th:inline="text">学生写作</h1>
+<button id="controlWrite">开始写作</button>
+<br>
+<h3 id="selectTitle"></h3>
+<form th:action="@{/saveWrite}" method="post" id="writeArea" style="display: none;">
+    <input type="hidden" id="titleName" name="titleName"/>
+    <input type="hidden" id="titleCode" name="titleCode"/>
+    <label>
+<textarea name="content" cols="20" rows="8" style="width: 1000px;height: 800px;" wrap="hard">
+</textarea>
+    </label>
+    <button type="submit" class="btn-primary">提交</button>
+</form>
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">题目选择</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="title"></label><input type="text" placeholder="题目" class="form-control"
+                                                  id="title" list="title_list" autocomplete="off"/>
+                <!-- 选择内容 -->
+                <datalist id="title_list">
+                </datalist>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveTitle()">Save title</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>-->
+<script th:src="@{js/student/student.js}"></script>
+<script th:src="@{js/bootbox.min.js}"></script>
+</html>

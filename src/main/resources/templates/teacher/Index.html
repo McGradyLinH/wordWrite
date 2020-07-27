@@ -21,14 +21,16 @@
 <script>
     function pgdone() {
         bootbox.confirm("确定提交该篇文章到下一个流程吗？", function (result) {
-            $.ajax({
-                url: '/essay',
-                type: 'post',
-                data: {_method:'put'},
-                success: function (data) {
-                    alert(data)
-                }
-            })
+            if (result){
+                $.ajax({
+                    url: '/essay',
+                    type: 'post',
+                    data: {_method:'put'},
+                    success: function (data) {
+                        window.location.reload();
+                    }
+                });
+            }
         });
     }
 </script>

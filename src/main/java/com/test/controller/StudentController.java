@@ -34,10 +34,15 @@ public class StudentController {
         return new ModelAndView("Login");
     }
 
+    @GetMapping("/stuIndex")
+    public ModelAndView stuIndex() {
+        return new ModelAndView("student/Index");
+    }
+
     @PostMapping("/login")
     public ModelAndView login(String phone, String password, HttpSession session, Map<String, Object> map) {
         PlatformUser student = studentService.queryByPhone(phone);
-        ModelAndView modelAndView = new ModelAndView("student/Index");
+        ModelAndView modelAndView = new ModelAndView("redirect:/stuIndex");
         if (Objects.isNull(student) || !student.getPassword().equals(password)) {
             map.put("msg", "用户名或密码错误");
             modelAndView.setViewName("Login");
@@ -47,14 +52,8 @@ public class StudentController {
             case 1:
                 break;
             case 2:
-                List<Essay> list = studentService.queryEssayList(1);
-                map.put("essays", list);
-                modelAndView.setViewName("teacher/Choose");
-                break;
             case 3:
-                List<Essay> list1 = studentService.queryEssayList(2);
-                map.put("essays", list1);
-                modelAndView.setViewName("teacher/Choose");
+                modelAndView.setViewName("redirect:/choose");
                 break;
             default:
                 modelAndView.setViewName("Login");

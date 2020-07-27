@@ -25,6 +25,11 @@
             <result property="email" column="email" jdbcType="VARCHAR"/>
             <result property="surplus" column="surplus" jdbcType="INTEGER"/>
         </collection>
+        <collection property="title" ofType="com.test.domain.Title">
+            <result property="id" column="id" jdbcType="INTEGER"/>
+            <result property="titleCode" column="titleCode" jdbcType="VARCHAR"/>
+            <result property="titleName" column="titleName" jdbcType="VARCHAR"/>
+        </collection>
     </resultMap>
 
     <!--查询单个-->
@@ -34,7 +39,9 @@
 
     <!--查询文章根据状态-->
     <select id="queryEssayList" resultMap="essay">
-        select * from essay e left join platformUser t on e.stuid=t.id where status = #{_parameter}
+        select * from essay e left join platformUser t on e.stuid=t.id
+         left join title ti on e.titleId=ti.titleCode
+         where e.status = #{_parameter}
     </select>
 
     <insert id="insertEssay" parameterType="essay" useGeneratedKeys="true" keyProperty="id">
@@ -53,12 +60,11 @@
         update essay
          <set>
              <if test="enTeacher != null and enTeacher != ''">
-                 enTeacherId=#{enTeacher.id},
+                 enTeacherId=#{enTeacher.id},status=2
              </if>
              <if test="CNTeacher != null and CNTeacher != ''">
-                 CNTeacher=#{CNTeacher.id},
+                 CNTeacher=#{CNTeacher.id},status=3
              </if>
-             status=2
          </set>
          where essayName=#{name}
     </update>
