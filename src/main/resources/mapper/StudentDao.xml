@@ -13,7 +13,7 @@
     </resultMap>
 
     <resultMap id="essay" type="com.test.domain.Essay">
-        <result property="id" column="id" jdbcType="INTEGER"></result>
+        <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="name" column="essayName" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="VARCHAR"/>
         <collection property="student" ofType="com.test.domain.PlatformUser">
@@ -32,13 +32,34 @@
         select * from platformUser where phone = #{_parameter}
     </select>
 
-    <!--查询单个-->
+    <!--查询文章根据状态-->
     <select id="queryEssayList" resultMap="essay">
         select * from essay e left join platformUser t on e.stuid=t.id where status = #{_parameter}
     </select>
 
     <insert id="insertEssay" parameterType="essay" useGeneratedKeys="true" keyProperty="id">
-        insert into essay (essayName,status,stuid) values (#{name},1,#{student.id})
+        insert into essay (essayName,status,stuid,titleId) values (#{name},1,#{student.id},#{title.titleCode})
     </insert>
 
+    <update id="decrementSurplus" parameterType="platformUser">
+        update platformUser set surplus=surplus-1 where id=#{id} and surplus > 0
+    </update>
+
+    <update id="incrementSurplus" parameterType="platformUser">
+        update platformUser set surplus=surplus+1 where id=#{id}
+    </update>
+
+    <update id="updateEssay" parameterType="essay">
+        update essay
+         <set>
+             <if test="enTeacher != null and enTeacher != ''">
+                 enTeacherId=#{enTeacher.id},
+             </if>
+             <if test="CNTeacher != null and CNTeacher != ''">
+                 CNTeacher=#{CNTeacher.id},
+             </if>
+             status=2
+         </set>
+         where essayName=#{name}
+    </update>
 </mapper>

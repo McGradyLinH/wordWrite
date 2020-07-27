@@ -1,6 +1,5 @@
 package com.test.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,16 +23,15 @@ public class WordController {
     @Autowired
     private StudentService studentService;
 
-    @GetMapping(value = "/choose")
-    public ModelAndView showChoose(Map<String, Object> map) {
-        ModelAndView mv = new ModelAndView("teacher/Choose");
-        List<Essay> list = studentService.queryEssayList(1);
-        map.put("essays", list);
-        return mv;
-    }
-
+    /**
+     * 去到批改文章的页面
+     *
+     * @param essayName 文件名称
+     * @param stuName   学生姓名
+     * @return
+     */
     @GetMapping(value = "/index")
-    public ModelAndView showIndex(Map<String, Object> map, String essayName, HttpSession session, String stuName) {
+    public ModelAndView showIndex(String essayName, HttpSession session, String stuName) {
         ModelAndView mv = new ModelAndView("teacher/Index");
         session.setAttribute("docName", essayName);
         session.setAttribute("stuName", stuName);
@@ -43,9 +41,7 @@ public class WordController {
     /**
      * 打开word文档
      *
-     * @param request
-     * @param map
-     * @param index   文章的编号
+     * @param index 文章的编号
      * @return
      */
     @GetMapping(value = "/word")
@@ -64,11 +60,39 @@ public class WordController {
         return mv;
     }
 
+    /**
+     * word文档保存方法
+     */
     @RequestMapping("/save")
     public void saveFile(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         FileSaver fs = new FileSaver(request, response);
         String stuName = (String) session.getAttribute("stuName");
-        fs.saveToFile("c:\\word\\" + stuName +"\\" + fs.getFileName());
+        fs.saveToFile("c:\\word\\" + stuName + "\\" + fs.getFileName());
         fs.close();
+    }
+
+    /**
+     * 修改文章的状态
+     * @param essay 要修改的文章
+     * @return
+     */
+    @PutMapping("/essay")
+    public String updateEssay(HttpSession session,Essay essay) {
+        //文件名称
+        String docName = (String) session.getAttribute("docName");
+        //登录老师
+        PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
+        essay.setName(docName);
+        Integer role = teacher.getRole();
+        if (role == 2){
+            essay.setEnTeacher(teacher);
+        }else
+            essay.setCNTeacher(teacher);
+        System.out.println(teacher);
+        int i = studentService.updateEssay(essay);
+        if (i > 0){
+            return "success";
+        }
+        return "fail";
     }
 }

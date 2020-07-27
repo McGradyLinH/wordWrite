@@ -16,4 +16,25 @@ public interface StudentService {
     List<Essay> queryEssayList(Integer status);
 
     Essay insertEssay(Essay essay);
+
+    /**
+     * 减少学生作文数
+     * @param student
+     * @return
+     */
+    int decrementSurplus(PlatformUser student);
+
+    /**
+     * 增加学生作文数
+     * @param student
+     * @return
+     */
+    int incrementSurplus(PlatformUser student);
+
+    /**
+     * 修改文章的状态
+     * @param essay
+     * @return
+     */
+    int updateEssay(Essay essay);
 }

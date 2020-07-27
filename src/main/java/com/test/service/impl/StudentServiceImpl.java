@@ -37,4 +37,19 @@ public class StudentServiceImpl implements StudentService {
         }
         return null;
     }
+
+    @Override
+    public int decrementSurplus(PlatformUser student) {
+        return studentDao.decrementSurplus(student);
+    }
+
+    @Override
+    public int incrementSurplus(PlatformUser student) {
+        return studentDao.incrementSurplus(student);
+    }
+
+    @Override
+    public int updateEssay(Essay essay) {
+        return studentDao.updateEssay(essay);
+    }
 }

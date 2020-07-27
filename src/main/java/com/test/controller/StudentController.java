@@ -2,6 +2,7 @@ package com.test.controller;
 
 import com.test.domain.Essay;
 import com.test.domain.PlatformUser;
+import com.test.domain.Title;
 import com.test.service.StudentService;
 import com.test.util.DocumentHandler;
 import com.zhuozhengsoft.pageoffice.DocumentVersion;
@@ -20,10 +21,8 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @RestController
 public class StudentController {
@@ -48,9 +47,13 @@ public class StudentController {
             case 1:
                 break;
             case 2:
+                List<Essay> list = studentService.queryEssayList(1);
+                map.put("essays", list);
                 modelAndView.setViewName("teacher/Choose");
                 break;
             case 3:
+                List<Essay> list1 = studentService.queryEssayList(2);
+                map.put("essays", list1);
                 modelAndView.setViewName("teacher/Choose");
                 break;
             default:
@@ -60,32 +63,67 @@ public class StudentController {
     }
 
     @PostMapping("/saveWrite")
-    public String saveWrite(String content, String titleName, HttpSession session) {
-        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
-        Map<String, Object> map = new HashMap<>();
-        map.put("content", content);
-        map.put("title", titleName);
-        String name = UUID.randomUUID().toString().replace("-", "");
-        Essay essay = new Essay();
-        essay.setName(name);
-        essay.setStatus(1);
-        essay.setStudent(student);
-        //保存文件到数据库
-        studentService.insertEssay(essay);
-        String desSource = "c:/word/" + student.getName() + "/write.doc";
-        File desFile = new File(desSource);
-        DocumentHandler.createDoc(map, desSource);
-        File file;
-        for (int i = 1; i <= 4; i++) {
-            //要保存的路径
-            file = new File("c:\\word\\" + student.getName() + "\\" + name + "_" + i + ".doc");
-            try {
-                Files.copy(desFile.toPath(), file.toPath());
-            } catch (IOException e) {
-                e.printStackTrace();
+    public String saveWrite(String content, HttpSession session, Title title) {
+        try {
+            StringBuilder str = new StringBuilder();
+            //换行三个为一个整体
+            //换行1
+            str.append(" </w:t></w:r></w:p><w:p><w:pPr></w:pPr>");
+            //换行2
+            str.append("<w:r><w:rPr>");
+            //设置样式  字体 大小 颜色
+            str.append("<w:rFonts w:ascii=\"Calibri\" w:fareast=\"Calibri\" w:h-ansi=\"宋体\"/>");
+            str.append("<w:color w:val=\"000000\"/><w:sz w:val=\"22\"/>");
+            //换行3
+            str.append(" </w:rPr><w:t>");
+            content = content.replaceAll("(\r\n|\n)", str.toString());
+
+            PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+            Map<String, Object> map = new HashMap<>();
+            map.put("content", content);
+            map.put("title", title.getTitleName());
+            String name = UUID.randomUUID().toString().replace("-", "");
+            String desSource = "c:/word/" + student.getName();
+            File desFile = new File(desSource);
+            if (!desFile.exists()) {
+                desFile.mkdirs();
             }
+            desSource += "/write.doc";
+            desFile = new File(desSource);
+            DocumentHandler.createDoc(map, desSource);
+            File file;
+            for (int i = 1; i <= 4; i++) {
+                //要保存的路径
+                file = new File("c:\\word\\" + student.getName() + "\\" + name + "_" + i + ".doc");
+                try {
+                    Files.copy(desFile.toPath(), file.toPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            Essay essay = new Essay();
+            essay.setName(name);
+            essay.setStatus(1);
+            essay.setStudent(student);
+            essay.setTitle(title);
+            //保存文件到数据库
+            studentService.insertEssay(essay);
+            //减掉学生的批改数
+            studentService.decrementSurplus(student);
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            return "fail";
         }
         return "success";
+    }
+
+    @GetMapping("/checkSurplus")
+    public String checkSurplus(HttpSession session) {
+        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+        if (student.getSurplus() >= 1) {
+            return "success";
+        }
+        return "false";
     }
 
     @GetMapping("/toWrite")

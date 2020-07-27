@@ -10,6 +10,15 @@ public class Title {
     private Integer titleCode;
     private String titleName;
 
+    public Title(){
+
+    }
+
+    public Title(String titleName,Integer titleCode){
+        this.titleCode = titleCode;
+        this.titleName = titleName;
+    }
+
     public Integer getId() {
         return id;
     }

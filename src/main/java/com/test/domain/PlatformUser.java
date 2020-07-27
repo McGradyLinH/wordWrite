@@ -70,4 +70,17 @@ public class PlatformUser {
     public void setRole(Integer role) {
         this.role = role;
     }
+
+    @Override
+    public String toString() {
+        return "PlatformUser{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", password='" + password + '\'' +
+                ", surplus=" + surplus +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }

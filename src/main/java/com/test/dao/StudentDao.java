@@ -15,5 +15,31 @@ public interface StudentDao {
 
     List<Essay> queryEssayList(Integer status);
 
+    /**
+     * 添加文章
+     * @param essay
+     * @return
+     */
     int insertEssay(Essay essay);
+
+    /**
+     * 减少学生作文数
+     * @param student
+     * @return
+     */
+    int decrementSurplus(PlatformUser student);
+
+    /**
+     * 增加学生作文数
+     * @param student
+     * @return
+     */
+    int incrementSurplus(PlatformUser student);
+
+    /**
+     * 修改文章的状态
+     * @param essay
+     * @return
+     */
+    int updateEssay(Essay essay);
 }

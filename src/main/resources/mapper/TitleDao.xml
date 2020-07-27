@@ -4,7 +4,7 @@
 
 
     <!--查询单个-->
-    <select id="queryTitles" resultType="com.test.domain.Title">
+    <select id="queryTitles" resultType="title">
         select * from title
     </select>
 

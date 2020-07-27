@@ -46,6 +46,7 @@ function titleName(titleCode) {
     for (let i = 0; i < titles.length; i++) {
         if (titles[i].titleCode == titleCode) {
             $("#titleName").val(titles[i].titleName);
+            $("#titleCode").val(titles[i].titleCode);
             $("#selectTitle").html(titles[i].titleName);
             break;
         }

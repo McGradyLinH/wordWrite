@@ -11,8 +11,6 @@ public class Essay {
     private Integer status;
     //是属于哪一个学生的
     private PlatformUser student;
-    //作文题目id
-    private Integer titleId;
     //英语教师批改
     private PlatformUser enTeacher;
     //中文教师批改
@@ -66,14 +64,6 @@ public class Essay {
 
     public void setCNTeacher(PlatformUser CNTeacher) {
         this.CNTeacher = CNTeacher;
-    }
-
-    public Integer getTitleId() {
-        return titleId;
-    }
-
-    public void setTitleId(Integer titleId) {
-        this.titleId = titleId;
     }
 
     public Title getTitle() {

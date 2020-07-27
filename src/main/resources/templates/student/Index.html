@@ -15,6 +15,7 @@
 <h3 id="selectTitle"></h3>
 <form th:action="@{/saveWrite}" method="post" id="writeArea" style="display: none;">
     <input type="hidden" id="titleName" name="titleName"/>
+    <input type="hidden" id="titleCode" name="titleCode"/>
     <label>
 <textarea name="content" cols="20" rows="8" style="width: 1000px;height: 800px;" wrap="hard">
 </textarea>
@@ -39,56 +40,14 @@
                 </datalist>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="saveTitle()">Save changes</button>
+                <button type="button" class="btn btn-primary" onclick="saveTitle()">Save title</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 </body>
-<script>
-    var titles;
-    $(document).ready(function () {
-        $("#controlWrite").click(function () {
-            if ($("#controlWrite").text() === '开始写作') {
-                $(".modal").modal();
-            } else {
-                $("#selectTitle").html('');
-                $("#titleName").val('');
-                $("#controlWrite").text('开始写作');
-                $("#writeArea").css('display', 'none');
-            }
-        });
-
-        $.ajax({
-            url: '/titles',
-            type: 'get',
-            success: function (data) {
-                titles = data;
-                for (let i = 0; i < data.length; i++) {
-                    let add_options = '<option value="' + data[i].titleCode + '">' + data[i].titleName + '</option>';
-                    $('datalist#title_list').append(add_options);
-                }
-            }
-        });
-    });
-
-    function saveTitle() {
-        let titleCode = $("#title").val();
-        titleName(titleCode);
-        $(".modal").modal('hide');
-        $("#writeArea").css('display', 'block');
-        $("#controlWrite").text('放弃写作');
-    }
-
-    function titleName(titleCode) {
-        for (let i = 0; i < titles.length; i++) {
-            if (titles[i].titleCode == titleCode) {
-                $("#titleName").val(titles[i].titleName);
-                $("#selectTitle").html(titles[i].titleName);
-                break;
-            }
-        }
-    }
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+<script th:src="@{js/student/student.js}"></script>
+<!--<script th:src="@{js/bootbox.min.js}"></script>-->
 </html>

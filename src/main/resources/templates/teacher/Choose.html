@@ -6,7 +6,6 @@
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
     <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
-
 </head>
 <body id="changeBody">
 <table class="table">
@@ -20,6 +19,7 @@
     </thead>
     <tbody>
     <tr th:each="essay : ${essays}">
+        <!--/*@thymesVar id="essay" type="com.test.domain.Essay"*/-->
         <td th:text="${essay.student.name}"></td>
         <td th:text="${essay.name}"></td>
         <td th:text="${essay.status}"></td>
