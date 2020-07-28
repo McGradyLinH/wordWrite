@@ -34,29 +34,36 @@ public class StudentController {
 
     /**
      * 去到学生上传文章页面
+     *
      * @return
      */
     @GetMapping("/stuUpload")
-    public ModelAndView imagerotate(){
+    public ModelAndView imagerotate() {
         return new ModelAndView("student/ImageRotate");
     }
 
     /**
      * 上传文章并解析
+     *
      * @param essayFile
      * @param session
      * @return
      */
     @PostMapping("/uploadEssay")
-    public String uploadEssay(MultipartFile essayFile,HttpSession session){
-
-
-
-        return null;
+    public String uploadEssay(MultipartFile essayFile, HttpSession session, MultipartFile imgFile,String imageString) {
+//        System.out.println(imgFile.getOriginalFilename());
+        System.err.println(imageString);
+//        try {
+//            essayFile.transferTo(new File("c:/word/uploadImage/" + essayFile.getOriginalFilename()));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        return "success";
     }
 
     /**
      * 去到登录页面
+     *
      * @return
      */
     @GetMapping("/login")
@@ -66,7 +73,8 @@ public class StudentController {
 
     /**
      * 根据角色跳转
-     * @param phone 电话
+     *
+     * @param phone    电话
      * @param password 密码
      * @return
      */
@@ -94,6 +102,7 @@ public class StudentController {
 
     /**
      * 学生首页
+     *
      * @return
      */
     @GetMapping("/stuIndex")
@@ -110,6 +119,7 @@ public class StudentController {
 
     /**
      * 去到学生查看文章页面
+     *
      * @param essayName 文件名称
      * @param stuName   学生姓名
      * @return
@@ -124,6 +134,7 @@ public class StudentController {
 
     /**
      * 学生写作页面
+     *
      * @return
      */
     @GetMapping("/stuWrite")
@@ -133,8 +144,9 @@ public class StudentController {
 
     /**
      * 学生提交写的作文
+     *
      * @param content 文章的内容
-     * @param title 文章的标题
+     * @param title   文章的标题
      * @return
      */
     @PostMapping("/saveWrite")
@@ -194,6 +206,7 @@ public class StudentController {
 
     /**
      * 检查剩余文章数
+     *
      * @return
      */
     @GetMapping("/checkSurplus")

@@ -9,20 +9,39 @@
 </head>
 <body>
 <form th:action="@{/uploadEssay}" method="post" enctype="multipart/form-data">
-    <input type="file" name="essayFile" id="myFile1"/>
+    <input type="file" name="essayFile" id="myFile1" accept="image/jpg,image/jpeg,image/png,image/PNG"/>
     <div id='container'>
-        <img src="" id='tank'>
+        <img src="" name="imgFile" alt="" id='tank'>
     </div>
     <button type="submit" class="btn-primary">上传</button>
 </form>
+<div id='show' style="width: 200px;height: 200px;"></div>
 </body>
 <script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" th:src="@{js/exif.js}"></script>
+<script type="text/javascript" th:src="@{js/student/image.js}"></script>
 <script>
+    $(function () {
+        var async = {};
+        //处理图片后进行的操作，如上传
+        async.do = function () {
+            var imageData = $('#show>img')[0].src;//获取base64格式的图片
+            var imageData = imageData.replace(/data:image\/jpeg;base64,/, '');//去掉"data:image/jpeg;base64,"
+            //上传图片
+            $.post('/uploadEssay', {imageString: imageData}, function (data) {
+                console.log(data)
+            })
+        };
+        var source = $('#myFile1');
+        var show = $('#show');
+        imageProcess(source, show, async);
+    })
+
     $("#myFile1").change(function () {
         //创建blob对象，浏览器将文件放入内存中，并生成标识
         //给img标检的src赋值
         document.getElementById("tank").src = URL.createObjectURL($(this)[0].files[0]);
-        //URL.revokeObjectURL(img_src);// 手动 回收，
+        //URL.revokeObjectURL(img_src);// 手动 回收
     });
 
     container.style = "width:200px;height:200px;border:3px solid;";
@@ -33,19 +52,39 @@
         if (code == 37) {
             current = 180;
             tank.style.transform = 'rotate(' + current + 'deg)';
+            let a = document.getElementById("tank").src;
+            var myFile1 = getImgToBase64(a);
+            console.log(myFile1);
+            var myFile = dataURLtoFile(myFile1, 'testimg');
+            console.log(myFile);
         }
         if (code == 38) {
             current = 270;
             tank.style.transform = 'rotate(' + current + 'deg)';
+            let a = document.getElementById("tank").src;
+            var myFile1 = getImgToBase64(a);
+            console.log(myFile1);
+            var myFile = dataURLtoFile(myFile1, 'testimg');
+            console.log(myFile);
         }
         if (code == 39) {
             current = 0;
             tank.style.transform = 'rotate(' + current + 'deg)';
+            let a = document.getElementById("tank").src;
+            var myFile1 = getImgToBase64(a);
+            console.log(myFile1);
+            var myFile = dataURLtoFile(myFile1, 'testimg');
+            console.log(myFile);
         }
         if (code == 40) {
             current = 90;
             tank.style.transform = 'rotate(' + current + 'deg)';
+            let a = document.getElementById("tank").src;
+            var myFile1 = getImgToBase64(a);
+            console.log(myFile1);
+            var myFile = dataURLtoFile(myFile1, 'testimg');
         }
     }
+
 </script>
 </html>
