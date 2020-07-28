@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.test.domain.Essay;
+import com.test.domain.EssayDto;
 import com.test.domain.PlatformUser;
 import com.test.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,9 @@ public class WordController {
         //登录老师
         PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
         Integer role = teacher.getRole();
-        List<Essay> list1 = studentService.queryEssayList(role);
+        EssayDto essayDto = new EssayDto();
+        essayDto.setStatus(role);
+        List<Essay> list1 = studentService.queryEssayList(essayDto);
         map.put("essays", list1);
         return modelAndView;
     }
@@ -52,7 +55,6 @@ public class WordController {
 
     /**
      * 打开word文档
-     *
      * @param index 文章的编号
      * @return
      */

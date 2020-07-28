@@ -10,6 +10,7 @@
 <table class="table">
     <thead>
     <tr>
+        <th>#</th>
         <th>学生姓名</th>
         <th>作文名</th>
         <th>状态</th>
@@ -17,8 +18,9 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="essay : ${essays}">
+    <tr th:each="essay,loopStatus : ${essays}">
         <!--/*@thymesVar id="essay" type="com.test.domain.Essay"*/-->
+        <td th:text="${loopStatus.count}"></td>
         <td th:text="${essay.student.name}"></td>
         <td th:text="${essay.title.getTitleName()}"></td>
         <td th:text="${essay.status}"></td>

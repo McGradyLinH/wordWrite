@@ -1,6 +1,7 @@
 package com.test.dao;
 
 import com.test.domain.Essay;
+import com.test.domain.EssayDto;
 import com.test.domain.PlatformUser;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface StudentDao {
     PlatformUser queryByPhone(String phone);
 
-    List<Essay> queryEssayList(Integer status);
+    List<Essay> queryEssayList(EssayDto essayDto);
 
     /**
      * 添加文章

@@ -2,6 +2,7 @@ package com.test.service.impl;
 
 import com.test.dao.StudentDao;
 import com.test.domain.Essay;
+import com.test.domain.EssayDto;
 import com.test.domain.PlatformUser;
 import com.test.service.StudentService;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<Essay> queryEssayList(Integer status) {
-        return studentDao.queryEssayList(status);
+    public List<Essay> queryEssayList(EssayDto essayDto) {
+        return studentDao.queryEssayList(essayDto);
     }
 
     @Override

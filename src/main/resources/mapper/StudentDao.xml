@@ -38,10 +38,18 @@
     </select>
 
     <!--查询文章根据状态-->
-    <select id="queryEssayList" resultMap="essay">
+    <select id="queryEssayList" resultMap="essay" parameterType="essayDto">
         select * from essay e left join platformUser t on e.stuid=t.id
          left join title ti on e.titleId=ti.titleCode
-         where e.status = #{_parameter}
+         <where>
+             <if test="status != null and status != ''">
+                 e.status = #{status}
+             </if>
+             <if test="stuId != null and stuId != ''">
+                 t.id = #{stuId}
+             </if>
+         </where>
+
     </select>
 
     <insert id="insertEssay" parameterType="essay" useGeneratedKeys="true" keyProperty="id">

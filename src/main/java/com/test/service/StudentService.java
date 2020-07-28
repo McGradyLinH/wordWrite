@@ -1,6 +1,7 @@
 package com.test.service;
 
 import com.test.domain.Essay;
+import com.test.domain.EssayDto;
 import com.test.domain.PlatformUser;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface StudentService {
     PlatformUser queryByPhone(String phone);
 
-    List<Essay> queryEssayList(Integer status);
+    List<Essay> queryEssayList(EssayDto essayDto);
 
     Essay insertEssay(Essay essay);
 
