@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,9 +31,28 @@ import java.util.regex.Pattern;
 public class StudentController {
     @Autowired
     private StudentService studentService;
-    @GetMapping("/imagerotate")
+
+    /**
+     * 去到学生上传文章页面
+     * @return
+     */
+    @GetMapping("/stuUpload")
     public ModelAndView imagerotate(){
         return new ModelAndView("student/ImageRotate");
+    }
+
+    /**
+     * 上传文章并解析
+     * @param essayFile
+     * @param session
+     * @return
+     */
+    @PostMapping("/uploadEssay")
+    public String uploadEssay(MultipartFile essayFile,HttpSession session){
+
+
+
+        return null;
     }
 
     /**

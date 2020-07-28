@@ -4,34 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>上传文章</title>
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
 </head>
 <body>
-<div id='container'>
-    <img th:src="@{images/ocr.jpg}" alt="" id='tank'>
-</div>
+<form th:action="@{/uploadEssay}" method="post" enctype="multipart/form-data">
+    <input type="file" name="essayFile" id="myFile1"/>
+    <div id='container'>
+        <img src="" id='tank'>
+    </div>
+    <button type="submit" class="btn-primary">上传</button>
+</form>
 </body>
+<script type="text/javascript" src="jquery.min.js"></script>
 <script>
-    container.style="width:200px;height:200px;border:3px solid;";
-    tank.style="width:200px;height:200px;position:relative;top:0px;left:0px;"
-    document.body.onkeydown=function(){
+    $("#myFile1").change(function () {
+        //创建blob对象，浏览器将文件放入内存中，并生成标识
+        //给img标检的src赋值
+        document.getElementById("tank").src = URL.createObjectURL($(this)[0].files[0]);
+        //URL.revokeObjectURL(img_src);// 手动 回收，
+    });
+
+    container.style = "width:200px;height:200px;border:3px solid;";
+    tank.style = "width:200px;height:200px;position:relative;top:0px;left:0px;"
+    document.body.onkeydown = function () {
         let current = 0;
         const code = event.keyCode;
-        if(code == 37) {
+        if (code == 37) {
             current = 180;
-            tank.style.transform = 'rotate('+current+'deg)';
+            tank.style.transform = 'rotate(' + current + 'deg)';
         }
-        if(code == 38) {
-            current =270;
-            tank.style.transform = 'rotate('+current+'deg)';
+        if (code == 38) {
+            current = 270;
+            tank.style.transform = 'rotate(' + current + 'deg)';
         }
-        if(code == 39) {
+        if (code == 39) {
             current = 0;
-            tank.style.transform = 'rotate('+current+'deg)';
+            tank.style.transform = 'rotate(' + current + 'deg)';
         }
-        if(code == 40) {
+        if (code == 40) {
             current = 90;
-            tank.style.transform = 'rotate('+current+'deg)';
+            tank.style.transform = 'rotate(' + current + 'deg)';
         }
     }
 </script>
