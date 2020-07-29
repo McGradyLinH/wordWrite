@@ -1,11 +1,14 @@
 package com.test.domain;
 
+import java.io.Serializable;
+
 /**
  * @author lx
  * @version 1.0
  * @date 2020/7/25 23:04
  */
-public class Title {
+public class Title implements Serializable {
+    private static final long serialVersionUID = 7450050213833451533L;
     private Integer id;
     private Integer titleCode;
     private String titleName;

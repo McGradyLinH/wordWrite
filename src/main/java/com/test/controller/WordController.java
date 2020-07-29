@@ -32,7 +32,7 @@ public class WordController {
         PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
         Integer role = teacher.getRole();
         EssayDto essayDto = new EssayDto();
-        essayDto.setStatus(role);
+        essayDto.setStatus(role - 1);
         List<Essay> list1 = studentService.queryEssayList(essayDto);
         map.put("essays", list1);
         return modelAndView;
@@ -55,6 +55,7 @@ public class WordController {
 
     /**
      * 打开word文档
+     *
      * @param index 文章的编号
      * @return
      */

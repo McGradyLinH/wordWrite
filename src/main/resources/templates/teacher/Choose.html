@@ -30,10 +30,11 @@
                 批改
             </button>
         </td>
-
     </tr>
     </tbody>
 </table>
+<!--当无记录时显示-->
+<span style="margin-left: 45%;color: red;" th:if="${#lists.isEmpty(essays)}">暂无记录!</span>
 </body>
 <script>
     function updateEssay(essayName, stuName) {

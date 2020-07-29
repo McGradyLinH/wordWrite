@@ -5,27 +5,20 @@ import com.test.domain.EssayDto;
 import com.test.domain.PlatformUser;
 import com.test.domain.Title;
 import com.test.service.StudentService;
-import com.test.util.DocumentHandler;
-import com.zhuozhengsoft.pageoffice.DocumentVersion;
-import com.zhuozhengsoft.pageoffice.FileSaver;
-import com.zhuozhengsoft.pageoffice.OpenModeType;
-import com.zhuozhengsoft.pageoffice.PageOfficeCtrl;
+import com.test.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.ParseException;
 import java.util.*;
-import java.util.regex.Pattern;
 
 @RestController
 public class StudentController {
@@ -38,26 +31,33 @@ public class StudentController {
      * @return
      */
     @GetMapping("/stuUpload")
-    public ModelAndView imagerotate() {
+    public ModelAndView imagerotate(Map<String, Object> map) {
+
         return new ModelAndView("student/ImageRotate");
     }
 
     /**
      * 上传文章并解析
      *
-     * @param essayFile
+     * @param imageString 图片的base64码
      * @param session
      * @return
      */
     @PostMapping("/uploadEssay")
-    public String uploadEssay(MultipartFile essayFile, HttpSession session, MultipartFile imgFile,String imageString) {
-//        System.out.println(imgFile.getOriginalFilename());
-        System.err.println(imageString);
-//        try {
-//            essayFile.transferTo(new File("c:/word/uploadImage/" + essayFile.getOriginalFilename()));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+    public String uploadEssay(HttpSession session, String imageString, Title title) {
+        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+        String fileName = UUID.randomUUID().toString().replaceAll("-", "") + ".jpg";
+        String filePath = "c:/word/uploadImage/" + student.getName() + "/";
+        //保存图片
+        Base64ToFile.base64ToFile(imageString, fileName, filePath);
+        //解析文字
+        try {
+            String jsonString = WebOcr.readFile(filePath + fileName);
+            String content = AnalyticText.analyticText(jsonString);
+            saveWrite(content, session, title);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
         return "success";
     }
 
@@ -79,23 +79,29 @@ public class StudentController {
      * @return
      */
     @PostMapping("/login")
-    public ModelAndView login(String phone, String password, HttpSession session, Map<String, Object> map) {
-        PlatformUser student = studentService.queryByPhone(phone);
+    public ModelAndView login(String phone, String password, HttpSession session,
+                              Map<String, Object> map, HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView("redirect:/stuIndex");
-        if (Objects.isNull(student) || !student.getPassword().equals(password)) {
-            map.put("msg", "用户名或密码错误");
+        if (!CodeUtil.checkVerifyCode(request)) {
+            map.put("msg", "验证码错误");
             modelAndView.setViewName("Login");
-        }
-        session.setAttribute("loginUser", student);
-        switch (student.getRole()) {
-            case 1:
-                break;
-            case 2:
-            case 3:
-                modelAndView.setViewName("redirect:/choose");
-                break;
-            default:
+        } else {
+            PlatformUser student = studentService.queryByPhone(phone);
+            if (Objects.isNull(student) || !student.getPassword().equals(password)) {
+                map.put("msg", "用户名或密码错误");
                 modelAndView.setViewName("Login");
+            }
+            session.setAttribute("loginUser", student);
+            switch (student.getRole()) {
+                case 1:
+                    break;
+                case 2:
+                case 3:
+                    modelAndView.setViewName("redirect:/choose");
+                    break;
+                default:
+                    modelAndView.setViewName("Login");
+            }
         }
         return modelAndView;
     }
@@ -150,7 +156,7 @@ public class StudentController {
      * @return
      */
     @PostMapping("/saveWrite")
-    public String saveWrite(String content, HttpSession session, Title title) {
+    public ModelAndView saveWrite(String content, HttpSession session, Title title) {
         try {
             StringBuilder str = new StringBuilder();
             //换行三个为一个整体
@@ -199,9 +205,8 @@ public class StudentController {
             studentService.decrementSurplus(student);
         } catch (RuntimeException e) {
             e.printStackTrace();
-            return "fail";
         }
-        return "success";
+        return new ModelAndView("redirect:/stuIndex");
     }
 
     /**

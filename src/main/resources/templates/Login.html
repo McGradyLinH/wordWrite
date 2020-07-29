@@ -36,6 +36,13 @@
                     <span class="focus-input100" data-symbol="&#xf190;"></span>
                 </div>
 
+                <div class="wrap-input100 validate-input" data-validate="请输入验证码">
+                    <span class="label-input100">验证码</span>
+                    <input class="input100" type="text" name="verifyCodeActual" placeholder="请输入验证码" autocomplete="off">
+                    <span class="focus-input100" data-symbol="&#xf233;"></span>
+                </div>
+                <img id="captcha_img" alt="点击更换" title="点击更换"
+                     onclick="refresh()" th:src="@{/kaptcha}" />
                 <div class="text-right p-t-8 p-b-31">
                     <!--<a href="javascript:">忘记密码？</a>-->
                 </div>

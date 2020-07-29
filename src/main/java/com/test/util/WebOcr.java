@@ -1,4 +1,4 @@
-package com.test.test;
+package com.test.util;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -17,7 +16,7 @@ import org.apache.commons.codec.digest.DigestUtils;
   *错误码链接：https://www.xfyun.cn/document/error-code (code返回错误码时必看)
   *@author iflytek
   */
-public class TestWebOcr {
+public class WebOcr {
 	// 手写文字识别webapi接口地址
 	private static final String WEBOCR_URL = "http://webapi.xfyun.cn/v1/service/v1/ocr/handwriting";
 	// 应用APPID(必须为webapi类型应用,并开通手写文字识别服务,参考帖子如何创建一个webapi应用：http://bbs.xfyun.cn/forum.php?mod=viewthread&tid=36481)
@@ -56,13 +55,13 @@ public class TestWebOcr {
 		return header;
 	}
 
-	public static void main(String[] args) throws IOException,ParseException{
+	public static String readFile(String imagePath) throws IOException,ParseException{
 		Map<String, String> header = constructHeader("en", "false");
 		// 读取图像文件，转二进制数组，然后Base64编码
-		byte[] imageByteArray = FileUtil.read2ByteArray(IMAGE_FILE_PATH);
+		byte[] imageByteArray = FileUtil.read2ByteArray(imagePath);
 		String imageBase64 = new String(Base64.encodeBase64(imageByteArray), "UTF-8");
 		String bodyParam = "image=" + imageBase64;
 		String result = HttpUtil.doPost(WEBOCR_URL, header, bodyParam);
-		System.out.println(result);
+		return result;
 	}
 }

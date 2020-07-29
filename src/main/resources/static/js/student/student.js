@@ -16,6 +16,7 @@ $(document).ready(function () {
         } else {
             $("#selectTitle").html('');
             $("#titleName").val('');
+            $("#titleCode").val('');
             $("#controlWrite").text('开始写作');
             $("#writeArea").css('display', 'none');
         }
@@ -40,6 +41,14 @@ function saveTitle() {
     $(".modal").modal('hide');
     $("#writeArea").css('display', 'block');
     $("#controlWrite").text('放弃写作');
+}
+
+function saveTitle1() {
+    let titleCode = $("#title").val();
+    titleName(titleCode);
+    $(".modal").modal('hide');
+    $("#uploadArea").css('display', 'block');
+    $("#chooseTitle").text('放弃上传');
 }
 
 function titleName(titleCode) {

@@ -10,17 +10,16 @@
 </head>
 <body>
 <h1 th:inline="text">学生写作</h1>
-<button id="controlWrite">开始写作</button>
+<button id="controlWrite" class="btn-primary">开始写作</button>
 <br>
-<h3 id="selectTitle"></h3>
-<form th:action="@{/saveWrite}" method="post" id="writeArea" style="display: none;">
+<h3 style="margin-left: 45%" id="selectTitle"></h3>
+<form th:action="@{/saveWrite}" role="form" method="post" id="writeArea" style="display: none;">
     <input type="hidden" id="titleName" name="titleName"/>
     <input type="hidden" id="titleCode" name="titleCode"/>
-    <label>
-<textarea name="content" cols="20" rows="8" style="width: 1000px;height: 800px;" wrap="hard">
-</textarea>
-    </label>
-    <button type="submit" class="btn-primary">提交</button>
+    <textarea name="content" class="form-control" rows="16" wrap="hard">
+    </textarea>
+    <br/>
+    <button type="submit" class="btn-primary btn-block">提 交</button>
 </form>
 
 <div class="modal" tabindex="-1" role="dialog">
@@ -47,7 +46,6 @@
     </div>
 </div>
 </body>
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>-->
 <script th:src="@{js/student/student.js}"></script>
 <script th:src="@{js/bootbox.min.js}"></script>
 </html>

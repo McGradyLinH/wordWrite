@@ -75,6 +75,9 @@
             return false;//返回false那么表单将不提交
         }
     }
-    
 
 })(jQuery);
+
+function refresh() {
+    document.getElementById('captcha_img').src="/kaptcha?"+Math.random();
+}
