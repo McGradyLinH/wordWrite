@@ -6,13 +6,26 @@
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
     <!--     	<script type="text/javascript" src="pageoffice.js" id="po_js_main"></script>-->
-
+    <style>
+        #count {
+            width: 200px;
+            height: 150px;
+            line-height: 150px;
+            margin: auto;
+            font-size: 40px;
+        }
+    </style>
 </head>
 <body>
 <h1 th:inline="text">学生写作</h1>
 <button id="controlWrite" class="btn-primary">开始写作</button>
 <br>
 <h3 style="margin-left: 45%" id="selectTitle"></h3>
+<div id="count">
+    <span id="id_H">00</span>
+    <span id="id_M">00</span>
+    <span id="id_S">00</span>
+</div>
 <form th:action="@{/saveWrite}" role="form" method="post" id="writeArea" style="display: none;">
     <input type="hidden" id="titleName" name="titleName"/>
     <input type="hidden" id="titleCode" name="titleCode"/>

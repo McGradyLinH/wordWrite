@@ -1,5 +1,16 @@
 let titles;
 $(document).ready(function () {
+    //点击开始建 开始计数
+    let count = 0;
+    setInterval(function() {
+        count++;
+        // 需要改变页面上时分秒的值
+        $("id_S").innerHTML = showNum(count % 60)
+        $("id_M").innerHTML = showNum(parseInt(count / 60) % 60)
+        $("id_H").innerHTML = showNum(parseInt(count / 60 / 60))
+    }, 1000)
+
+
     $("#controlWrite").click(function () {
         if ($("#controlWrite").text() === '开始写作') {
             $.ajax({
@@ -60,4 +71,18 @@ function titleName(titleCode) {
             break;
         }
     }
+}
+
+//可以将查找标签节点的操作进行简化  var btn = getElementById('btn')
+function $(id) {
+    return document.getElementById(id)
+}
+
+
+//封装一个处理单位数字的函数
+function showNum(num) {
+    if (num < 10) {
+        return '0' + num
+    }
+    return num
 }

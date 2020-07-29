@@ -1,9 +1,21 @@
 package com.test.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.test.domain.PlatformUser;
+import com.test.domain.Title;
+import com.test.util.AnalyticText;
+import com.test.util.Base64ToFile;
+import com.test.util.WebOcr;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Test {
 
@@ -31,5 +43,40 @@ public class Test {
 
         }
 
+    }
+
+    /**
+     * 去到学生上传文章页面
+     *
+     * @return
+     */
+    @GetMapping("/stuUpload")
+    public ModelAndView imagerotate(Map<String, Object> map) {
+        return new ModelAndView("student/ImageRotate");
+    }
+
+    /**
+     * 上传文章并解析
+     *
+     * @param imageString 图片的base64码
+     * @param session
+     * @return
+     */
+    @PostMapping("/uploadEssay")
+    public String uploadEssay(HttpSession session, String imageString, Title title) {
+        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+        String fileName = UUID.randomUUID().toString().replaceAll("-", "") + ".jpg";
+        String filePath = "c:/word/uploadImage/" + student.getName() + "/";
+        //保存图片
+        Base64ToFile.base64ToFile(imageString, fileName, filePath);
+        //解析文字
+        try {
+            String jsonString = WebOcr.readFile(filePath + fileName);
+            String content = AnalyticText.analyticText(jsonString);
+//            saveWrite(content, session, title);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        return "success";
     }
 }

@@ -26,42 +26,6 @@ public class StudentController {
     private StudentService studentService;
 
     /**
-     * 去到学生上传文章页面
-     *
-     * @return
-     */
-    @GetMapping("/stuUpload")
-    public ModelAndView imagerotate(Map<String, Object> map) {
-
-        return new ModelAndView("student/ImageRotate");
-    }
-
-    /**
-     * 上传文章并解析
-     *
-     * @param imageString 图片的base64码
-     * @param session
-     * @return
-     */
-    @PostMapping("/uploadEssay")
-    public String uploadEssay(HttpSession session, String imageString, Title title) {
-        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
-        String fileName = UUID.randomUUID().toString().replaceAll("-", "") + ".jpg";
-        String filePath = "c:/word/uploadImage/" + student.getName() + "/";
-        //保存图片
-        Base64ToFile.base64ToFile(imageString, fileName, filePath);
-        //解析文字
-        try {
-            String jsonString = WebOcr.readFile(filePath + fileName);
-            String content = AnalyticText.analyticText(jsonString);
-            saveWrite(content, session, title);
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-        return "success";
-    }
-
-    /**
      * 去到登录页面
      *
      * @return
@@ -90,6 +54,7 @@ public class StudentController {
             if (Objects.isNull(student) || !student.getPassword().equals(password)) {
                 map.put("msg", "用户名或密码错误");
                 modelAndView.setViewName("Login");
+                return modelAndView;
             }
             session.setAttribute("loginUser", student);
             switch (student.getRole()) {
@@ -158,6 +123,12 @@ public class StudentController {
     @PostMapping("/saveWrite")
     public ModelAndView saveWrite(String content, HttpSession session, Title title) {
         try {
+            PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+            //减掉学生的批改数
+            int i1 = studentService.decrementSurplus(student);
+            if (i1 == 0){
+                return new ModelAndView("redirect:/login");
+            }
             StringBuilder str = new StringBuilder();
             //换行三个为一个整体
             //换行1
@@ -171,7 +142,7 @@ public class StudentController {
             str.append(" </w:rPr><w:t>");
             content = content.replaceAll("(\r\n|\n)", str.toString());
 
-            PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+
             Map<String, Object> map = new HashMap<>();
             map.put("content", content);
             map.put("title", title.getTitleName());
@@ -201,8 +172,6 @@ public class StudentController {
             essay.setTitle(title);
             //保存文件到数据库
             studentService.insertEssay(essay);
-            //减掉学生的批改数
-            studentService.decrementSurplus(student);
         } catch (RuntimeException e) {
             e.printStackTrace();
         }

@@ -9,7 +9,7 @@
 </head>
 <body id="changeBody">
 <a th:href="@{/stuWrite}" class="btn btn-primary">写作</a>
-<a th:href="@{/stuUpload}" class="btn btn-primary">上传</a>
+<!--<a th:href="@{/stuUpload}" class="btn btn-primary">上传</a>-->
 <table class="table">
     <thead>
     <tr>
@@ -34,18 +34,8 @@
     </tr>
     </tbody>
 </table>
+<!--当无记录时显示-->
+<span style="margin-left: 45%;color: red;" th:if="${#lists.isEmpty(essays)}">暂无记录!</span>
 </body>
-<script>
-    function updateEssay(essayName, stuName) {
-        $.ajax({
-            url: '/stucheck',
-            type: 'get',
-            data: {essayName: essayName, stuName: stuName},
-            dataType: 'html',
-            success: function (data) {
-                $("#changeBody").html(data);
-            }
-        })
-    }
-</script>
+<script type="text/javascript" th:src="@{js/student/stuIndex.js}"></script>
 </html>
