@@ -21,11 +21,11 @@ public class DocumentHandler {
 
     static {
         configuration.setDefaultEncoding("utf-8");
+        //需要导出模板的包路径
+        configuration.setClassForTemplateLoading(DocumentHandler.class, "/word");
     }
 
     public static void createDoc(Map<String, Object> dataMap, String fileName) {
-        //需要导出模板的包路径
-        configuration.setClassForTemplateLoading(DocumentHandler.class, "/word");
         Template t = null;
         try {
             t = configuration.getTemplate("write.ftl");
@@ -39,19 +39,22 @@ public class DocumentHandler {
             fos = new FileOutputStream(outFile);
             OutputStreamWriter oWriter = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
             out = new BufferedWriter(oWriter);
-        } catch (FileNotFoundException e1) {
+            if (t != null) {
+                t.process(dataMap, out);
+            }
+        } catch (TemplateException | IOException e1) {
             e1.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (fos != null) {
+                    fos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-        try {
-            assert t != null;
-            t.process(dataMap, out);
-            assert out != null;
-            out.close();
-            fos.close();
-        } catch (TemplateException | IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }
