@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +18,6 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.ParseException;
 import java.util.*;
 
 @RestController
@@ -121,7 +121,7 @@ public class StudentController {
      * @return
      */
     @PostMapping("/saveWrite")
-    public ModelAndView saveWrite(String content, HttpSession session, Title title) {
+    public ModelAndView saveWrite(String content, HttpSession session, Title title, MultipartFile titleImage) {
         try {
             PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
             //减掉学生的批改数
@@ -141,11 +141,16 @@ public class StudentController {
             //换行3
             str.append(" </w:rPr><w:t>");
             content = content.replaceAll("(\r\n|\n)", str.toString());
-
-
-            Map<String, Object> map = new HashMap<>();
+            //传入word文档的值
+            Map<String, Object> map = new HashMap<>(3);
             map.put("content", content);
             map.put("title", title.getTitleName());
+            map.put("img", "");
+            if (!titleImage.isEmpty()) {
+                //上传图片的base64
+                String base64 = Base64.getEncoder().encodeToString(titleImage.getBytes());
+                map.put("img", base64);
+            }
             String name = UUID.randomUUID().toString().replace("-", "");
             String desSource = "c:/word/" + student.getName();
             File desFile = new File(desSource);
@@ -172,7 +177,7 @@ public class StudentController {
             essay.setTitle(title);
             //保存文件到数据库
             studentService.insertEssay(essay);
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | IOException e) {
             e.printStackTrace();
         }
         return new ModelAndView("redirect:/stuIndex");
@@ -180,7 +185,6 @@ public class StudentController {
 
     /**
      * 检查剩余文章数
-     *
      * @return
      */
     @GetMapping("/checkSurplus")
@@ -191,66 +195,5 @@ public class StudentController {
         }
         return "false";
     }
-
-    //下面两个是保留方法
-//    @GetMapping("/toWrite")
-//    public ModelAndView toWrite(HttpServletRequest request, Map<String, Object> map) {
-//        HttpSession session = request.getSession();
-//        String name = UUID.randomUUID().toString().replace("-", "");
-//        //文件名称
-//        session.setAttribute("name", name);
-//        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
-//        Essay essay = new Essay();
-//        essay.setName(name);
-//        essay.setStatus(1);
-//        essay.setStudent(student);
-//        //保存文件到数据库
-//        studentService.insertEssay(essay);
-//        PageOfficeCtrl poCtrl = new PageOfficeCtrl(request);
-//        poCtrl.setServerPage("/poserver.zz");//设置服务页面
-//        poCtrl.addCustomToolButton("保存", "Save", 1);//添加自定义保存按钮
-//        poCtrl.setSaveFilePage("/writeSave");//设置处理文件保存的请求方法
-//        //打开word
-//        ModelAndView mv = new ModelAndView("Word");
-//        //创建word
-//        poCtrl.webCreateNew(student.getName(), DocumentVersion.Word2003);
-//        map.put("pageoffice", poCtrl.getHtmlCode("PageOfficeCtrl1"));
-//        map.put("name", student.getName());
-//        return mv;
-//    }
-//
-//    @RequestMapping("/writeSave")
-//    public void saveFile(HttpServletRequest request, HttpServletResponse response) {
-//        HttpSession session = request.getSession();
-//        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
-//        FileSaver fs = new FileSaver(request, response);
-//        String fileName = "";
-//        File file;
-//        boolean isCreate = false;
-//        //为每一个学生创建一个文件夹
-//        file = new File("c:\\word\\" + student.getName() + "");
-//        if (!file.exists()) {
-//            file.mkdir();
-//        }
-//        String name = (String) session.getAttribute("name");
-//
-//        for (int i = 1; i <= 4; i++) {
-//            fileName = "c:\\word\\" + student.getName() + "\\" + name + "_" + i + ".doc";
-//            file = new File(fileName);
-//            if (!file.exists()) {
-//                try {
-//                    isCreate = file.createNewFile();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            } else {
-//                fs.saveToFile(fileName);
-//            }
-//            if (isCreate) {
-//                fs.saveToFile(fileName);
-//            }
-//        }
-//        fs.close();
-//    }
 
 }

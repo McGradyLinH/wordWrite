@@ -3,39 +3,52 @@
 <head>
     <title>学生写作</title>
     <link th:href="@{css/bootstrap.min.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{css/fileinput/fileinput.min.css}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{js/fileinput/fileinput.min.js}"></script>
     <!--     	<script type="text/javascript" src="pageoffice.js" id="po_js_main"></script>-->
     <style>
         #count {
-            width: 200px;
-            height: 150px;
-            line-height: 150px;
-            margin: auto;
-            font-size: 40px;
+            width: 400px;
+            height: 30px;
+            line-height: 30px;
+            font-size: 25px;
         }
     </style>
 </head>
 <body>
 <h1 th:inline="text">学生写作</h1>
-<button id="controlWrite" class="btn-primary">开始写作</button>
+<button id="controlWrite" class="btn-primary btn-lg">开始写作</button>
 <br>
-<h3 style="margin-left: 45%" id="selectTitle"></h3>
-<div id="count">
-    <span id="id_H">00</span>
-    <span id="id_M">00</span>
-    <span id="id_S">00</span>
-</div>
-<form th:action="@{/saveWrite}" role="form" method="post" id="writeArea" style="display: none;">
-    <input type="hidden" id="titleName" name="titleName"/>
-    <input type="hidden" id="titleCode" name="titleCode"/>
-    <textarea name="content" class="form-control" rows="16" wrap="hard">
+<!--<h3 style="margin-left: 45%" id="selectTitle"></h3>-->
+<form th:action="@{/saveWrite}" role="form" enctype="multipart/form-data" method="post" id="writeArea" style="display: none;">
+<!--    <input type="hidden" id="titleCode" name="titleCode"/>-->
+    <div id="count">
+        用时:<span id="id_H">00</span>小时
+        <span id="id_M">00</span>分
+        <span id="id_S">00</span>秒
+        单词数:<span id="wordCount">0</span>字
+    </div>
+<!--    <button class="btn-primary" type="button" data-toggle="modal" data-target="#titleModal">选择题目</button>-->
+    <label>输入作文题目：(请使用英文在此输入作文题目或上传题目图片或选择题目)</label>
+    <label for="titleName"></label><input id="titleName" name="titleName" type="text" style="width: 500px;"/><br>
+    <button type="button" class="btn-primary" onclick="showFileUpload()">上传题目</button>
+    <div id="uploadTitleArea" style="display: none;">
+        <input type="file" class="file" name="titleImage" id="myFile1"
+               accept="image/jpg,image/jpeg,image/png,image/PNG"/>
+    </div>
+<!--    <div style="margin-left: 20px;">-->
+<!--        <img src="" id="preview_img" width="300px" height="200px" alt="">-->
+<!--    </div>-->
+    <label>写作文：</label>
+    <textarea name="content" onkeyup="wordStatic(this)" class="form-control" rows="12" wrap="hard">
     </textarea>
     <br/>
     <button type="submit" class="btn-primary btn-block">提 交</button>
 </form>
 
-<div class="modal" tabindex="-1" role="dialog">
+<div class="modal" tabindex="-1" id="titleModal" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
