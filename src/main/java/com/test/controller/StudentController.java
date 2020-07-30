@@ -117,16 +117,16 @@ public class StudentController {
      * 学生提交写的作文
      *
      * @param content 文章的内容
-     * @param title   文章的标题
+     * @param titleName   文章的标题
      * @return
      */
     @PostMapping("/saveWrite")
-    public ModelAndView saveWrite(String content, HttpSession session, Title title, MultipartFile titleImage) {
+    public ModelAndView saveWrite(String content, HttpSession session, String titleName, MultipartFile titleImage) {
         try {
             PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
             //减掉学生的批改数
             int i1 = studentService.decrementSurplus(student);
-            if (i1 == 0){
+            if (i1 == 0) {
                 return new ModelAndView("redirect:/login");
             }
             StringBuilder str = new StringBuilder();
@@ -144,12 +144,20 @@ public class StudentController {
             //传入word文档的值
             Map<String, Object> map = new HashMap<>(3);
             map.put("content", content);
-            map.put("title", title.getTitleName());
             map.put("img", "");
+            map.put("title", "");
+            String ftl = "write.ftl";
+            Essay essay = new Essay();
+            essay.setTitleName("小作文，无描述");
+            if (!"".equals(titleName)) {
+                map.put("title", titleName);
+                essay.setTitleName(titleName);
+            }
             if (!titleImage.isEmpty()) {
+                ftl = "upload.ftl";
                 //上传图片的base64
                 String base64 = Base64.getEncoder().encodeToString(titleImage.getBytes());
-                map.put("img", base64);
+                map.put("image", base64);
             }
             String name = UUID.randomUUID().toString().replace("-", "");
             String desSource = "c:/word/" + student.getName();
@@ -159,7 +167,7 @@ public class StudentController {
             }
             desSource += "/write.doc";
             desFile = new File(desSource);
-            DocumentHandler.createDoc(map, desSource);
+            DocumentHandler.createDoc(map, desSource, ftl);
             File file;
             for (int i = 1; i <= 4; i++) {
                 //要保存的路径
@@ -170,11 +178,9 @@ public class StudentController {
                     e.printStackTrace();
                 }
             }
-            Essay essay = new Essay();
             essay.setName(name);
             essay.setStatus(1);
             essay.setStudent(student);
-            essay.setTitle(title);
             //保存文件到数据库
             studentService.insertEssay(essay);
         } catch (RuntimeException | IOException e) {
@@ -185,6 +191,7 @@ public class StudentController {
 
     /**
      * 检查剩余文章数
+     *
      * @return
      */
     @GetMapping("/checkSurplus")

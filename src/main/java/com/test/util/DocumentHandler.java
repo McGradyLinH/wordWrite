@@ -25,10 +25,10 @@ public class DocumentHandler {
         configuration.setClassForTemplateLoading(DocumentHandler.class, "/word");
     }
 
-    public static void createDoc(Map<String, Object> dataMap, String fileName) {
+    public static void createDoc(Map<String, Object> dataMap, String fileName, String ftl) {
         Template t = null;
         try {
-            t = configuration.getTemplate("write.ftl");
+            t = configuration.getTemplate(ftl);
         } catch (IOException e) {
             e.printStackTrace();
         }

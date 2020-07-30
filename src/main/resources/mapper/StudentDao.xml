@@ -16,19 +16,8 @@
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="name" column="essayName" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="VARCHAR"/>
-        <collection property="student" ofType="com.test.domain.PlatformUser">
-            <result property="id" column="id" jdbcType="INTEGER"/>
-            <result property="name" column="stuName" jdbcType="VARCHAR"/>
-            <result property="phone" column="phone" jdbcType="VARCHAR"/>
-            <result property="password" column="password" jdbcType="VARCHAR"/>
-            <result property="role" column="role" jdbcType="INTEGER"/>
-            <result property="email" column="email" jdbcType="VARCHAR"/>
-            <result property="surplus" column="surplus" jdbcType="INTEGER"/>
-        </collection>
-        <collection property="title" ofType="com.test.domain.Title">
-            <result property="id" column="id" jdbcType="INTEGER"/>
-            <result property="titleCode" column="titleCode" jdbcType="VARCHAR"/>
-            <result property="titleName" column="titleName" jdbcType="VARCHAR"/>
+        <result property="titleName" column="titleName" jdbcType="VARCHAR"/>
+        <collection property="student" resultMap="student">
         </collection>
     </resultMap>
 
@@ -40,7 +29,6 @@
     <!--查询文章根据状态-->
     <select id="queryEssayList" resultMap="essay" parameterType="essayDto">
         select * from essay e left join platformUser t on e.stuid=t.id
-         left join title ti on e.titleId=ti.titleCode
          <where>
              <if test="status != null and status != ''">
                  e.status = #{status}
@@ -53,7 +41,7 @@
     </select>
 
     <insert id="insertEssay" parameterType="essay" useGeneratedKeys="true" keyProperty="id">
-        insert into essay (essayName,status,stuid,titleId) values (#{name},1,#{student.id},#{title.titleCode})
+        insert into essay (essayName,status,stuid,titleName) values (#{name},1,#{student.id},#{titleName})
     </insert>
 
     <update id="decrementSurplus" parameterType="platformUser">

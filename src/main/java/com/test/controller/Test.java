@@ -5,6 +5,7 @@ import com.test.domain.PlatformUser;
 import com.test.domain.Title;
 import com.test.util.AnalyticText;
 import com.test.util.Base64ToFile;
+import com.test.util.DocumentHandler;
 import com.test.util.WebOcr;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -20,8 +22,11 @@ import java.util.UUID;
 public class Test {
 
     public static void main(String[] args) {
-        int i = 5;
-        System.out.println(i / 60);
+        Map<String, Object> map = new HashMap<>();
+        map.put("image","");
+        map.put("content","123");
+        map.put("title","");
+        DocumentHandler.createDoc(map,"c:/word/test.doc","upload.ftl");
     }
 
 //    public static void main(String[] args) {

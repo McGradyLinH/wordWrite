@@ -16,7 +16,7 @@ public class Essay {
     //中文教师批改
     private PlatformUser CNTeacher;
     //文章的题目
-    private Title title;
+    private String titleName;
 
     public Integer getId() {
         return id;
@@ -66,11 +66,11 @@ public class Essay {
         this.CNTeacher = CNTeacher;
     }
 
-    public Title getTitle() {
-        return title;
+    public String getTitleName() {
+        return titleName;
     }
 
-    public void setTitle(Title title) {
-        this.title = title;
+    public void setTitleName(String titleName) {
+        this.titleName = titleName;
     }
 }
