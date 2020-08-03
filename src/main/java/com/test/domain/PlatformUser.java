@@ -12,7 +12,7 @@ public class PlatformUser {
     private Integer surplus;
     //邮箱
     private String email;
-    //角色1-学生，2-外教，3-中教
+    //角色0-管理员，1-学生，2-外教，3-中教
     private Integer role;
 
     public String getName() {

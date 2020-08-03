@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>添加员工</title>
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-12 pt-3 px-4">
+            <form th:action="@{/register}" method="post">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="lastName">name</label>
+                        <input type="text" name="name" class="form-control" id="lastName" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="phone">phone</label>
+                        <input type="text" name="phone" class="form-control" id="phone" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="userPwd">password</label>
+                        <input name="password" id="userPwd" type="password" class="form-control" required/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="repwd">repassword</label>
+                        <input id="repwd" type="password" class="form-control" required/>
+                    </div>
+                </div>
+                <p style="color: red;text-align: center;" id="pwdMsg"></p>
+                <div class="form-row">
+                    <label for="email">Email address</label>
+                    <input type="email" name="info.email" class="form-control" id="email" required>
+                </div>
+                <br>
+                <button class="btn-primary btn-block" type="submit">注 册</button>
+            </form>
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+
+<!-- Icons -->
+<script type="text/javascript" th:src="@{/js/feather.min.js}"></script>
+<script>
+    feather.replace()
+</script>
+
+<!-- Graphs -->
+<script type="text/javascript" th:src="@{/js/Chart.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/student/register.js}"></script>
+</body>
+
+</html>

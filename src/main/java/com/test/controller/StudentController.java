@@ -7,6 +7,7 @@ import com.test.domain.Title;
 import com.test.service.StudentService;
 import com.test.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +52,7 @@ public class StudentController {
             modelAndView.setViewName("Login");
         } else {
             PlatformUser student = studentService.queryByPhone(phone);
-            if (Objects.isNull(student) || !student.getPassword().equals(password)) {
+            if (Objects.isNull(student) || !student.getPassword().equals(DigestUtils.md5DigestAsHex(password.getBytes()))) {
                 map.put("msg", "用户名或密码错误");
                 modelAndView.setViewName("Login");
                 return modelAndView;
@@ -63,6 +64,9 @@ public class StudentController {
                 case 2:
                 case 3:
                     modelAndView.setViewName("redirect:/choose");
+                    break;
+                case 0:
+                    modelAndView.setViewName("redirect:/users");
                     break;
                 default:
                     modelAndView.setViewName("Login");

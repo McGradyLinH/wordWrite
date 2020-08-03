@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>修改员工信息</title>
+		<!-- Bootstrap core CSS -->
+		<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+		<!-- Custom styles for this template -->
+		<link th:href="@{/css/dashboard.css}" rel="stylesheet">
+		<link th:href="@{/css/bootstrap-datetimepicker.min.css}" rel="stylesheet">
+	</head>
+
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-12 pt-3 px-4">
+					<form th:action="@{/emp}" method="post">
+						<input type="hidden" name="_method" value="PUT"/>
+						<input type="hidden" name="user_id" th:value="${emp.user_id}"/>
+						<input type="hidden" name="info.user_info_id" th:value="${emp.info.user_info_id}"/>
+						<input type="hidden" name="status.status_id" th:value="${emp.status.status_id}"/>
+						<input type="hidden" name="tbCompany.companyId" th:value="${emp.tbCompany.companyId}"/>
+						<div class="form-group">
+							<label for="lastName">name</label>
+							<input type="text" name="info.name" th:value="${emp.info.name}" class="form-control" id="lastName">
+						</div>
+						<div class="form-group">
+							<label for="email">Email address</label>
+							<input type="email" name="info.email" class="form-control" th:value="${emp.info.email}"  id="email">
+						</div>
+						<div class="form-group">
+							<label for="gender">gender</label>
+							<select class="form-control" name="info.sex" id="gender">
+								<option value="1" th:selected="${emp.info.sex}==1">female</option>
+								<option value="0" th:selected="${emp.info.sex}==0">male</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="department">department</label>
+							<select class="form-control" name="dept.dept_id" id="department">
+								<option th:selected="${emp.dept}==null?'':${emp.dept.dept_id} == ${dept.dept_id}" th:each="dept : ${depts}"
+										th:value="${dept.dept_id}" th:text="${dept.dept_name}"></option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="status">status</label>
+							<input class="form-control" name="status.status" id="status" th:value="${emp.status.status}"/>
+						</div>
+						<div class="form-group">
+							<label for="statusStrat">status start</label>
+							<input autoComplete='off' name="start_time1" data-link-field="dtp_input2" id="statusStrat" type="text"
+								   th:value="${emp.status.start_time}" class="date form_date input-group form-control" />
+						</div>
+						<div class="form-group">
+							<label for="statusEnd">status end</label>
+							<input autoComplete='off' name="end_time1" data-link-field="dtp_input2" id="statusEnd" type="text"
+								   th:value="${emp.status.end_time}" class="date form_date input-group form-control" />
+						</div>
+
+						<button class="btn btn-primary" type="submit">修改</button>
+					</form>
+				</main>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+
+		<!-- Icons -->
+		<script type="text/javascript" th:src="@{/js/feather.min.js}"></script>
+		<script>
+			feather.replace()
+		</script>
+
+		<!-- Graphs -->
+		<script type="text/javascript" th:src="@{/js/Chart.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/bootstrap-datetimepicker.js}"></script>
+		<script type="text/javascript" th:src="@{/js/bootstrap-datetimepicker.fr.js}"></script>
+		<script>
+			$(function () {
+                $('.form_date').datetimepicker({
+                    format:"yyyy-mm-dd",
+                    weekStart: 1,
+                    todayBtn:  1,
+                    autoclose: 1,
+                    todayHighlight: 1,
+                    startView: 2,
+                    minView: 2,
+                    forceParse: 0
+                });
+            })
+		</script>
+
+	</body>
+
+</html>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.dao.PlatformUserDao">
+
+    <resultMap id="pfuser" type="com.test.domain.PlatformUser">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="stuName" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="role" column="role" jdbcType="INTEGER"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="surplus" column="surplus" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryUsers" resultMap="pfuser">
+        select * from platformUser
+    </select>
+
+    <insert id="registerUser" parameterType="platformUser">
+        insert into platformUser (stuName,phone,password,role,email,surplus) values (
+            #{name},#{phone},#{password},1,#{email},0
+        )
+    </insert>
+
+</mapper>
