@@ -8,4 +8,6 @@ public interface PlatformUserService {
     List<PlatformUser> queryUsers();
 
     int registerUser(PlatformUser user);
+
+    PlatformUser checkUser(PlatformUser user);
 }

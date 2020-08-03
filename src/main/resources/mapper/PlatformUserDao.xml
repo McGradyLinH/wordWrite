@@ -23,4 +23,8 @@
         )
     </insert>
 
+    <select id="checkUser" resultMap="pfuser" parameterType="platformUser">
+        select * from platformUser where phone = #{phone}
+    </select>
+
 </mapper>

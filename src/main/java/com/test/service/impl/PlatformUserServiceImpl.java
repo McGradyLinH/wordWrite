@@ -22,4 +22,9 @@ public class PlatformUserServiceImpl implements PlatformUserService {
     public int registerUser(PlatformUser user) {
         return platformUserDao.registerUser(user);
     }
+
+    @Override
+    public PlatformUser checkUser(PlatformUser user) {
+        return platformUserDao.checkUser(user);
+    }
 }

@@ -8,4 +8,6 @@ public interface PlatformUserDao {
     List<PlatformUser> queryUsers();
 
     int registerUser(PlatformUser user);
+
+    PlatformUser checkUser(PlatformUser user);
 }

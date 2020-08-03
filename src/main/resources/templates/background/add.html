@@ -35,16 +35,28 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label for="repwd">repassword</label>
-                        <input id="repwd" type="password" class="form-control" required/>
+                        <input id="repwd" type="password" onkeyup="checkpwd(this)" class="form-control" required/>
                     </div>
                 </div>
                 <p style="color: red;text-align: center;" id="pwdMsg"></p>
                 <div class="form-row">
-                    <label for="email">Email address</label>
-                    <input type="email" name="info.email" class="form-control" id="email" required>
+                    <div class="form-group col-md-6">
+                        <label for="email">Email address</label>
+                        <input type="email" name="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="kaptcha">验证码</label>
+                        <input type="text" name="verifyCodeActual" class="form-control" id="kaptcha" required>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="captcha_img"></label>
+                        <img id="captcha_img" alt="点击更换" title="点击更换" class="form-control" style="width: 140px;" height="50px"
+                             onclick="refresh()" th:src="@{/kaptcha}" />
+                    </div>
                 </div>
+                <p style="color: red;text-align: center;" th:text="${msg}"></p>
                 <br>
-                <button class="btn-primary btn-block" type="submit">注 册</button>
+                <button class="btn-primary btn-block" id="zhuce" type="submit">注 册</button>
             </form>
         </main>
     </div>
