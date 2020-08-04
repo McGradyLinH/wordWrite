@@ -3,6 +3,7 @@ package com.test.domain;
 public class EssayDto {
     private Integer status;
     private Integer stuId;
+    private String essayName;
 
     public Integer getStuId() {
         return stuId;
@@ -19,5 +20,13 @@ public class EssayDto {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getEssayName() {
+        return essayName;
+    }
+
+    public void setEssayName(String essayName) {
+        this.essayName = essayName;
     }
 }

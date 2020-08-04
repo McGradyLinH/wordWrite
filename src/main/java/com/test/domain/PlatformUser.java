@@ -14,6 +14,7 @@ public class PlatformUser {
     private String email;
     //角色0-管理员，1-学生，2-外教，3-中教
     private Integer role;
+    private String avatar;
 
     public String getName() {
         return name;
@@ -82,5 +83,13 @@ public class PlatformUser {
                 ", email='" + email + '\'' +
                 ", role=" + role +
                 '}';
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

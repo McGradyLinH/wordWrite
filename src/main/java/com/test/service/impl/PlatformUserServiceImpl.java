@@ -2,6 +2,7 @@ package com.test.service.impl;
 
 import com.test.dao.PlatformUserDao;
 import com.test.domain.PlatformUser;
+import com.test.domain.UserDto;
 import com.test.service.PlatformUserService;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +27,10 @@ public class PlatformUserServiceImpl implements PlatformUserService {
     @Override
     public PlatformUser checkUser(PlatformUser user) {
         return platformUserDao.checkUser(user);
+    }
+
+    @Override
+    public List<PlatformUser> queryUsersByDto(UserDto userDto) {
+        return platformUserDao.queryUsersByDto(userDto);
     }
 }

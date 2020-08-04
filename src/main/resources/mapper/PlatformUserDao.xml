@@ -10,9 +10,9 @@
         <result property="role" column="role" jdbcType="INTEGER"/>
         <result property="email" column="email" jdbcType="VARCHAR"/>
         <result property="surplus" column="surplus" jdbcType="INTEGER"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
     </resultMap>
 
-    <!--查询单个-->
     <select id="queryUsers" resultMap="pfuser">
         select * from platformUser
     </select>
@@ -22,6 +22,15 @@
             #{name},#{phone},#{password},1,#{email},0
         )
     </insert>
+
+    <select id="queryUsersByDto" resultMap="pfuser">
+        select * from platformUser
+        <where>
+            <if test="role != null and role != ''">
+                role = #{role}
+            </if>
+        </where>
+    </select>
 
     <select id="checkUser" resultMap="pfuser" parameterType="platformUser">
         select * from platformUser where phone = #{phone}

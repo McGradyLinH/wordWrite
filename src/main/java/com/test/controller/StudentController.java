@@ -1,9 +1,7 @@
 package com.test.controller;
 
-import com.test.domain.Essay;
-import com.test.domain.EssayDto;
-import com.test.domain.PlatformUser;
-import com.test.domain.Title;
+import com.test.domain.*;
+import com.test.service.PlatformUserService;
 import com.test.service.StudentService;
 import com.test.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +23,9 @@ import java.util.*;
 public class StudentController {
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private PlatformUserService userService;
 
     /**
      * 去到登录页面
@@ -113,15 +114,18 @@ public class StudentController {
      * @return
      */
     @GetMapping("/stuWrite")
-    public ModelAndView stuWrite() {
+    public ModelAndView stuWrite(Map<String, Object> map) {
+        UserDto userDto = new UserDto();
+        userDto.setRole(2);
+        map.put("teachers", userService.queryUsersByDto(userDto));
         return new ModelAndView("student/Write");
     }
 
     /**
      * 学生提交写的作文
      *
-     * @param content 文章的内容
-     * @param titleName   文章的标题
+     * @param content   文章的内容
+     * @param titleName 文章的标题
      * @return
      */
     @PostMapping("/saveWrite")

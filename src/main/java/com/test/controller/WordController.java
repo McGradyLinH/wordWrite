@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import com.test.domain.Essay;
 import com.test.domain.EssayDto;
 import com.test.domain.PlatformUser;
+import com.test.service.EmailService;
 import com.test.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,9 @@ import com.zhuozhengsoft.pageoffice.*;
 public class WordController {
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/choose")
     public ModelAndView choose(Map<String, Object> map, HttpSession session) {
@@ -96,15 +100,23 @@ public class WordController {
     public String updateEssay(HttpSession session, Essay essay) {
         //文件名称
         String docName = (String) session.getAttribute("docName");
+        EssayDto essayDto = new EssayDto();
+        essayDto.setEssayName(docName);
+        //该文章对应的学生,拿到学生的邮箱，给学生发送提醒邮件
+        PlatformUser student = studentService.queryEssayList(essayDto).get(0).getStudent();
         //登录老师
         PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
         essay.setName(docName);
         Integer role = teacher.getRole();
+        String content;
         if (role == 2) {
             essay.setEnTeacher(teacher);
-        } else
+            content = "该文章已由外教批改完成，现移交给中教修改！";
+        } else {
             essay.setCNTeacher(teacher);
-        System.out.println(teacher);
+            content = "该文章已由中教批改完成，现在你可以登录我们的网站进行查看！";
+        }
+        emailService.sendSimpleEmail(student.getEmail(), "批改进度", content);
         int i = studentService.updateEssay(essay);
         if (i > 0) {
             return "success";

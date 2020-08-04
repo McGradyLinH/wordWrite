@@ -9,13 +9,18 @@ import com.test.util.CodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -64,7 +69,8 @@ public class PlatformUserController {
      * @return
      */
     @PostMapping("/register")
-    public String addUser(PlatformUser user, Map<String, Object> map, HttpServletRequest request) {
+    public String addUser(PlatformUser user, Map<String, Object> map,
+                          HttpServletRequest request, MultipartFile avatar) {
         if (!CodeUtil.checkVerifyCode(request)) {
             map.put("msg", "验证码错误！");
             return "background/add";
@@ -74,9 +80,19 @@ public class PlatformUserController {
             map.put("msg", "该手机号已经注册！");
             return "background/add";
         }
+        String property = System.getProperty("user.dir") + "/static/images/";
+        File file = new File(property + "test.jpg");
+        try {
+            System.out.println(file.createNewFile());
+            avatar.transferTo(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         String password = user.getPassword();
         user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
-        int i = userService.registerUser(user);
+        //int i = userService.registerUser(user);
+        int i = 0;
         if (i == 0) {
             map.put("msg", "提交失败，请稍后重试！");
             return "background/add";

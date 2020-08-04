@@ -8,6 +8,7 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * Hello world!
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.ImportResource;
 @SpringBootApplication
 @MapperScan("com.test.dao")
 @EnableCaching
+@EnableAsync
 public class WordWriteApp {
     public static void main(String[] args) {
         SpringApplication.run(WordWriteApp.class, args);

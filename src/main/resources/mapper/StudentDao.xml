@@ -10,6 +10,7 @@
         <result property="role" column="role" jdbcType="INTEGER"/>
         <result property="email" column="email" jdbcType="VARCHAR"/>
         <result property="surplus" column="surplus" jdbcType="INTEGER"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
     </resultMap>
 
     <resultMap id="essay" type="com.test.domain.Essay">
@@ -35,6 +36,9 @@
              </if>
              <if test="stuId != null and stuId != ''">
                  t.id = #{stuId}
+             </if>
+             <if test="essayName != null and essayName != ''">
+                 e.essayName = #{essayName}
              </if>
          </where>
 
