@@ -9,6 +9,7 @@
 </head>
 <body id="changeBody">
 <a th:href="@{/stuWrite}" class="btn btn-primary">写作</a>
+<label th:text="'剩余批改数:'+${session.loginUser.surplus}"></label>
 <!--<a th:href="@{/stuUpload}" class="btn btn-primary">上传</a>-->
 <table class="table">
     <thead>
@@ -16,6 +17,7 @@
         <th>#</th>
         <th>作文名</th>
         <th>状态</th>
+        <th>版本</th>
         <th>操作</th>
     </tr>
     </thead>
@@ -24,10 +26,15 @@
         <!--/*@thymesVar id="essay" type="com.test.domain.Essay"*/-->
         <td th:text="${loopStatus.count}"></td>
         <td th:text="${essay.titleName}"></td>
-        <td th:text="${essay.status}"></td>
+        <td th:switch="${essay.status}">
+            <p th:case="1">外教修改</p>
+            <p th:case="2">中教修改</p>
+            <p th:case="3">已完成</p>
+        </td>
+        <td th:text="${essay.versions}"></td>
         <td>
             <button type="button" class="btn btn-info btn-sm"
-                    th:onclick="updateEssay([[${essay.name}]],[[${essay.student.name}]])">
+                    th:onclick="updateEssay([[${essay.name}]],[[${essay.student.name}]],[[${essay.versions}]])">
                 查看
             </button>
         </td>

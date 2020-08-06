@@ -47,10 +47,12 @@
     </textarea>
     <p>选择教师批改：</p>
     <div class="card" th:each="teacher,loopStatus : ${teachers}" style="width: 10rem;float: left;">
-        <img th:src="@{images/ocr.jpg}" style="width: 155px;height: 92px;" class="card-img-top" alt="avatar">
+        <p th:text="${teacher.name}"></p>
+        <img th:src="${(teacher.avatar != null && !#strings.isEmpty(teacher.avatar)) ? '/images/avatar/'+teacher.avatar : '/images/avatar/avatar.png'}"
+             style="width: 155px;height: 92px;" class="card-img-top" alt="avatar">
         <!--        <div class="card-body">-->
         <input type="radio" th:checked="${loopStatus.count}==1?true:false"
-               name="chooseTeacher" style="margin: auto;" th:value="${teacher.id}"/>
+               name="teacherId" style="margin: auto;" th:value="${teacher.id}"/>
         <!--        </div>-->
     </div>
     <button type="submit" class="btn-primary btn-block">提 交</button>

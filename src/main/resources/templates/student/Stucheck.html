@@ -9,10 +9,16 @@
 </head>
 <body>
 <h1 th:inline="text">查看批改</h1>
+<button onclick="window.location.reload()" class="btn-primary">返回</button><br>
 <a href="javascript:POBrowser.openWindowModeless('/word?index=1','width=1200px;height=800px;');">查看1 </a>
 <a href="javascript:POBrowser.openWindowModeless('/word?index=2','width=1200px;height=800px;');">查看2 </a>
 <a href="javascript:POBrowser.openWindowModeless('/word?index=3','width=1200px;height=800px;');">查看3 </a>
 <a href="javascript:POBrowser.openWindowModeless('/word?index=4','width=1200px;height=800px;');">查看4 </a>
+<br>
+<button onclick="checkAgain(2)" th:if="${session.versions==1}" class="btn-primary">再次修改</button>
+<button onclick="checkAgain(3)" th:if="${session.versions!=3}" class="btn-primary">批改完成</button>
 </body>
 <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootbox.min.js}"></script>
+<script type="text/javascript" th:src="@{js/student/stuIndex.js}"></script>
 </html>

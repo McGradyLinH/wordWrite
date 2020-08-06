@@ -16,6 +16,13 @@ public class PlatformUser {
     private Integer role;
     private String avatar;
 
+    public PlatformUser() {
+    }
+
+    public PlatformUser(Integer id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }

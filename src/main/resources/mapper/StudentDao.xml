@@ -18,6 +18,7 @@
         <result property="name" column="essayName" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="VARCHAR"/>
         <result property="titleName" column="titleName" jdbcType="VARCHAR"/>
+        <result property="versions" column="versions" jdbcType="INTEGER"/>
         <collection property="student" resultMap="student">
         </collection>
     </resultMap>
@@ -31,21 +32,29 @@
     <select id="queryEssayList" resultMap="essay" parameterType="essayDto">
         select * from essay e left join platformUser t on e.stuid=t.id
          <where>
+            e.versions != 3
              <if test="status != null and status != ''">
-                 e.status = #{status}
+                 and e.status = #{status}
              </if>
              <if test="stuId != null and stuId != ''">
-                 t.id = #{stuId}
+                 and t.id = #{stuId}
              </if>
              <if test="essayName != null and essayName != ''">
-                 e.essayName = #{essayName}
+                 and e.essayName = #{essayName}
+             </if>
+             <if test="enTeacher != null and enTeacher != ''">
+                 and e.enTeacherId = #{enTeacher.id}
+             </if>
+             <if test="CNTeacher != null and CNTeacher != ''">
+                 and e.CNTeacher=#{CNTeacher.id}
              </if>
          </where>
 
     </select>
 
     <insert id="insertEssay" parameterType="essay" useGeneratedKeys="true" keyProperty="id">
-        insert into essay (essayName,status,stuid,titleName) values (#{name},1,#{student.id},#{titleName})
+        insert into essay (essayName,status,stuid,titleName,enTeacherId) values
+         (#{name},1,#{student.id},#{titleName},#{enTeacher.id})
     </insert>
 
     <update id="decrementSurplus" parameterType="platformUser">
@@ -60,10 +69,16 @@
         update essay
          <set>
              <if test="enTeacher != null and enTeacher != ''">
-                 enTeacherId=#{enTeacher.id},status=2
+                 enTeacherId=#{enTeacher.id},
              </if>
              <if test="CNTeacher != null and CNTeacher != ''">
-                 CNTeacher=#{CNTeacher.id},status=3
+                 CNTeacher=#{CNTeacher.id},
+             </if>
+             <if test="status != null and status != ''">
+                 status=#{status},
+             </if>
+             <if test="versions != null and versions != ''">
+                 versions=#{versions},
              </if>
          </set>
          where essayName=#{name}

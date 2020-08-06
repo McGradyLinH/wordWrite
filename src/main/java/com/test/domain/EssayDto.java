@@ -4,6 +4,10 @@ public class EssayDto {
     private Integer status;
     private Integer stuId;
     private String essayName;
+    //英语教师批改
+    private PlatformUser enTeacher;
+    //中文教师批改
+    private PlatformUser CNTeacher;
 
     public Integer getStuId() {
         return stuId;
@@ -28,5 +32,21 @@ public class EssayDto {
 
     public void setEssayName(String essayName) {
         this.essayName = essayName;
+    }
+
+    public PlatformUser getEnTeacher() {
+        return enTeacher;
+    }
+
+    public void setEnTeacher(PlatformUser enTeacher) {
+        this.enTeacher = enTeacher;
+    }
+
+    public PlatformUser getCNTeacher() {
+        return CNTeacher;
+    }
+
+    public void setCNTeacher(PlatformUser CNTeacher) {
+        this.CNTeacher = CNTeacher;
     }
 }

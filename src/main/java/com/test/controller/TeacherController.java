@@ -10,7 +10,9 @@ import javax.servlet.http.HttpSession;
 import com.test.domain.Essay;
 import com.test.domain.EssayDto;
 import com.test.domain.PlatformUser;
+import com.test.domain.UserDto;
 import com.test.service.EmailService;
+import com.test.service.PlatformUserService;
 import com.test.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +24,15 @@ import com.zhuozhengsoft.pageoffice.*;
  * @author Administrator
  */
 @RestController
-public class WordController {
+public class TeacherController {
     @Autowired
     private StudentService studentService;
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private PlatformUserService userService;
 
     @GetMapping("/choose")
     public ModelAndView choose(Map<String, Object> map, HttpSession session) {
@@ -37,6 +42,11 @@ public class WordController {
         Integer role = teacher.getRole();
         EssayDto essayDto = new EssayDto();
         essayDto.setStatus(role - 1);
+        if (teacher.getRole() == 2){
+            essayDto.setEnTeacher(teacher);
+        }else {
+            essayDto.setCNTeacher(teacher);
+        }
         List<Essay> list1 = studentService.queryEssayList(essayDto);
         map.put("essays", list1);
         return modelAndView;
@@ -104,16 +114,21 @@ public class WordController {
         essayDto.setEssayName(docName);
         //该文章对应的学生,拿到学生的邮箱，给学生发送提醒邮件
         PlatformUser student = studentService.queryEssayList(essayDto).get(0).getStudent();
+        System.err.println(student);
         //登录老师
         PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
         essay.setName(docName);
         Integer role = teacher.getRole();
         String content;
         if (role == 2) {
-            essay.setEnTeacher(teacher);
             content = "该文章已由外教批改完成，现移交给中教修改！";
+            UserDto userDto = new UserDto();
+            userDto.setRole(3);
+            List<PlatformUser> users = userService.queryUsersByDto(userDto);
+            essay.setCNTeacher(users.get(0));
+            essay.setStatus(2);
         } else {
-            essay.setCNTeacher(teacher);
+            essay.setStatus(3);
             content = "该文章已由中教批改完成，现在你可以登录我们的网站进行查看！";
         }
         emailService.sendSimpleEmail(student.getEmail(), "批改进度", content);

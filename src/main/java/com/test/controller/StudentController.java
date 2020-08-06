@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -101,10 +102,11 @@ public class StudentController {
      * @return
      */
     @GetMapping(value = "/stucheck")
-    public ModelAndView showIndex(String essayName, HttpSession session, String stuName) {
+    public ModelAndView showIndex(String essayName, HttpSession session, String stuName,Integer versions) {
         ModelAndView mv = new ModelAndView("student/Stucheck");
         session.setAttribute("docName", essayName);
         session.setAttribute("stuName", stuName);
+        session.setAttribute("versions", versions);
         return mv;
     }
 
@@ -129,7 +131,8 @@ public class StudentController {
      * @return
      */
     @PostMapping("/saveWrite")
-    public ModelAndView saveWrite(String content, HttpSession session, String titleName, MultipartFile titleImage) {
+    public ModelAndView saveWrite(String content, HttpSession session, String titleName,
+                                  MultipartFile titleImage, Integer teacherId) {
         try {
             PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
             //减掉学生的批改数
@@ -175,6 +178,7 @@ public class StudentController {
             }
             desSource += "/write.doc";
             desFile = new File(desSource);
+            //创建word文档
             DocumentHandler.createDoc(map, desSource, ftl);
             File file;
             for (int i = 1; i <= 4; i++) {
@@ -187,10 +191,15 @@ public class StudentController {
                 }
             }
             essay.setName(name);
-            essay.setStatus(1);
             essay.setStudent(student);
+            PlatformUser enTeacher = new PlatformUser(teacherId);
+            System.out.println(enTeacher.getId());
+            essay.setEnTeacher(enTeacher);
             //保存文件到数据库
             studentService.insertEssay(essay);
+            //更改登录用户session中的文章数
+            student.setSurplus(student.getSurplus() - 1);
+            session.setAttribute("loginUser", student);
         } catch (RuntimeException | IOException e) {
             e.printStackTrace();
         }
@@ -209,6 +218,23 @@ public class StudentController {
             return "success";
         }
         return "false";
+    }
+
+    /**
+     * 学生修改文章状态
+     *
+     * @return
+     */
+    @PutMapping("/stuessay")
+    public String stuessay(HttpSession session, Essay essay) {
+        String docName = session.getAttribute("docName").toString();
+        essay.setStatus(2);
+        essay.setName(docName);
+        int i = studentService.updateEssay(essay);
+        if (i == 0) {
+            return "fail";
+        }
+        return "success";
     }
 
 }

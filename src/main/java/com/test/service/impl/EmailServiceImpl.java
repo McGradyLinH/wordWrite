@@ -23,7 +23,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     @Async
-    public boolean sendSimpleEmail(String to, String subject, String content) {
+    public void sendSimpleEmail(String to, String subject, String content) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(to);
         simpleMailMessage.setFrom(fromEmail);
@@ -34,9 +34,7 @@ public class EmailServiceImpl implements EmailService {
             javaMailSender.send(simpleMailMessage);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
-        return true;
     }
 
     @Override

@@ -70,7 +70,7 @@ public class PlatformUserController {
      */
     @PostMapping("/register")
     public String addUser(PlatformUser user, Map<String, Object> map,
-                          HttpServletRequest request, MultipartFile avatar) {
+                          HttpServletRequest request) {
         if (!CodeUtil.checkVerifyCode(request)) {
             map.put("msg", "验证码错误！");
             return "background/add";
@@ -80,15 +80,6 @@ public class PlatformUserController {
             map.put("msg", "该手机号已经注册！");
             return "background/add";
         }
-        String property = System.getProperty("user.dir") + "/static/images/";
-        File file = new File(property + "test.jpg");
-        try {
-            System.out.println(file.createNewFile());
-            avatar.transferTo(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         String password = user.getPassword();
         user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
         //int i = userService.registerUser(user);

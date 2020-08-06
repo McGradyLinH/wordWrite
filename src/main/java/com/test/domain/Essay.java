@@ -17,6 +17,8 @@ public class Essay {
     private PlatformUser CNTeacher;
     //文章的题目
     private String titleName;
+    //第几次修改1-表示第一次，2-表示第二次，3-表示不再修改
+    private Integer versions;
 
     public Integer getId() {
         return id;
@@ -72,5 +74,13 @@ public class Essay {
 
     public void setTitleName(String titleName) {
         this.titleName = titleName;
+    }
+
+    public Integer getVersions() {
+        return versions;
+    }
+
+    public void setVersions(Integer versions) {
+        this.versions = versions;
     }
 }
