@@ -32,7 +32,7 @@
     <select id="queryEssayList" resultMap="essay" parameterType="essayDto">
         select * from essay e left join platformUser t on e.stuid=t.id
          <where>
-            e.versions != 3
+            e.versions &lt;&gt; 3
              <if test="status != null and status != ''">
                  and e.status = #{status}
              </if>
@@ -58,7 +58,7 @@
     </insert>
 
     <update id="decrementSurplus" parameterType="platformUser">
-        update platformUser set surplus=surplus-1 where id=#{id} and surplus > 0
+        update platformUser set surplus=surplus-1 where id=#{id} and surplus &gt; 0
     </update>
 
     <update id="incrementSurplus" parameterType="platformUser">

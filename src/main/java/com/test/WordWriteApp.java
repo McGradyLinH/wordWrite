@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @SpringBootApplication
 @MapperScan("com.test.dao")
-@EnableCaching
+//@EnableCaching
 @EnableAsync
 public class WordWriteApp {
     public static void main(String[] args) {

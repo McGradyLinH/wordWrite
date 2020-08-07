@@ -8,9 +8,10 @@
     <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
 </head>
 <body id="changeBody">
-<a th:href="@{/stuWrite}" class="btn btn-primary">写作</a>
+<a th:href="@{/stuWrite}" th:if="${session.loginUser.surplus != 0}" class="btn btn-primary">写作</a>
 <label th:text="'剩余批改数:'+${session.loginUser.surplus}"></label>
-<!--<a th:href="@{/stuUpload}" class="btn btn-primary">上传</a>-->
+<a th:href="@{/stuUpload}" th:if="false" class="btn btn-primary">上传</a>
+<a th:href="@{/stubuy}" class="btn btn-primary">购买</a>
 <table class="table">
     <thead>
     <tr>

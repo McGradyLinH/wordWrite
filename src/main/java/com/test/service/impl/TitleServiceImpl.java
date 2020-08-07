@@ -21,7 +21,7 @@ public class TitleServiceImpl implements TitleService {
 
 
     @Override
-    @Cacheable("titles")
+//    @Cacheable("titles")
     public List<Title> queryTitles() {
         return titleDao.queryTitles();
     }
