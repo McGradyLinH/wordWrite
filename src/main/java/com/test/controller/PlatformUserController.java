@@ -82,8 +82,7 @@ public class PlatformUserController {
         }
         String password = user.getPassword();
         user.setPassword(DigestUtils.md5DigestAsHex(password.getBytes()));
-        //int i = userService.registerUser(user);
-        int i = 0;
+        int i = userService.registerUser(user);
         if (i == 0) {
             map.put("msg", "提交失败，请稍后重试！");
             return "background/add";

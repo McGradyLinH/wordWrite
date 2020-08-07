@@ -136,22 +136,26 @@ public class StudentController {
         try {
             PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
             //减掉学生的批改数
-            int i1 = studentService.decrementSurplus(student);
-            if (i1 == 0) {
-                return new ModelAndView("redirect:/login");
-            }
-            StringBuilder str = new StringBuilder();
+//            int i1 = studentService.decrementSurplus(student);
+//            if (i1 == 0) {
+//                return new ModelAndView("redirect:/login");
+//            }
+//            StringBuilder str = new StringBuilder();
             //换行三个为一个整体
             //换行1
-            str.append(" </w:t></w:r></w:p><w:p><w:pPr></w:pPr>");
+//            str.append(" </w:t></w:r></w:p><w:p><w:pPr></w:pPr>");
             //换行2
-            str.append("<w:r><w:rPr>");
+//            str.append("<w:r><w:rPr>");
             //设置样式  字体 大小 颜色
-            str.append("<w:rFonts w:ascii=\"Calibri\" w:fareast=\"Calibri\" w:h-ansi=\"宋体\"/>");
-            str.append("<w:color w:val=\"000000\"/><w:sz w:val=\"22\"/>");
+//            str.append("<w:rFonts w:ascii=\"Calibri\" w:fareast=\"Calibri\" w:h-ansi=\"宋体\"/>");
+//            str.append("<w:color w:val=\"000000\"/><w:sz w:val=\"22\"/>");
             //换行3
-            str.append(" </w:rPr><w:t>");
-            content = content.replaceAll("(\r\n|\n)", str.toString());
+//            str.append("</w:rPr><w:t>&#160;&#160;&#160;&#160;");
+//            str.append("<w:br/>");
+            content = content.replaceAll("(\r\n|\n)", "<w:br/>");
+            content = content.replaceAll(" ","&#160;");
+            content = content.replaceAll("\t","&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;");
+            System.err.println(content);
             //传入word文档的值
             Map<String, Object> map = new HashMap<>(3);
             map.put("content", content);
@@ -193,7 +197,6 @@ public class StudentController {
             essay.setName(name);
             essay.setStudent(student);
             PlatformUser enTeacher = new PlatformUser(teacherId);
-            System.out.println(enTeacher.getId());
             essay.setEnTeacher(enTeacher);
             //保存文件到数据库
             studentService.insertEssay(essay);
