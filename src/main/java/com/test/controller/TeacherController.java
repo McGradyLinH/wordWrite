@@ -7,10 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.test.domain.Essay;
-import com.test.domain.EssayDto;
-import com.test.domain.PlatformUser;
-import com.test.domain.UserDto;
+import com.test.domain.*;
+import com.test.service.CommentsService;
 import com.test.service.EmailService;
 import com.test.service.PlatformUserService;
 import com.test.service.StudentService;
@@ -33,6 +31,9 @@ public class TeacherController {
 
     @Autowired
     private PlatformUserService userService;
+
+    @Autowired
+    private CommentsService commentsService;
 
     @GetMapping("/choose")
     public ModelAndView choose(Map<String, Object> map, HttpSession session) {
@@ -68,8 +69,21 @@ public class TeacherController {
     }
 
     /**
+     * 学生自己写的文章
+     * @param map
+     * @param index
+     * @param session
+     * @return
+     */
+    @GetMapping("/correct/{index}")
+    public ModelAndView correct(Map<String, Object> map,@RequestParam("index") Integer index, HttpSession session){
+        ModelAndView modelAndView = new ModelAndView("teacher/CorrectEssay");
+
+        return modelAndView;
+    }
+
+    /**
      * 打开word文档
-     *
      * @param index 文章的编号
      * @return
      */

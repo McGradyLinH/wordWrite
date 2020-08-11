@@ -18,6 +18,7 @@
         <result property="name" column="essayName" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="VARCHAR"/>
         <result property="titleName" column="titleName" jdbcType="VARCHAR"/>
+        <result property="essayContent" column="essayContent" jdbcType="LONGVARCHAR"/>
         <result property="versions" column="versions" jdbcType="INTEGER"/>
         <collection property="student" resultMap="student">
         </collection>
@@ -53,8 +54,8 @@
     </select>
 
     <insert id="insertEssay" parameterType="essay" useGeneratedKeys="true" keyProperty="id">
-        insert into essay (essayName,status,stuid,titleName,enTeacherId) values
-         (#{name},1,#{student.id},#{titleName},#{enTeacher.id})
+        insert into essay (essayName,status,stuid,titleName,enTeacherId,essayContent) values
+         (#{name},1,#{student.id},#{titleName},#{enTeacher.id},essayContent)
     </insert>
 
     <update id="decrementSurplus" parameterType="platformUser">

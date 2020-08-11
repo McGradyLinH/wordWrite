@@ -17,7 +17,7 @@
         select * from platformUser
     </select>
 
-    <insert id="registerUser" parameterType="platformUser">
+    <insert id="registerUser" parameterType="com.test.domain.PlatformUser">
         insert into platformUser (stuName,phone,password,role,email,surplus) values (
             #{name},#{phone},#{password},1,#{email},0
         )
@@ -32,7 +32,7 @@
         </where>
     </select>
 
-    <select id="checkUser" resultMap="pfuser" parameterType="platformUser">
+    <select id="checkUser" resultMap="pfuser" parameterType="com.test.domain.PlatformUser">
         select * from platformUser where phone = #{phone}
     </select>
 

@@ -19,6 +19,8 @@ public class Essay {
     private String titleName;
     //第几次修改1-表示第一次，2-表示第二次，3-表示不再修改
     private Integer versions;
+    //文章内容
+    private String essayContent;
 
     public Integer getId() {
         return id;
@@ -82,5 +84,13 @@ public class Essay {
 
     public void setVersions(Integer versions) {
         this.versions = versions;
+    }
+
+    public String getEssayContent() {
+        return essayContent;
+    }
+
+    public void setEssayContent(String essayContent) {
+        this.essayContent = essayContent;
     }
 }

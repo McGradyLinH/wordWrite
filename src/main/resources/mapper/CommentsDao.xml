@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.dao.CommentsDao">
+
+
+    <!--查询单个-->
+    <select id="queryComments" resultType="comment">
+        select * from comments where essayCode = #{_parameter}
+    </select>
+
+    <insert id="insertComment" parameterType="comment">
+        insert into comments (essayCode,spanId,comment) values (#{essayCode},#{spanId},#{comment})
+    </insert>
+
+
+</mapper>
