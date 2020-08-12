@@ -23,6 +23,9 @@
         <result property="essayNumber" column="essayNumber" jdbcType="INTEGER"/>
         <collection property="student" resultMap="student">
         </collection>
+        <collection property="enTeacher" ofType="platformUser">
+            <result property="teacherName" column="teacherName" jdbcType="VARCHAR"/>
+        </collection>
     </resultMap>
 
     <!--查询单个-->
@@ -32,7 +35,8 @@
 
     <!--查询文章根据状态-->
     <select id="queryEssayList" resultMap="essay" parameterType="essayDto">
-        select * from essay e left join platformUser t on e.stuid=t.id
+        select e.*,t.*,t1.stuName teacherName from essay e left join platformUser t on e.stuid=t.id
+        left join platformUser t1 on e.enTeacherId=t1.id
         <where>
             e.versions != 3
             <if test="status != null and status != ''">

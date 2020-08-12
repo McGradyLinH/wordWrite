@@ -16,6 +16,10 @@ public class PlatformUser {
     private Integer role;
     //头像名称
     private String avatar;
+    /**
+     * 方便结果集
+     */
+    private String teacherName;
 
     public PlatformUser() {
     }
@@ -99,5 +103,13 @@ public class PlatformUser {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
     }
 }

@@ -1,7 +1,10 @@
 let i = 0;
 let teacherName = $("#teacherName").val();
+let maxId;
 $(function () {
     initComments();
+    let lastSpanid = $('#content span').last().attr("id");
+    maxId = lastSpanid.substring(5);
     $("#content").mouseup(function (e) {
         for (let y = 0; y <= i; y++) {
             $("#tooltip" + y).remove();
@@ -45,7 +48,7 @@ function initComments() {
         type: 'get',
         data: {index:essayNumber},
         success: function (data) {
-            console.log(data);
+            i = data.length;
             for (let i = 0;i<data.length;i++){
                 let spanId = data[i].spanId;
                 $("#pigai"+spanId).on("click", function () {
@@ -158,7 +161,8 @@ function updatepigai(index) {
 
 //绑定点击事件时生产的html
 function createTooltip(m, inputtext) {
-    for (let y = 0; y <= i; y++) {
+    console.log(maxId);
+    for (let y = 0; y <= maxId; y++) {
         $("#tooltipx" + y).remove();
     }
     let tooltip = '<div id="tooltipx' + m + '"><p>' + teacherName + '</p >' +
@@ -171,7 +175,7 @@ function createTooltip(m, inputtext) {
         '<br /><button onclick="updatepigai(' + m + ')">Update</button><button onclick="removetooltip(' + m +
         ')">Delete</button></div>';
     $("body").append(tooltip);
-    $("#tooltip" + i).css({
+    $("#tooltipx" + i).css({
         "float": "left",
     }).show("fast");
 }

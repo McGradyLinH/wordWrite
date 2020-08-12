@@ -103,4 +103,20 @@ public class Essay {
     public void setEssayNumber(Integer essayNumber) {
         this.essayNumber = essayNumber;
     }
+
+    @Override
+    public String toString() {
+        return "Essay{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                ", student=" + student +
+                ", enTeacher=" + enTeacher +
+                ", CNTeacher=" + CNTeacher +
+                ", titleName='" + titleName + '\'' +
+                ", versions=" + versions +
+                ", essayContent='" + essayContent + '\'' +
+                ", essayNumber=" + essayNumber +
+                '}';
+    }
 }

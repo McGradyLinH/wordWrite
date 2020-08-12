@@ -73,8 +73,7 @@ public class TeacherController {
     }
 
     /**
-     * 学生自己写的文章
-     *
+     * 批改某一篇文章
      * @param map
      * @param index
      * @param session
@@ -84,7 +83,6 @@ public class TeacherController {
     public ModelAndView correct(Map<String, Object> map, @PathVariable("index") Integer index, HttpSession session) {
         ModelAndView modelAndView = new ModelAndView("teacher/CorrectEssay");
         String docName = (String) session.getAttribute("docName");
-//        String stuName = (String) session.getAttribute("stuName");
         EssayDto essayDto = new EssayDto();
         essayDto.setEssayName(docName);
         essayDto.setEssayNumber(index);

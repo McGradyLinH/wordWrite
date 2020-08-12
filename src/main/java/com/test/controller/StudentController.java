@@ -6,10 +6,7 @@ import com.test.service.StudentService;
 import com.test.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -91,7 +88,7 @@ public class StudentController {
         EssayDto essayDto = new EssayDto();
         essayDto.setStuId(studentId);
         List<Essay> list = studentService.queryEssayList(essayDto);
-        //根据essaycode去重
+        //根据essayCode去重
         list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
                 () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
         map.put("essays", list);
@@ -276,4 +273,31 @@ public class StudentController {
         return "success";
     }
 
+    /**
+     * 查看某一篇文章
+     * @param map
+     * @param index
+     * @param session
+     * @return
+     */
+    @GetMapping("/check/{index}")
+    public ModelAndView correct(Map<String, Object> map, @PathVariable("index") Integer index, HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("student/CheckEssay");
+        String docName = (String) session.getAttribute("docName");
+        EssayDto essayDto = new EssayDto();
+        essayDto.setEssayName(docName);
+        essayDto.setEssayNumber(index);
+        Essay essay = studentService.queryEssayList(essayDto).get(0);
+        System.err.println(essay);
+        map.put("essay", essay);
+        String titleName = essay.getTitleName();
+        map.put("xiaozuowen", "false");
+        if (titleName.split("/").length == 5) {
+            map.put("xiaozuowen", "true");
+            session.setAttribute("titleSrc", titleName);
+        }
+        map.put("index", index);
+        map.put("teacherName",essay.getEnTeacher().getTeacherName());
+        return modelAndView;
+    }
 }
