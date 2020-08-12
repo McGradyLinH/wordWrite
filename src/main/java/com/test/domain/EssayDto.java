@@ -8,6 +8,8 @@ public class EssayDto {
     private PlatformUser enTeacher;
     //中文教师批改
     private PlatformUser CNTeacher;
+    //第几篇文章1，2，3，4
+    private Integer essayNumber;
 
     public Integer getStuId() {
         return stuId;
@@ -48,5 +50,13 @@ public class EssayDto {
 
     public void setCNTeacher(PlatformUser CNTeacher) {
         this.CNTeacher = CNTeacher;
+    }
+
+    public Integer getEssayNumber() {
+        return essayNumber;
+    }
+
+    public void setEssayNumber(Integer essayNumber) {
+        this.essayNumber = essayNumber;
     }
 }

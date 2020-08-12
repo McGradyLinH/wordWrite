@@ -1,7 +1,11 @@
 package com.test.controller;
 
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,9 +36,6 @@ public class TeacherController {
     @Autowired
     private PlatformUserService userService;
 
-    @Autowired
-    private CommentsService commentsService;
-
     @GetMapping("/choose")
     public ModelAndView choose(Map<String, Object> map, HttpSession session) {
         ModelAndView modelAndView = new ModelAndView("teacher/Choose");
@@ -43,12 +44,15 @@ public class TeacherController {
         Integer role = teacher.getRole();
         EssayDto essayDto = new EssayDto();
         essayDto.setStatus(role - 1);
-        if (teacher.getRole() == 2){
+        if (teacher.getRole() == 2) {
             essayDto.setEnTeacher(teacher);
-        }else {
+        } else {
             essayDto.setCNTeacher(teacher);
         }
         List<Essay> list1 = studentService.queryEssayList(essayDto);
+        //根据essaycode去重
+        list1 = list1.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
+                () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
         map.put("essays", list1);
         return modelAndView;
     }
@@ -70,20 +74,76 @@ public class TeacherController {
 
     /**
      * 学生自己写的文章
+     *
      * @param map
      * @param index
      * @param session
      * @return
      */
     @GetMapping("/correct/{index}")
-    public ModelAndView correct(Map<String, Object> map,@RequestParam("index") Integer index, HttpSession session){
+    public ModelAndView correct(Map<String, Object> map, @PathVariable("index") Integer index, HttpSession session) {
         ModelAndView modelAndView = new ModelAndView("teacher/CorrectEssay");
-
+        String docName = (String) session.getAttribute("docName");
+//        String stuName = (String) session.getAttribute("stuName");
+        EssayDto essayDto = new EssayDto();
+        essayDto.setEssayName(docName);
+        essayDto.setEssayNumber(index);
+        Essay essay = studentService.queryEssayList(essayDto).get(0);
+        map.put("essay", essay);
+        String titleName = essay.getTitleName();
+        map.put("xiaozuowen", "false");
+        if (titleName.split("/").length == 5) {
+            map.put("xiaozuowen", "true");
+            session.setAttribute("titleSrc", titleName);
+        }
+        //登录老师
+        PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
+        map.put("teacherName", teacher.getName());
+        map.put("index", index);
         return modelAndView;
     }
 
     /**
+     * 读取本地图片
+     */
+    @RequestMapping(value = "/showImg")
+    public void showImg(HttpServletResponse response, HttpSession session) {
+        String pathName = session.getAttribute("titleSrc").toString();
+        File imgFile = new File(pathName);
+        FileInputStream fin = null;
+        OutputStream output = null;
+        try {
+            output = response.getOutputStream();
+            fin = new FileInputStream(imgFile);
+            byte[] arr = new byte[1024 * 10];
+            int n;
+            while ((n = fin.read(arr)) != -1) {
+                output.write(arr, 0, n);
+            }
+            output.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fin != null) {
+                    fin.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (output != null) {
+                    output.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
      * 打开word文档
+     *
      * @param index 文章的编号
      * @return
      */
@@ -146,6 +206,20 @@ public class TeacherController {
             content = "该文章已由中教批改完成，现在你可以登录我们的网站进行查看！";
         }
         emailService.sendSimpleEmail(student.getEmail(), "批改进度", content);
+        int i = studentService.updateEssay(essay);
+        if (i > 0) {
+            return "success";
+        }
+        return "fail";
+    }
+
+    @PutMapping("/correctessay")
+    public String correctEssay(Integer index, String content, HttpSession session) {
+        String essayCode = (String) session.getAttribute("docName");
+        Essay essay = new Essay();
+        essay.setEssayContent(content);
+        essay.setEssayNumber(index);
+        essay.setName(essayCode);
         int i = studentService.updateEssay(essay);
         if (i > 0) {
             return "success";

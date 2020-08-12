@@ -19,12 +19,17 @@ public class CommentsServiceImpl implements CommentsService {
     private CommentsDao commentsDao;
 
     @Override
-    public List<Comment> queryComments(String essayCode) {
-        return commentsDao.queryComments(essayCode);
+    public List<Comment> queryComments(String essayCode, Integer index) {
+        return commentsDao.queryComments(essayCode, index);
     }
 
     @Override
     public int insertComment(Comment comment) {
         return commentsDao.insertComment(comment);
+    }
+
+    @Override
+    public int deleteComment(Comment comment) {
+        return commentsDao.deleteComment(comment);
     }
 }

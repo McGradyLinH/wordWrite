@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class StudentController {
@@ -90,6 +91,9 @@ public class StudentController {
         EssayDto essayDto = new EssayDto();
         essayDto.setStuId(studentId);
         List<Essay> list = studentService.queryEssayList(essayDto);
+        //根据essaycode去重
+        list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
+                () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
         map.put("essays", list);
         return new ModelAndView("student/Index");
     }
@@ -201,10 +205,10 @@ public class StudentController {
                                   MultipartFile titleImage, Integer teacherId) {
         PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
         //减掉学生的批改数
-        int i1 = studentService.decrementSurplus(student);
-        if (i1 == 0) {
-            return new ModelAndView("redirect:/login");
-        }
+//        int i1 = studentService.decrementSurplus(student);
+//        if (i1 == 0) {
+//            return new ModelAndView("redirect:/login");
+//        }
         Essay essay = new Essay();
         essay.setTitleName("小作文，无描述");
         if (!"".equals(titleName)) {
@@ -212,11 +216,31 @@ public class StudentController {
         }
         if (!titleImage.isEmpty()) {
             String filename = UUID.randomUUID().toString().replaceAll("-", "");
-            File file = new File("c:/word/titleimage/"+filename+".img");
-            essay.setTitleName("c:/word/titleimage/"+filename+".img");
+            String filePath = "c:/word/titleimage/" + student.getName() + "/";
+            File file = new File(filePath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            file = new File(filePath + filename + "." +
+                    titleImage.getOriginalFilename().split("\\.")[1]);
+            try {
+                titleImage.transferTo(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            essay.setTitleName(filePath + filename + "." +
+                    titleImage.getOriginalFilename().split("\\.")[1]);
         }
-
-
+        String essayCode = UUID.randomUUID().toString().replaceAll("-", "");
+        essay.setName(essayCode);
+        content = content.replaceAll("(\r\n|\n)", "<br/>");
+        content = content.replaceAll(" ", "&nbsp;");
+        content = content.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        essay.setEssayContent(content);
+        PlatformUser enTeacher = new PlatformUser(teacherId);
+        essay.setEnTeacher(enTeacher);
+        essay.setStudent(student);
+        studentService.insertEssay(essay);
         return new ModelAndView("redirect:/stuIndex");
     }
 

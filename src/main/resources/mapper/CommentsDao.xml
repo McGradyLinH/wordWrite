@@ -5,12 +5,16 @@
 
     <!--查询单个-->
     <select id="queryComments" resultType="comment">
-        select * from comments where essayCode = #{_parameter}
+        select * from comments where essayCode = #{essayCode} and essayNumber=#{index}
     </select>
 
     <insert id="insertComment" parameterType="comment">
-        insert into comments (essayCode,spanId,comment) values (#{essayCode},#{spanId},#{comment})
+        insert into comments (essayCode,spanId,comment,essayNumber) values
+         (#{essayCode},#{spanId},#{comment},#{essayNumber})
     </insert>
 
+    <delete id="deleteComment" parameterType="comment">
+        delete from comments where essayCode=#{essayCode} and spanId=#{spanId} and essayNumber=#{essayNumber}
+    </delete>
 
 </mapper>

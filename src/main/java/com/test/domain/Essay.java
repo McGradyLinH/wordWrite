@@ -21,6 +21,8 @@ public class Essay {
     private Integer versions;
     //文章内容
     private String essayContent;
+    //文章号数
+    private Integer essayNumber;
 
     public Integer getId() {
         return id;
@@ -92,5 +94,13 @@ public class Essay {
 
     public void setEssayContent(String essayContent) {
         this.essayContent = essayContent;
+    }
+
+    public Integer getEssayNumber() {
+        return essayNumber;
+    }
+
+    public void setEssayNumber(Integer essayNumber) {
+        this.essayNumber = essayNumber;
     }
 }

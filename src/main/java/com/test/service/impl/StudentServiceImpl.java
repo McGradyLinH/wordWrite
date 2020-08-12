@@ -6,8 +6,10 @@ import com.test.domain.EssayDto;
 import com.test.domain.PlatformUser;
 import com.test.service.StudentService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,9 +33,22 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public Essay insertEssay(Essay essay) {
-        int i = studentDao.insertEssay(essay);
+        List<Essay> list = new ArrayList<>(4);
+        for (int i = 1; i <= 4; i++) {
+            Essay temp = new Essay();
+            temp.setEssayNumber(i);
+            temp.setName(essay.getName());
+            temp.setEssayContent(essay.getEssayContent());
+            temp.setEnTeacher(essay.getEnTeacher());
+            temp.setTitleName(essay.getTitleName());
+            temp.setStudent(essay.getStudent());
+            list.add(essay);
+        }
+        int i = studentDao.insertEssay(list);
         if (i > 0) {
+            //成功增加四次
             return essay;
         }
         return null;

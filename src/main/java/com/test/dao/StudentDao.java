@@ -18,10 +18,10 @@ public interface StudentDao {
 
     /**
      * 添加文章
-     * @param essay
+     * @param essays
      * @return
      */
-    int insertEssay(Essay essay);
+    int insertEssay(List<Essay> essays);
 
     /**
      * 减少学生作文数

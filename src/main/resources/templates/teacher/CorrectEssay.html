@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>correct essay</title>
     <style>
         .color{
             width: 20px;
@@ -11,140 +11,20 @@
             margin-right: 2px;
         }
     </style>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
-<div contenteditable="true" id="content" style="width: 60%;float: left;height: 300px;">
-    asdas cxzc adsa dwq dwqe casczx c wefcxzczc we cweqc ac
-    dasd a d sa sxczv xz vx cv dfdsvd fsf s vcxb cv nth
-    cxv r s bvcbdrtehe hbcbg dasd sad as
-    xcb ewrgrbrb
+<input type="hidden" id="teacherName" th:value="${teacherName}"/>
+<button class="btn-primary" th:onclick="correctDone([[${index}]])">修改完成</button>
+<h1 id="essayTitle" th:if="${xiaozuowen=='false'}" th:text="${essay.titleName}"></h1>
+<div th:if="${xiaozuowen=='true'}" >
+    <img th:src="@{/showImg}" style="height: 250px;">
 </div>
+<div contenteditable="true" id="content" style="width: 60%;float: left;height: 300px;border: 1px solid"
+     th:utext="${essay.essayContent}">
+</div>
+<input type="hidden" id="essayNumber" th:value="${index}"/>
 </body>
-<script type="text/javascript" src="jquery.min.js"></script>
-<script type="text/javascript">
-    let i = 0;
-    $(function() {
-        $("#content").mouseup(function(e) {
-            for(let y = 0 ;y <= i; y++){
-                $("#tooltip"+y).remove();
-            }
-            var x = 10;
-            var y = 10;
-            var text = "";
-            if (document.selection) {
-                text = document.selection.createRange().text;
-            } else if (window.getSelection()) {
-                text = window.getSelection();
-            }
-            text = $.trim(text);
-            if (text != "" && text != null) {
-                i = i + 1;
-                let tooltip = '<div id="tooltip' + i + '"><p>Author</p >' +
-                    '<button class="color" style="background-color: #ff0000;" onclick="changeColor(this)"></button>' +
-                    '<button class="color" style="background-color: #0000ff;" onclick="changeColor(this)"></button>' +
-                    '<button class="color" style="background-color: #00ffff;" onclick="changeColor(this)"></button>' +
-                    '<button class="color" style="background-color: #7fff00" onclick="changeColor(this)"></button>' +
-                    '<br /><input type="text" style="border: none;" id="text' + i + '" placeholder="write something"/>' +
-                    '<br /><button onclick="savepigai(' + i + ')">Save</button><button onclick="removetooltip(' + i +
-                    ')">Delete</button></div>';
-                $("body").append(tooltip);
-                $("#tooltip" + i).css({
-                    "top": (e.pageY + y) + "px",
-                    "left": (e.pageX + x) + "px",
-                    "position": "absolute",
-                    "border-top": "1px solid black",
-                    "border-left": "1px solid black"
-                }).show("fast");
-                changeColor($("<button style='background-color: red;'></button>"));
-            }
-        })
-    });
-    //删除右边弹出的
-    function removetooltip(index) {
-        $("#tooltipx" + index).remove();
-        $("#pigai" + index).off("click");
-        $("#content").find("span").each(function(m) {
-            let str = $(this).attr("id");
-            let a = str.substring(5);
-            if (a == index) {
-                let text= "";
-                $(this).attr("id","yishanchu"+index);
-                $(this).css("background-color", "");
-                $(this).css("cursor", "");
-                $(this).find("font").each(function(n) {
-                    text = $(this).text();
-                });
-                $(this).after(text);
-                $(this).remove();
-            }
-        });
-    }
-    //保存添加时的批改
-    function savepigai(index) {
-        $("#content").find("span").each(function(m) {
-            let str = $(this).attr("id");
-            let a = str.substring(5);
-            if (a == index) {
-                let inputText = $("#text" + index).val();
-                console.log(inputText);
-                if (inputText == null || inputText == "") {
-                    alert("input suggest!");
-                    return;
-                }
-                $(this).css({
-                    "cursor": "pointer"
-                });
-                $(this).on("click", function() {
-                    createTooltip(index,inputText);
-                });
-                $("#tooltip" + index).remove();
-            }
-        });
-    }
-    //添加时改变背景色
-    function changeColor(dom) {
-        let colors = $(dom).css("background-color");
-        document.execCommand("BackColor", false, colors);
-        document.execCommand("ForeColor", false, "white");
-        $("#content").find("span").each(function(m) {
-            let spanid = $(this).attr("id");
-            if (spanid == null || spanid == "") {
-                $(this).attr("id", "pigai" + i);
-            }
-        });
-    }
-    //修改时改变背景色
-    function changeColor1(dom,index) {
-        let colors = $(dom).css("background-color");
-        $("#pigai"+index).css("background-color",colors);
-    }
-    //修改内容触发
-    function updatepigai(index){
-        let inputtext = $("#text"+index).val();
-        $("#pigai"+index).off("click");
-        $("#pigai"+index).on("click",function(){
-            createTooltip(index,inputtext);
-        });
-        $("#tooltipx"+index).remove();
-    }
-    //绑定点击事件时生产的html
-    function createTooltip(m,inputtext){
-        for(let y = 0 ;y <= i; y++){
-            $("#tooltipx"+y).remove();
-        }
-        let tooltip = '<div id="tooltipx' + m + '"><p>Author</p >' +
-            '<button class="color" style="background-color: red;" onclick="changeColor1(this,'+m+')"></button>' +
-            '<button class="color" style="background-color: blue;" onclick="changeColor1(this,'+m+')"></button>' +
-            '<button class="color" style="background-color: aqua;" onclick="changeColor1(this,'+m+')"></button>' +
-            '<button class="color" style="background-color: chartreuse" onclick="changeColor1(this,'+m+')"></button>' +
-            '<br /><input type="text" style="border: none;" id="text' + m + '" value="' + inputtext + '"' +
-            'placeholder="write something"/>' +
-            '<br /><button onclick="updatepigai(' + m + ')">Update</button><button onclick="removetooltip(' + m +
-            ')">Delete</button></div>';
-        $("body").append(tooltip);
-        $("#tooltip" + i).css({
-            "float": "left",
-        }).show("fast");
-    }
-</script>
+<script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/teacher/correct.js}"></script>
 </html>

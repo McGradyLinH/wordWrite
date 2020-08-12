@@ -10,6 +10,7 @@ public class Comment {
     private String essayCode;
     private Integer spanId;
     private String comment;
+    private Integer essayNumber;
 
     public int getId() {
         return id;
@@ -41,5 +42,13 @@ public class Comment {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Integer getEssayNumber() {
+        return essayNumber;
+    }
+
+    public void setEssayNumber(Integer essayNumber) {
+        this.essayNumber = essayNumber;
     }
 }

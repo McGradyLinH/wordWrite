@@ -10,7 +10,9 @@ import java.util.List;
  * @date 2020/8/11 22:19
  */
 public interface CommentsService {
-    List<Comment> queryComments(String essayCode);
+    List<Comment> queryComments(String essayCode, Integer index);
 
     int insertComment(Comment comment);
+
+    int deleteComment(Comment comment);
 }
