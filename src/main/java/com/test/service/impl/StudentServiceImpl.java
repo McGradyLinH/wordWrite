@@ -1,6 +1,8 @@
 package com.test.service.impl;
 
+import com.test.dao.CommentsDao;
 import com.test.dao.StudentDao;
+import com.test.domain.Comment;
 import com.test.domain.Essay;
 import com.test.domain.EssayDto;
 import com.test.domain.PlatformUser;
@@ -10,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author lx
@@ -21,6 +25,9 @@ import java.util.List;
 public class StudentServiceImpl implements StudentService {
     @Resource
     private StudentDao studentDao;
+
+    @Resource
+    private CommentsDao commentsDao;
 
     @Override
     public PlatformUser queryByPhone(String phone) {
@@ -67,5 +74,25 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public int updateEssay(Essay essay) {
         return studentDao.updateEssay(essay);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int correctEssay(Essay essay, List<Comment> addCommentList, List<Comment> delCommentList) {
+        //添加评论
+        if (!addCommentList.isEmpty()){
+            commentsDao.insertBatchComment(addCommentList);
+        }
+        //删除评论
+        if (!delCommentList.isEmpty()){
+            Map<String,Object> paramMap = new HashMap<>(3);
+            paramMap.put("essayCode",essay.getName());
+            paramMap.put("essayNumber",essay.getEssayNumber());
+            paramMap.put("list",delCommentList);
+            commentsDao.deleteBatchComment(paramMap);
+        }
+        //更新文章内容
+        studentDao.updateEssay(essay);
+        return 1;
     }
 }

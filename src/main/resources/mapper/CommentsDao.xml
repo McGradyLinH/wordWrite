@@ -17,4 +17,19 @@
         delete from comments where essayCode=#{essayCode} and spanId=#{spanId} and essayNumber=#{essayNumber}
     </delete>
 
+    <insert id="insertBatchComment" parameterType="comment">
+        insert into comments (essayCode,spanId,comment,essayNumber) values
+         <foreach collection="list" separator="," item="comment">
+             (#{comment.essayCode},#{comment.spanId},#{comment.comment},#{comment.essayNumber})
+         </foreach>
+    </insert>
+
+    <delete id="deleteBatchComment" parameterType="java.util.Map">
+        delete from comments where essayCode=#{essayCode}  and essayNumber=#{essayNumber} and
+         spanId in
+         <foreach collection="list" open="(" close=")" separator="," item="item">
+             #{item.spanId}
+         </foreach>
+    </delete>
+
 </mapper>

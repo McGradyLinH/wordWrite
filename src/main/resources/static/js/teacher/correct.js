@@ -1,13 +1,18 @@
 let i = 0;
 let teacherName = $("#teacherName").val();
-let maxId;
+let maxId = 0;
+let addComments = new Array();
+let delComments = new Array();
 $(function () {
     initComments();
     let lastSpanid = $('#content span').last().attr("id");
-    maxId = lastSpanid.substring(5);
+    if (lastSpanid != null && lastSpanid != ""){
+        maxId = lastSpanid.substring(5);
+    }
     $("#content").mouseup(function (e) {
-        for (let y = 0; y <= i; y++) {
+        for (let y = 0; y <= maxId; y++) {
             $("#tooltip" + y).remove();
+            $("#tooltipx" + y).remove();
         }
         var x = 10;
         var y = 10;
@@ -42,7 +47,6 @@ $(function () {
 });
 //初始化评论
 function initComments() {
-    let essayNumber = $("#essayNumber").val();
     $.ajax({
         url: '/comments',
         type: 'get',
@@ -62,6 +66,7 @@ function initComments() {
 //删除右边弹出的
 function removetooltip(index) {
     $("#tooltipx" + index).remove();
+    $("#tooltip" + index).remove();
     $("#pigai" + index).off("click");
     $("#content").find("span").each(function (m) {
         let str = $(this).attr("id");
@@ -95,6 +100,7 @@ function savepigai(index) {
             $(this).css({
                 "cursor": "pointer"
             });
+            maxId = maxId + 1;
             $(this).on("click", function () {
                 createTooltip(index, inputText);
             });
@@ -103,30 +109,20 @@ function savepigai(index) {
         }
     });
 }
-
 //增加评论
+let essayNumber = $("#essayNumber").val();
 function saveToServer(index, inputText) {
-    let essayNumber = $("#essayNumber").val();
-    $.ajax({
-        url: '/comment',
-        type: 'post',
-        data: {spanId: index, comment: inputText,essayNumber:essayNumber},
-        success: function (data) {
-            console.log(data)
-        }
+    addComments.push({
+       spanId : index,
+       comment: inputText,
+       essayNumber : essayNumber
     });
 }
-
 //删除评论
 function deleteComment(index) {
-    let essayNumber = $("#essayNumber").val();
-    $.ajax({
-        url: '/comment',
-        type: 'post',
-        data: {spanId: index, _method: "delete",essayNumber:essayNumber},
-        success: function (data) {
-            console.log(data)
-        }
+    delComments.push({
+        spanId: index,
+        essayNumber: essayNumber
     });
 }
 
@@ -161,7 +157,6 @@ function updatepigai(index) {
 
 //绑定点击事件时生产的html
 function createTooltip(m, inputtext) {
-    console.log(maxId);
     for (let y = 0; y <= maxId; y++) {
         $("#tooltipx" + y).remove();
     }
@@ -186,10 +181,11 @@ function correctDone(index) {
     $.ajax({
         url: '/correctessay',
         type: 'post',
-        data: {index: index, content: text, _method: "put"},
+        data: {index: index, content: text,
+            addComments: JSON.stringify(addComments),delComments: JSON.stringify(delComments)},
         success: function (data) {
             if(data=="success"){
-                window.location.history(-1);
+                window.history.back();
             }
         }
     });

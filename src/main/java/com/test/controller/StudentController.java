@@ -103,11 +103,21 @@ public class StudentController {
      * @return
      */
     @GetMapping(value = "/stucheck")
-    public ModelAndView showIndex(String essayName, HttpSession session, String stuName, Integer versions) {
-        ModelAndView mv = new ModelAndView("student/Stucheck");
+    public ModelAndView stucheck(String essayName, HttpSession session, String stuName, Integer versions) {
+        ModelAndView mv = new ModelAndView("redirect:/check");
         session.setAttribute("docName", essayName);
         session.setAttribute("stuName", stuName);
         session.setAttribute("versions", versions);
+        return mv;
+    }
+
+    /**
+     * 为了解决路径参数
+     * @return
+     */
+    @GetMapping(value = "/check")
+    public ModelAndView showIndex() {
+        ModelAndView mv = new ModelAndView("student/Stucheck");
         return mv;
     }
 
@@ -202,10 +212,10 @@ public class StudentController {
                                   MultipartFile titleImage, Integer teacherId) {
         PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
         //减掉学生的批改数
-//        int i1 = studentService.decrementSurplus(student);
-//        if (i1 == 0) {
-//            return new ModelAndView("redirect:/login");
-//        }
+        int i1 = studentService.decrementSurplus(student);
+        if (i1 == 0) {
+            return new ModelAndView("redirect:/login");
+        }
         Essay essay = new Essay();
         essay.setTitleName("小作文，无描述");
         if (!"".equals(titleName)) {

@@ -12,6 +12,31 @@ public class Comment {
     private String comment;
     private Integer essayNumber;
 
+    public Comment() {
+    }
+
+    public Comment(Integer spanId, Integer essayNumber) {
+        this.spanId = spanId;
+        this.essayNumber = essayNumber;
+    }
+
+    public Comment(Integer spanId, String comment, Integer essayNumber) {
+        this.spanId = spanId;
+        this.comment = comment;
+        this.essayNumber = essayNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "id=" + id +
+                ", essayCode='" + essayCode + '\'' +
+                ", spanId=" + spanId +
+                ", comment='" + comment + '\'' +
+                ", essayNumber=" + essayNumber +
+                '}';
+    }
+
     public int getId() {
         return id;
     }

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.alibaba.fastjson.JSON;
 import com.test.domain.*;
 import com.test.service.CommentsService;
 import com.test.service.EmailService;
@@ -35,6 +36,9 @@ public class TeacherController {
 
     @Autowired
     private PlatformUserService userService;
+
+    @Autowired
+    private CommentsService commentsService;
 
     @GetMapping("/choose")
     public ModelAndView choose(Map<String, Object> map, HttpSession session) {
@@ -74,6 +78,7 @@ public class TeacherController {
 
     /**
      * 批改某一篇文章
+     *
      * @param map
      * @param index
      * @param session
@@ -211,14 +216,18 @@ public class TeacherController {
         return "fail";
     }
 
-    @PutMapping("/correctessay")
-    public String correctEssay(Integer index, String content, HttpSession session) {
+    @PostMapping("/correctessay")
+    public String correctEssay(Integer index, String content, HttpSession session,
+                               String addComments, String delComments) {
+        List<Comment> addCommentList = JSON.parseArray(addComments, Comment.class);
+        List<Comment> delCommentList = JSON.parseArray(delComments, Comment.class);
         String essayCode = (String) session.getAttribute("docName");
+        addCommentList.forEach(comment -> comment.setEssayCode(essayCode));
         Essay essay = new Essay();
         essay.setEssayContent(content);
         essay.setEssayNumber(index);
         essay.setName(essayCode);
-        int i = studentService.updateEssay(essay);
+        int i = studentService.correctEssay(essay, addCommentList, delCommentList);
         if (i > 0) {
             return "success";
         }

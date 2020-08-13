@@ -1,9 +1,11 @@
 let teacherName = $("#teacherName").val();
-let maxId;
+let maxId = 0;
 $(function () {
     initComments();
     let lastSpanid = $('#content span').last().attr("id");
-    maxId = lastSpanid.substring(5);
+    if (lastSpanid != null && lastSpanid != ""){
+        maxId = lastSpanid.substring(5);
+    }
 });
 //初始化评论
 function initComments() {

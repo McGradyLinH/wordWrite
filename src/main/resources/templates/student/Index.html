@@ -33,10 +33,12 @@
         </td>
         <td th:text="${essay.versions}"></td>
         <td>
-            <button type="button" class="btn btn-info btn-sm"
-                    th:onclick="updateEssay([[${essay.name}]],[[${essay.student.name}]],[[${essay.versions}]])">
+            <!--th:onclick="updateEssay([[${essay.name}]],[[${essay.student.name}]],[[${essay.versions}]])"-->
+            <a type="button" class="btn btn-info btn-sm"
+                th:href="@{/checkessay(essayName=${essay.name},stuName=${essay.student.name},versions=${essay.versions})}"
+                    >
                 查看
-            </button>
+            </a>
         </td>
     </tr>
     </tbody>

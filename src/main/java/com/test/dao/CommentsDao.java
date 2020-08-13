@@ -3,6 +3,7 @@ package com.test.dao;
 import com.test.domain.Comment;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author lx
@@ -15,4 +16,8 @@ public interface CommentsDao {
     int insertComment(Comment comment);
 
     int deleteComment(Comment comment);
+
+    int insertBatchComment(List<Comment> comments);
+
+    int deleteBatchComment(Map<String,Object> map);
 }

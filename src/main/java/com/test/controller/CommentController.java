@@ -44,8 +44,7 @@ public class CommentController {
     @GetMapping("/comments")
     public List<Comment> comments(HttpSession session,Integer index){
         String docName = (String) session.getAttribute("docName");
-        List<Comment> comments = commentsService.queryComments(docName, index);
-        return comments;
+        return commentsService.queryComments(docName, index);
     }
 
 }
