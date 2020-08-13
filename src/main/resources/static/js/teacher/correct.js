@@ -5,25 +5,32 @@ let addComments = new Array();
 let delComments = new Array();
 $(function () {
     initComments();
-    let lastSpanid = $('#content span').last().attr("id");
-    if (lastSpanid != null && lastSpanid != ""){
-        maxId = lastSpanid.substring(5);
-    }
+
     $("#content").mouseup(function (e) {
-        for (let y = 0; y <= maxId; y++) {
+        for (let y = 0; y <= i; y++) {
+            let a = $("#text"+y).val();
+            if (a===null || a===""){
+                removetooltip(y);
+            }
             $("#tooltip" + y).remove();
+        }
+        let lastSpanid = $('#content span').last().attr("id");
+        if (lastSpanid != null && lastSpanid !== ""){
+            maxId = lastSpanid.substring(5);
+        }
+        for (let y = 0; y <= maxId; y++) {
             $("#tooltipx" + y).remove();
         }
-        var x = 10;
-        var y = 10;
-        var text = "";
+        const x = 10;
+        const y = 10;
+        let text = "";
         if (document.selection) {
             text = document.selection.createRange().text;
         } else if (window.getSelection()) {
             text = window.getSelection();
         }
         text = $.trim(text);
-        if (text != "" && text != null) {
+        if (text !== "" && text != null) {
             i = i + 1;
             let tooltip = '<div id="tooltip' + i + '"><p>' + teacherName + '</p >' +
                 '<button class="color" style="background-color: #ff0000;" onclick="changeColor1(this,' + i + ')"></button>' +
@@ -37,7 +44,8 @@ $(function () {
             $("#tooltip" + i).css({
                 "top": (e.pageY + y) + "px",
                 "left": (e.pageX + x) + "px",
-                "position": "absolute",
+                // "position": "absolute",
+                "float": "left",
                 "border-top": "1px solid black",
                 "border-left": "1px solid black"
             }).show("fast");
