@@ -59,6 +59,19 @@
             </if>
         </where>
     </select>
+    <!-- 查询已批改完成的文章 -->
+    <select id="queryDoneEssay" resultMap="essay" parameterType="java.util.Map">
+        select * from essay e left join platformUser t on e.stuid=t.id
+        <where>
+        	e.versions=3
+        	<if test="enTeacherid != null and enTeacherid != ''">
+                and e.enTeacherId = #{enTeacherid}
+            </if>
+            <if test="CNTeacherid != null and CNTeacherid != ''">
+                and e.CNTeacher = #{CNTeacherid}
+            </if>
+        </where>
+    </select>
 
     <insert id="insertEssay" parameterType="essay" useGeneratedKeys="true" keyProperty="id">
         insert into essay (essayName,status,stuid,titleName,enTeacherId,essayContent,essayNumber) values

@@ -6,6 +6,7 @@ import com.test.domain.EssayDto;
 import com.test.domain.PlatformUser;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author lx
@@ -16,6 +17,8 @@ public interface StudentService {
     PlatformUser queryByPhone(String phone);
 
     List<Essay> queryEssayList(EssayDto essayDto);
+    
+    List<Essay> queryDoneEssay(Map<String, Object> paramMap);
 
     Essay insertEssay(Essay essay);
 

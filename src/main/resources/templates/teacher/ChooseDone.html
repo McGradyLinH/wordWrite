@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
 </head>
 <body id="changeBody">
-<a th:href="@{/choosedone}" class="btn btn-primary">批改完成</a>
+<a th:href="@{/choose}" class="btn btn-primary">需要批改</a>
 <table class="table">
     <thead>
     <tr>
@@ -24,16 +24,12 @@
         <td th:text="${loopStatus.count}"></td>
         <td th:text="${essay.student.name}"></td>
         <td th:text="${essay.titleName}"></td>
-        <td th:switch="${essay.status}">
-            <p th:case="1">外教修改</p>
-            <p th:case="2">中教修改</p>
-        </td>
+        <td>已完成</td>
         <td>
-       <!--  th:onclick="updateEssay([[${essay.name}]],[[${essay.student.name}]])"> -->
-            <a type="button" class="btn btn-info btn-sm"
-            	th:href="@{/index(essayName=${essay.name},stuName=${essay.student.name})}">
+            <button type="button" class="btn btn-info btn-sm"
+                    th:onclick="updateEssay([[${essay.name}]],[[${essay.student.name}]])">
                 批改
-            </a>
+            </button>
         </td>
     </tr>
     </tbody>

@@ -4,24 +4,39 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+
 import com.alibaba.fastjson.JSON;
-import com.test.domain.*;
-import com.test.service.CommentsService;
+import com.test.domain.Comment;
+import com.test.domain.Essay;
+import com.test.domain.EssayDto;
+import com.test.domain.PlatformUser;
+import com.test.domain.UserDto;
 import com.test.service.EmailService;
 import com.test.service.PlatformUserService;
 import com.test.service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
-import com.zhuozhengsoft.pageoffice.*;
+import com.zhuozhengsoft.pageoffice.FileSaver;
+import com.zhuozhengsoft.pageoffice.OpenModeType;
+import com.zhuozhengsoft.pageoffice.PageOfficeCtrl;
 
 /**
  * @author Administrator
@@ -37,9 +52,6 @@ public class TeacherController {
     @Autowired
     private PlatformUserService userService;
 
-    @Autowired
-    private CommentsService commentsService;
-
     @GetMapping("/choose")
     public ModelAndView choose(Map<String, Object> map, HttpSession session) {
         ModelAndView modelAndView = new ModelAndView("teacher/Choose");
@@ -48,12 +60,32 @@ public class TeacherController {
         Integer role = teacher.getRole();
         EssayDto essayDto = new EssayDto();
         essayDto.setStatus(role - 1);
-        if (teacher.getRole() == 2) {
+        if (role == 2) {
             essayDto.setEnTeacher(teacher);
         } else {
             essayDto.setCNTeacher(teacher);
         }
         List<Essay> list1 = studentService.queryEssayList(essayDto);
+        //根据essaycode去重
+        list1 = list1.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
+                () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
+        map.put("essays", list1);
+        return modelAndView;
+    }
+    
+    @GetMapping("/choosedone")
+    public ModelAndView choosedone(Map<String, Object> map, HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("teacher/ChooseDone");
+        //登录老师
+        PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
+        Integer role = teacher.getRole();
+        Map<String, Object> paramMap = new HashMap<>(2);
+        if (role == 2) {
+            paramMap.put("enTeacherid", teacher.getId());
+        } else {
+        	paramMap.put("CNTeacherid", teacher.getId());
+        }
+		List<Essay> list1 = studentService.queryDoneEssay(paramMap);
         //根据essaycode去重
         list1 = list1.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
                 () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
@@ -70,7 +102,7 @@ public class TeacherController {
      */
     @GetMapping(value = "/index")
     public ModelAndView showIndex(String essayName, HttpSession session, String stuName) {
-        ModelAndView mv = new ModelAndView("teacher/Index");
+        ModelAndView mv = new ModelAndView("redirect:/correctindex");
         session.setAttribute("docName", essayName);
         session.setAttribute("stuName", stuName);
         return mv;
@@ -191,7 +223,6 @@ public class TeacherController {
         essayDto.setEssayName(docName);
         //该文章对应的学生,拿到学生的邮箱，给学生发送提醒邮件
         PlatformUser student = studentService.queryEssayList(essayDto).get(0).getStudent();
-        System.err.println(student);
         //登录老师
         PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
         essay.setName(docName);
@@ -204,6 +235,7 @@ public class TeacherController {
             List<PlatformUser> users = userService.queryUsersByDto(userDto);
             essay.setCNTeacher(users.get(0));
             essay.setStatus(2);
+            emailService.sendSimpleEmail(users.get(0).getEmail(), "作文提交", "有新作文提交！");
         } else {
             essay.setStatus(3);
             content = "该文章已由中教批改完成，现在你可以登录我们的网站进行查看！";

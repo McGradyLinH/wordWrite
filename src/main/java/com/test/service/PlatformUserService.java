@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface PlatformUserService {
     List<PlatformUser> queryUsers();
+    
+    PlatformUser queryUserById(Integer id);
 
     int registerUser(PlatformUser user);
 

@@ -1,22 +1,38 @@
 package com.test.controller;
 
-import com.test.domain.*;
-import com.test.service.PlatformUserService;
-import com.test.service.StudentService;
-import com.test.util.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeSet;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.test.domain.Essay;
+import com.test.domain.EssayDto;
+import com.test.domain.PlatformUser;
+import com.test.domain.UserDto;
+import com.test.service.EmailService;
+import com.test.service.PlatformUserService;
+import com.test.service.StudentService;
+import com.test.util.CodeUtil;
 
 @RestController
 public class StudentController {
@@ -25,6 +41,9 @@ public class StudentController {
 
     @Autowired
     private PlatformUserService userService;
+    
+    @Autowired
+    private EmailService emailService;
 
     /**
      * 去到登录页面
@@ -108,16 +127,6 @@ public class StudentController {
         session.setAttribute("docName", essayName);
         session.setAttribute("stuName", stuName);
         session.setAttribute("versions", versions);
-        return mv;
-    }
-
-    /**
-     * 为了解决路径参数
-     * @return
-     */
-    @GetMapping(value = "/check")
-    public ModelAndView showIndex() {
-        ModelAndView mv = new ModelAndView("student/Stucheck");
         return mv;
     }
 
@@ -208,6 +217,7 @@ public class StudentController {
 //        return new ModelAndView("redirect:/stuIndex");
 //    }
     @PostMapping("/saveWrite")
+    @Transactional(rollbackFor = Exception.class)
     public ModelAndView saveWrite(String content, HttpSession session, String titleName,
                                   MultipartFile titleImage, Integer teacherId) {
         PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
@@ -244,10 +254,12 @@ public class StudentController {
         content = content.replaceAll(" ", "&nbsp;");
         content = content.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
         essay.setEssayContent(content);
-        PlatformUser enTeacher = new PlatformUser(teacherId);
+        PlatformUser enTeacher = userService.queryUserById(teacherId);
         essay.setEnTeacher(enTeacher);
         essay.setStudent(student);
         studentService.insertEssay(essay);
+        emailService.sendSimpleEmail(student.getEmail(), "批改进度", "已提交给外教，我们会随时为你提供进度信息！");
+        emailService.sendSimpleEmail(enTeacher.getEmail(), "作文提交", "有新作文提交！");
         return new ModelAndView("redirect:/stuIndex");
     }
 
@@ -298,7 +310,6 @@ public class StudentController {
         essayDto.setEssayName(docName);
         essayDto.setEssayNumber(index);
         Essay essay = studentService.queryEssayList(essayDto).get(0);
-        System.err.println(essay);
         map.put("essay", essay);
         String titleName = essay.getTitleName();
         map.put("xiaozuowen", "false");

@@ -16,6 +16,10 @@
     <select id="queryUsers" resultMap="pfuser">
         select * from platformUser
     </select>
+    
+    <select id="queryUserById" resultMap="pfuser">
+        select * from platformUser where id =#{_parameter}
+    </select>
 
     <insert id="registerUser" parameterType="com.test.domain.PlatformUser">
         insert into platformUser (stuName,phone,password,role,email,surplus) values (

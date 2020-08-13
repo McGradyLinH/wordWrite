@@ -33,4 +33,9 @@ public class PlatformUserServiceImpl implements PlatformUserService {
     public List<PlatformUser> queryUsersByDto(UserDto userDto) {
         return platformUserDao.queryUsersByDto(userDto);
     }
+
+	@Override
+	public PlatformUser queryUserById(Integer id) {
+		return platformUserDao.queryUserById(id);
+	}
 }

@@ -9,6 +9,8 @@ import java.util.List;
 @Mapper
 public interface PlatformUserDao {
     List<PlatformUser> queryUsers();
+    
+    PlatformUser queryUserById(Integer id);
 
     int registerUser(PlatformUser user);
 
