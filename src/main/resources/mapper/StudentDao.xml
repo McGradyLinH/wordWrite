@@ -21,6 +21,7 @@
         <result property="essayContent" column="essayContent" jdbcType="LONGVARCHAR"/>
         <result property="versions" column="versions" jdbcType="INTEGER"/>
         <result property="essayNumber" column="essayNumber" jdbcType="INTEGER"/>
+        <result property="essayType" column="essayType" jdbcType="INTEGER"/>
         <collection property="student" resultMap="student">
         </collection>
     </resultMap>
@@ -70,10 +71,10 @@
     </select>
 
     <insert id="insertEssay" parameterType="essay" useGeneratedKeys="true" keyProperty="id">
-        insert into essay (essayName,status,stuid,titleName,enTeacherId,essayContent,essayNumber) values
+        insert into essay (essayName,status,stuid,titleName,enTeacherId,essayContent,essayNumber,essayType) values
         <foreach collection="list" separator="," item="essay">
             (#{essay.name},1,#{essay.student.id},#{essay.titleName},#{essay.enTeacher.id}
-            ,#{essay.essayContent},#{essay.essayNumber})
+            ,#{essay.essayContent},#{essay.essayNumber},#{essay.essayType})
         </foreach>
     </insert>
 

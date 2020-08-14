@@ -224,29 +224,29 @@ public class StudentController {
         //减掉学生的批改数
         int i1 = studentService.decrementSurplus(student);
         if (i1 == 0) {
-            return new ModelAndView("redirect:/login");
+            return new ModelAndView("redirect:/stuIndex");
         }
         Essay essay = new Essay();
-        essay.setTitleName("小作文，无描述");
+        essay.setEssayType(2);
         if (!"".equals(titleName)) {
             essay.setTitleName(titleName);
         }
         if (!titleImage.isEmpty()) {
+            essay.setEssayType(1);
             String filename = UUID.randomUUID().toString().replaceAll("-", "");
             String filePath = "c:/word/titleimage/" + student.getName() + "/";
             File file = new File(filePath);
             if (!file.exists()) {
                 file.mkdirs();
             }
-            file = new File(filePath + filename + "." +
-                    titleImage.getOriginalFilename().split("\\.")[1]);
+            String pathName = filePath + filename + "." + titleImage.getOriginalFilename().split("\\.")[1];
+            file = new File(pathName);
             try {
                 titleImage.transferTo(file);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            essay.setTitleName(filePath + filename + "." +
-                    titleImage.getOriginalFilename().split("\\.")[1]);
+            essay.setTitleName(pathName);
         }
         String essayCode = UUID.randomUUID().toString().replaceAll("-", "");
         essay.setName(essayCode);

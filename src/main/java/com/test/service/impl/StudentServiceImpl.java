@@ -51,7 +51,7 @@ public class StudentServiceImpl implements StudentService {
             temp.setEnTeacher(essay.getEnTeacher());
             temp.setTitleName(essay.getTitleName());
             temp.setStudent(essay.getStudent());
-            list.add(essay);
+            list.add(temp);
         }
         int i = studentDao.insertEssay(list);
         if (i > 0) {

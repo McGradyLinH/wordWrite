@@ -23,6 +23,8 @@ public class Essay {
     private String essayContent;
     //文章号数
     private Integer essayNumber;
+    //1-小作文，2-大作文
+    private Integer essayType;
 
     public Integer getId() {
         return id;
@@ -118,5 +120,13 @@ public class Essay {
                 ", essayContent='" + essayContent + '\'' +
                 ", essayNumber=" + essayNumber +
                 '}';
+    }
+
+    public Integer getEssayType() {
+        return essayType;
+    }
+
+    public void setEssayType(Integer essayType) {
+        this.essayType = essayType;
     }
 }
