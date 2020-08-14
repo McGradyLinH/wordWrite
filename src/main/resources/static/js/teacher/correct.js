@@ -5,7 +5,6 @@ let addComments = new Array();
 let delComments = new Array();
 $(function () {
     initComments();
-
     $("#content").mouseup(function (e) {
         for (let y = 0; y <= i; y++) {
             let a = $("#text"+y).val();
@@ -60,11 +59,11 @@ function initComments() {
         type: 'get',
         data: {index:essayNumber},
         success: function (data) {
-            i = data.length;
+            i = data[data.length-1].spanId;
             for (let i = 0;i<data.length;i++){
                 let spanId = data[i].spanId;
                 $("#pigai"+spanId).on("click", function () {
-                    createTooltip(spanId, data[i].comment);
+                    createTooltip(spanId, data[i].comment,data[i].teacher.name);
                 });
             }
         }
@@ -110,7 +109,7 @@ function savepigai(index) {
             });
             maxId = maxId + 1;
             $(this).on("click", function () {
-                createTooltip(index, inputText);
+                createTooltip(index, inputText ,teacherName);
             });
             $("#tooltip" + index).remove();
             saveToServer(index, inputText);
@@ -156,6 +155,7 @@ function changeColor1(dom, index) {
 //修改内容触发
 function updatepigai(index) {
     let inputtext = $("#text" + index).val();
+    let teacherName = $("#teacherId" + index).text();
     $("#pigai" + index).off("click");
     $("#pigai" + index).on("click", function () {
         createTooltip(index, inputtext);
@@ -164,11 +164,11 @@ function updatepigai(index) {
 }
 
 //绑定点击事件时生产的html
-function createTooltip(m, inputtext) {
+function createTooltip(m, inputtext,tName) {
     for (let y = 0; y <= maxId; y++) {
         $("#tooltipx" + y).remove();
     }
-    let tooltip = '<div id="tooltipx' + m + '"><p>' + teacherName + '</p >' +
+    let tooltip = '<div id="tooltipx' + m + '"><p id="teacherId' + m + '">' + tName + '</p >' +
         '<button class="color" style="background-color: red;" onclick="changeColor1(this,' + m + ')"></button>' +
         '<button class="color" style="background-color: blue;" onclick="changeColor1(this,' + m + ')"></button>' +
         '<button class="color" style="background-color: aqua;" onclick="changeColor1(this,' + m + ')"></button>' +

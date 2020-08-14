@@ -11,6 +11,7 @@ public class Comment {
     private Integer spanId;
     private String comment;
     private Integer essayNumber;
+    private PlatformUser teacher;
 
     public Comment() {
     }
@@ -26,18 +27,15 @@ public class Comment {
         this.essayNumber = essayNumber;
     }
 
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "id=" + id +
-                ", essayCode='" + essayCode + '\'' +
-                ", spanId=" + spanId +
-                ", comment='" + comment + '\'' +
-                ", essayNumber=" + essayNumber +
-                '}';
-    }
+    
 
-    public int getId() {
+    @Override
+	public String toString() {
+		return "Comment [id=" + id + ", essayCode=" + essayCode + ", spanId=" + spanId + ", comment=" + comment
+				+ ", essayNumber=" + essayNumber + ", teacher=" + teacher + "]";
+	}
+
+	public int getId() {
         return id;
     }
 
@@ -76,4 +74,13 @@ public class Comment {
     public void setEssayNumber(Integer essayNumber) {
         this.essayNumber = essayNumber;
     }
+
+	public PlatformUser getTeacher() {
+		return teacher;
+	}
+
+	public void setTeacher(PlatformUser teacher) {
+		this.teacher = teacher;
+	}
+
 }

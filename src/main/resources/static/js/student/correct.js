@@ -1,4 +1,3 @@
-let teacherName = $("#teacherName").val();
 let maxId = 0;
 $(function () {
     initComments();
@@ -19,7 +18,7 @@ function initComments() {
             for (let i = 0;i<length;i++){
                 let spanId = data[i].spanId;
                 $("#pigai"+spanId).on("click", function () {
-                    createTooltip(spanId, data[i].comment);
+                    createTooltip(spanId, data[i].comment,data[i].teacher.name,data[i].teacher.role);
                 });
             }
         }
@@ -27,11 +26,12 @@ function initComments() {
 }
 
 //绑定点击事件时生产的html
-function createTooltip(m, inputtext) {
+function createTooltip(m, inputtext,tName,role) {
     for (let y = 0; y <= maxId; y++) {
         $("#tooltipx" + y).remove();
     }
-    let tooltip = '<div id="tooltipx' + m + '"><p>enteacher:' + teacherName + '</p >' +
+    let whoteacher = role === 2 ? 'enTeacher':'CNTeacher';
+    let tooltip = '<div id="tooltipx' + m + '"><p>'+whoteacher+':' + tName + '</p >' +
         '<input type="text" style="border: none;" id="text' + m + '" value="' + inputtext + '"' +
         'readonly /></div>';
     $("body").append(tooltip);

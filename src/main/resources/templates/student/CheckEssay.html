@@ -14,7 +14,6 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
-<input type="hidden" id="teacherName" th:value="${teacherName}"/>
 <button class="btn-primary" th:onclick="correctDone([[${index}]])">修改完成</button>
 <h1 id="essayTitle" th:if="${xiaozuowen=='false'}" th:text="${essay.titleName}"></h1>
 <div th:if="${xiaozuowen=='true'}" >

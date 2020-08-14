@@ -318,7 +318,6 @@ public class StudentController {
             session.setAttribute("titleSrc", titleName);
         }
         map.put("index", index);
-        map.put("teacherName",essay.getEnTeacher().getTeacherName());
         return modelAndView;
     }
 }
