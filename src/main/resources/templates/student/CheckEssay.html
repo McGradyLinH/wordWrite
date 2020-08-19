@@ -17,7 +17,9 @@
 <button class="btn-primary" th:onclick="correctDone([[${index}]])">修改完成</button>
 <h1 id="essayTitle" th:if="${xiaozuowen=='false'}" th:text="${essay.titleName}"></h1>
 <div th:if="${xiaozuowen=='true'}" >
-    <img th:src="@{/showImg}" style="height: 250px;">
+    <h1 id="essayTitle1" th:if="${!#strings.isEmpty(essay.titleName)}"
+        th:text="${essay.titleName}"></h1>
+    <img th:src="@{/showImg}" style="height: 250px;" alt="title">
 </div>
 <div contenteditable="true" id="content" style="width: 60%;float: left;height: 300px;border: 1px solid"
      th:utext="${essay.essayContent}">

@@ -123,7 +123,7 @@ public class TeacherController {
         map.put("essay", essay);
         String titlePath = essay.getTitlePath();
         map.put("xiaozuowen", "false");
-        if (null != titlePath && "" != titlePath) {
+        if (null != titlePath && !"".equals(titlePath)) {
             map.put("xiaozuowen", "true");
             session.setAttribute("titleSrc", titlePath);
         }

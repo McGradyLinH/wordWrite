@@ -13,10 +13,13 @@ $(function () {
             }
             $("#tooltip" + y).remove();
         }
-        let lastSpanid = $('#content span').last().attr("id");
-        if (lastSpanid != null && lastSpanid !== ""){
-            maxId = lastSpanid.substring(5);
-        }
+        $('#content').find("span").each(function (e) {
+            let spanId = $(this).attr('id');
+            let tempMax = spanId.substring(5);
+            if (tempMax > maxId) {
+                maxId = tempMax;
+            }
+        });
         for (let y = 0; y <= maxId; y++) {
             $("#tooltipx" + y).remove();
         }

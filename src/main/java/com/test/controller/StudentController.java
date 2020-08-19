@@ -193,11 +193,11 @@ public class StudentController {
         essayDto.setVersions(3);
         Essay essay = studentService.queryEssayList(essayDto).get(0);
         map.put("essay", essay);
-        String titleName = essay.getTitleName();
+        String titlePath = essay.getTitlePath();
         map.put("xiaozuowen", "false");
-        if (titleName.split("/").length == 5) {
+        if (null != titlePath && !"".equals(titlePath)) {
             map.put("xiaozuowen", "true");
-            session.setAttribute("titleSrc", titleName);
+            session.setAttribute("titleSrc", titlePath);
         }
         map.put("index", index);
         return modelAndView;

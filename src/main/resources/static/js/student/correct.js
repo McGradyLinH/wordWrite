@@ -1,10 +1,13 @@
 let maxId = 0;
 $(function () {
+    $('#content').find("span").each(function (e) {
+        let spanId = $(this).attr('id');
+        let tempMax = spanId.substring(5);
+        if (tempMax > maxId) {
+            maxId = tempMax;
+        }
+    });
     initComments();
-    let lastSpanid = $('#content span').last().attr("id");
-    if (lastSpanid != null && lastSpanid != "") {
-        maxId = lastSpanid.substring(5);
-    }
 });
 
 //初始化评论
@@ -13,6 +16,7 @@ function initComments() {
     $.ajax({
         url: '/comments',
         type: 'get',
+        async: false,
         data: {index: essayNumber},
         success: function (data) {
             let length = data.length;
