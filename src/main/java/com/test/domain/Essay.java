@@ -19,6 +19,12 @@ public class Essay {
     private String titleName;
     //第几次修改1-表示第一次，2-表示第二次，3-表示不再修改
     private Integer versions;
+    //文章内容
+    private String essayContent;
+    //文章号数
+    private Integer essayNumber;
+    //1-小作文，2-大作文
+    private Integer essayType;
 
     public Integer getId() {
         return id;
@@ -82,5 +88,45 @@ public class Essay {
 
     public void setVersions(Integer versions) {
         this.versions = versions;
+    }
+
+    public String getEssayContent() {
+        return essayContent;
+    }
+
+    public void setEssayContent(String essayContent) {
+        this.essayContent = essayContent;
+    }
+
+    public Integer getEssayNumber() {
+        return essayNumber;
+    }
+
+    public void setEssayNumber(Integer essayNumber) {
+        this.essayNumber = essayNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Essay{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                ", student=" + student +
+                ", enTeacher=" + enTeacher +
+                ", CNTeacher=" + CNTeacher +
+                ", titleName='" + titleName + '\'' +
+                ", versions=" + versions +
+                ", essayContent='" + essayContent + '\'' +
+                ", essayNumber=" + essayNumber +
+                '}';
+    }
+
+    public Integer getEssayType() {
+        return essayType;
+    }
+
+    public void setEssayType(Integer essayType) {
+        this.essayType = essayType;
     }
 }

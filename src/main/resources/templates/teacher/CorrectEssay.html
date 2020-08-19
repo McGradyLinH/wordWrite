@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>correct essay</title>
+    <style>
+        .color{
+            width: 20px;
+            height: 20px;
+            border: 1px solid;
+            margin-right: 2px;
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<input type="hidden" id="teacherName" th:value="${teacherName}"/>
+<button class="btn-primary" th:onclick="correctDone([[${index}]])">修改完成</button>
+<h1 id="essayTitle" th:if="${xiaozuowen=='false'}" th:text="${essay.titleName}"></h1>
+<div th:if="${xiaozuowen=='true'}" >
+    <img th:src="@{/showImg}" style="height: 250px;">
+</div>
+<div contenteditable="true" id="content" style="width: 60%;float: left;height: 300px;border: 1px solid"
+     th:utext="${essay.essayContent}">
+</div>
+<input type="hidden" id="essayNumber" th:value="${index}"/>
+</body>
+<script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/teacher/correct.js}"></script>
+</html>

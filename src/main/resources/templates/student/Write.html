@@ -4,7 +4,7 @@
     <title>学生写作</title>
     <link th:href="@{css/bootstrap.min.css}" rel="stylesheet" type="text/css">
     <link th:href="@{css/fileinput/fileinput.min.css}" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
     <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{js/fileinput/fileinput.min.js}"></script>
     <!--     	<script type="text/javascript" src="pageoffice.js" id="po_js_main"></script>-->
@@ -25,15 +25,17 @@
 <form th:action="@{/saveWrite}" role="form" enctype="multipart/form-data" method="post" id="writeArea"
       style="display: none;">
     <!--    <input type="hidden" id="titleCode" name="titleCode"/>-->
-    <div id="count">
+    <div id="count" style="margin-bottom: 8px;margin-top: 8px;">
         用时:<span id="id_H">00</span>小时
         <span id="id_M">00</span>分
         <span id="id_S">00</span>秒
         单词数:<span id="wordCount">0</span>字
     </div>
     <!--    <button class="btn-primary" type="button" data-toggle="modal" data-target="#titleModal">选择题目</button>-->
-    <label>输入作文题目：(请使用英文在此输入作文题目或上传题目图片或选择题目)</label>
-    <label for="titleName"></label><input id="titleName" name="titleName" type="text" style="width: 500px;"/><br>
+    <label for="titleName">输入作文题目：(请使用英文在此输入作文题目或上传题目图片或选择题目)</label><br>
+        <textarea id="titleName" name="titleName" style="width: 500px;resize: none;">
+        </textarea>
+    <br>
     <button type="button" class="btn-primary" onclick="showFileUpload()">上传题目</button>
     <div id="uploadTitleArea" style="display: none;">
         <input type="file" class="file" name="titleImage" id="myFile1"
@@ -42,18 +44,18 @@
     <!--    <div style="margin-left: 20px;">-->
     <!--        <img src="" id="preview_img" width="300px" height="200px" alt="">-->
     <!--    </div>-->
-    <label>写作文：</label>
-    <textarea name="content" onkeyup="wordStatic(this)" class="form-control" rows="12" wrap="hard">
+    <label for="inputContent">写作文：</label>
+    <textarea name="content" id="inputContent" onkeyup="wordStatic(this)" class="form-control" rows="12" wrap="hard">
     </textarea>
     <p>选择教师批改：</p>
     <div class="card" th:each="teacher,loopStatus : ${teachers}" style="width: 10rem;float: left;">
         <p th:text="${teacher.name}"></p>
         <img th:src="${(teacher.avatar != null && !#strings.isEmpty(teacher.avatar)) ? '/images/avatar/'+teacher.avatar : '/images/avatar/avatar.png'}"
              style="width: 155px;height: 92px;" class="card-img-top" alt="avatar">
-        <!--        <div class="card-body">-->
-        <input type="radio" th:checked="${loopStatus.count}==1?true:false"
-               name="teacherId" style="margin: auto;" th:value="${teacher.id}"/>
-        <!--        </div>-->
+        <label style="margin: auto;">
+            <input type="radio" th:checked="${loopStatus.count}==1?true:false"
+                   name="teacherId"  th:value="${teacher.id}"/>
+        </label>
     </div>
     <button type="submit" class="btn-primary btn-block">提 交</button>
 </form>

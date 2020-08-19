@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>学生首页</title>
-    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
     <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
     <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
 </head>
@@ -34,10 +34,12 @@
         </td>
         <td th:text="${essay.versions}"></td>
         <td>
-            <button type="button" class="btn btn-info btn-sm"
-                    th:onclick="updateEssay([[${essay.name}]],[[${essay.student.name}]],[[${essay.versions}]])">
+            <!--th:onclick="updateEssay([[${essay.name}]],[[${essay.student.name}]],[[${essay.versions}]])"-->
+            <a type="button" class="btn btn-info btn-sm"
+                th:href="@{/stucheck(essayName=${essay.name},stuName=${essay.student.name},versions=${essay.versions})}"
+                    >
                 查看
-            </button>
+            </a>
         </td>
     </tr>
     </tbody>

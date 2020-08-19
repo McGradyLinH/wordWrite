@@ -1,10 +1,12 @@
 package com.test.service;
 
+import com.test.domain.Comment;
 import com.test.domain.Essay;
 import com.test.domain.EssayDto;
 import com.test.domain.PlatformUser;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author lx
@@ -15,11 +17,14 @@ public interface StudentService {
     PlatformUser queryByPhone(String phone);
 
     List<Essay> queryEssayList(EssayDto essayDto);
+    
+    List<Essay> queryDoneEssay(Map<String, Object> paramMap);
 
     Essay insertEssay(Essay essay);
 
     /**
      * 减少学生作文数
+     *
      * @param student
      * @return
      */
@@ -27,6 +32,7 @@ public interface StudentService {
 
     /**
      * 增加学生作文数
+     *
      * @param student
      * @return
      */
@@ -34,8 +40,18 @@ public interface StudentService {
 
     /**
      * 修改文章的状态
+     *
      * @param essay
      * @return
      */
     int updateEssay(Essay essay);
+
+    /**
+     * 批改文章
+     * @param essay
+     * @param addCommentList
+     * @param delCommentList
+     * @return
+     */
+    int correctEssay(Essay essay, List<Comment> addCommentList, List<Comment> delCommentList);
 }

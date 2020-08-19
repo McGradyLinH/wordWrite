@@ -1,24 +1,38 @@
 package com.test.controller;
 
-import com.test.domain.*;
-import com.test.service.PlatformUserService;
-import com.test.service.StudentService;
-import com.test.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeSet;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.*;
+import com.test.domain.Essay;
+import com.test.domain.EssayDto;
+import com.test.domain.PlatformUser;
+import com.test.domain.UserDto;
+import com.test.service.EmailService;
+import com.test.service.PlatformUserService;
+import com.test.service.StudentService;
+import com.test.util.CodeUtil;
 
 @RestController
 public class StudentController {
@@ -27,6 +41,9 @@ public class StudentController {
 
     @Autowired
     private PlatformUserService userService;
+    
+    @Autowired
+    private EmailService emailService;
 
     /**
      * 去到登录页面
@@ -90,6 +107,9 @@ public class StudentController {
         EssayDto essayDto = new EssayDto();
         essayDto.setStuId(studentId);
         List<Essay> list = studentService.queryEssayList(essayDto);
+        //根据essayCode去重
+        list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
+                () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
         map.put("essays", list);
         return new ModelAndView("student/Index");
     }
@@ -102,8 +122,8 @@ public class StudentController {
      * @return
      */
     @GetMapping(value = "/stucheck")
-    public ModelAndView showIndex(String essayName, HttpSession session, String stuName,Integer versions) {
-        ModelAndView mv = new ModelAndView("student/Stucheck");
+    public ModelAndView stucheck(String essayName, HttpSession session, String stuName, Integer versions) {
+        ModelAndView mv = new ModelAndView("redirect:/check");
         session.setAttribute("docName", essayName);
         session.setAttribute("stuName", stuName);
         session.setAttribute("versions", versions);
@@ -130,81 +150,119 @@ public class StudentController {
      * @param titleName 文章的标题
      * @return
      */
+//    @PostMapping("/saveWrite")
+//    public ModelAndView saveWrite(String content, HttpSession session, String titleName,
+//                                  MultipartFile titleImage, Integer teacherId) {
+//        try {
+//            PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+//            //减掉学生的批改数
+//            int i1 = studentService.decrementSurplus(student);
+//            if (i1 == 0) {
+//                return new ModelAndView("redirect:/login");
+//            }
+//            content = content.replaceAll("(\r\n|\n)", "<w:br/>");
+//            content = content.replaceAll(" ","&#160;");
+//            content = content.replaceAll("\t","&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;");
+//            System.err.println(content);
+//            //传入word文档的值
+//            Map<String, Object> map = new HashMap<>(3);
+//            map.put("content", content);
+//            map.put("img", "");
+//            map.put("title", "");
+//            String ftl = "write.ftl";
+//            Essay essay = new Essay();
+//            essay.setTitleName("小作文，无描述");
+//            if (!"".equals(titleName)) {
+//                map.put("title", titleName);
+//                essay.setTitleName(titleName);
+//            }
+//            if (!titleImage.isEmpty()) {
+//                ftl = "upload.ftl";
+//                //上传图片的base64
+//                String base64 = Base64.getEncoder().encodeToString(titleImage.getBytes());
+//                map.put("image", base64);
+//            }
+//            String name = UUID.randomUUID().toString().replace("-", "");
+//            String desSource = "c:/word/" + student.getName();
+//            File desFile = new File(desSource);
+//            if (!desFile.exists()) {
+//                desFile.mkdirs();
+//            }
+//            desSource += "/write.doc";
+//            desFile = new File(desSource);
+//            //创建word文档
+//            DocumentHandler.createDoc(map, desSource, ftl);
+//            File file;
+//            for (int i = 1; i <= 4; i++) {
+//                //要保存的路径
+//                file = new File("c:\\word\\" + student.getName() + "\\" + name + "_" + i + ".doc");
+//                try {
+//                    Files.copy(desFile.toPath(), file.toPath());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            essay.setName(name);
+//            essay.setStudent(student);
+//            PlatformUser enTeacher = new PlatformUser(teacherId);
+//            essay.setEnTeacher(enTeacher);
+//            //保存文件到数据库
+//            studentService.insertEssay(essay);
+//            //更改登录用户session中的文章数
+//            student.setSurplus(student.getSurplus() - 1);
+//            session.setAttribute("loginUser", student);
+//        } catch (RuntimeException | IOException e) {
+//            e.printStackTrace();
+//        }
+//        return new ModelAndView("redirect:/stuIndex");
+//    }
     @PostMapping("/saveWrite")
+    @Transactional(rollbackFor = Exception.class)
     public ModelAndView saveWrite(String content, HttpSession session, String titleName,
                                   MultipartFile titleImage, Integer teacherId) {
-        try {
-            PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
-            //减掉学生的批改数
-            int i1 = studentService.decrementSurplus(student);
-            if (i1 == 0) {
-                return new ModelAndView("redirect:/login");
-            }
-            StringBuilder str = new StringBuilder();
-            //换行三个为一个整体
-            //换行1
-            str.append(" </w:t></w:r></w:p><w:p><w:pPr></w:pPr>");
-            //换行2
-            str.append("<w:r><w:rPr>");
-            //设置样式  字体 大小 颜色
-            str.append("<w:rFonts w:ascii=\"Calibri\" w:fareast=\"Calibri\" w:h-ansi=\"宋体\"/>");
-            str.append("<w:color w:val=\"000000\"/><w:sz w:val=\"22\"/>");
-            //换行3
-            str.append(" </w:rPr><w:t>");
-            content = content.replaceAll("(\r\n|\n)", str.toString());
-            //传入word文档的值
-            Map<String, Object> map = new HashMap<>(3);
-            map.put("content", content);
-            map.put("img", "");
-            map.put("title", "");
-            String ftl = "write.ftl";
-            Essay essay = new Essay();
-            essay.setTitleName("小作文，无描述");
-            if (!"".equals(titleName)) {
-                map.put("title", titleName);
-                essay.setTitleName(titleName);
-            }
-            if (!titleImage.isEmpty()) {
-                ftl = "upload.ftl";
-                //上传图片的base64
-                String base64 = Base64.getEncoder().encodeToString(titleImage.getBytes());
-                map.put("image", base64);
-            }
-            String name = UUID.randomUUID().toString().replace("-", "");
-            String desSource = "c:/word/" + student.getName();
-            File desFile = new File(desSource);
-            if (!desFile.exists()) {
-                desFile.mkdirs();
-            }
-            desSource += "/write.doc";
-            desFile = new File(desSource);
-            //创建word文档
-            DocumentHandler.createDoc(map, desSource, ftl);
-            File file;
-            for (int i = 1; i <= 4; i++) {
-                //要保存的路径
-                file = new File("c:\\word\\" + student.getName() + "\\" + name + "_" + i + ".doc");
-                try {
-                    Files.copy(desFile.toPath(), file.toPath());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            essay.setName(name);
-            essay.setStudent(student);
-            PlatformUser enTeacher = new PlatformUser(teacherId);
-            System.out.println(enTeacher.getId());
-            essay.setEnTeacher(enTeacher);
-            //保存文件到数据库
-            studentService.insertEssay(essay);
-            //更改登录用户session中的文章数
-            student.setSurplus(student.getSurplus() - 1);
-            session.setAttribute("loginUser", student);
-        } catch (RuntimeException | IOException e) {
-            e.printStackTrace();
+        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+        //减掉学生的批改数
+        int i1 = studentService.decrementSurplus(student);
+        if (i1 == 0) {
+            return new ModelAndView("redirect:/stuIndex");
         }
+        Essay essay = new Essay();
+        essay.setEssayType(2);
+        if (!"".equals(titleName)) {
+            essay.setTitleName(titleName);
+        }
+        if (!titleImage.isEmpty()) {
+            essay.setEssayType(1);
+            String filename = UUID.randomUUID().toString().replaceAll("-", "");
+            String filePath = "c:/word/titleimage/" + student.getName() + "/";
+            File file = new File(filePath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            String pathName = filePath + filename + "." + titleImage.getOriginalFilename().split("\\.")[1];
+            file = new File(pathName);
+            try {
+                titleImage.transferTo(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            essay.setTitleName(pathName);
+        }
+        String essayCode = UUID.randomUUID().toString().replaceAll("-", "");
+        essay.setName(essayCode);
+        content = content.replaceAll("(\r\n|\n)", "<br/>");
+        content = content.replaceAll(" ", "&nbsp;");
+        content = content.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        essay.setEssayContent(content);
+        PlatformUser enTeacher = userService.queryUserById(teacherId);
+        essay.setEnTeacher(enTeacher);
+        essay.setStudent(student);
+        studentService.insertEssay(essay);
+        emailService.sendSimpleEmail(student.getEmail(), "批改进度", "已提交给外教，我们会随时为你提供进度信息！");
+        emailService.sendSimpleEmail(enTeacher.getEmail(), "作文提交", "有新作文提交！");
         return new ModelAndView("redirect:/stuIndex");
     }
+
 
     /**
      * 检查剩余文章数
@@ -237,4 +295,29 @@ public class StudentController {
         return "success";
     }
 
+    /**
+     * 查看某一篇文章
+     * @param map
+     * @param index
+     * @param session
+     * @return
+     */
+    @GetMapping("/check/{index}")
+    public ModelAndView correct(Map<String, Object> map, @PathVariable("index") Integer index, HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("student/CheckEssay");
+        String docName = (String) session.getAttribute("docName");
+        EssayDto essayDto = new EssayDto();
+        essayDto.setEssayName(docName);
+        essayDto.setEssayNumber(index);
+        Essay essay = studentService.queryEssayList(essayDto).get(0);
+        map.put("essay", essay);
+        String titleName = essay.getTitleName();
+        map.put("xiaozuowen", "false");
+        if (titleName.split("/").length == 5) {
+            map.put("xiaozuowen", "true");
+            session.setAttribute("titleSrc", titleName);
+        }
+        map.put("index", index);
+        return modelAndView;
+    }
 }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.dao.CommentsDao">
+	<resultMap type="com.test.domain.Comment" id="commentRm">
+		<result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="essayCode" column="essayCode" jdbcType="VARCHAR"/>
+        <result property="spanId" column="spanId" jdbcType="INTEGER"/>
+        <result property="comment" column="comment" jdbcType="VARCHAR"/>
+        <result property="essayNumber" column="essayNumber" jdbcType="INTEGER"/>
+        <collection property="teacher" ofType="com.test.domain.PlatformUser">
+        	<result property="name" column="stuName" jdbcType="VARCHAR"/>
+        	<result property="role" column="role" jdbcType="INTEGER"/>
+        </collection>
+	</resultMap>
+	
+	
+    <!--查询多个-->
+    <select id="queryComments" resultMap="commentRm">
+        select co.*,u.stuName,u.role from comments co left join platformUser u on co.teacherId=u.id
+         where co.essayCode = #{essayCode} and co.essayNumber=#{index}
+    </select>
+
+    <insert id="insertComment" parameterType="comment">
+        insert into comments (essayCode,spanId,comment,essayNumber) values
+         (#{essayCode},#{spanId},#{comment},#{essayNumber})
+    </insert>
+
+    <delete id="deleteComment" parameterType="comment">
+        delete from comments where essayCode=#{essayCode} and spanId=#{spanId} and essayNumber=#{essayNumber}
+    </delete>
+
+    <insert id="insertBatchComment" parameterType="comment">
+        insert into comments (essayCode,spanId,comment,essayNumber) values
+         <foreach collection="list" separator="," item="comment">
+             (#{comment.essayCode},#{comment.spanId},#{comment.comment},#{comment.essayNumber})
+         </foreach>
+    </insert>
+
+    <delete id="deleteBatchComment" parameterType="java.util.Map">
+        delete from comments where essayCode=#{essayCode}  and essayNumber=#{essayNumber} and
+         spanId in
+         <foreach collection="list" open="(" close=")" separator="," item="item">
+             #{item.spanId}
+         </foreach>
+    </delete>
+
+</mapper>
