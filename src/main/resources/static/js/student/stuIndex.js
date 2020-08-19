@@ -24,7 +24,7 @@ function checkAgain(id) {
                 type: 'post',
                 data: {_method: 'put', versions: id},
                 success: function (data) {
-                    window.location.reload();
+                    window.location.href="/stuIndex"
                 }
             });
         }

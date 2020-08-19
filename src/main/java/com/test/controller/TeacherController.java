@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -34,9 +33,6 @@ import com.test.domain.UserDto;
 import com.test.service.EmailService;
 import com.test.service.PlatformUserService;
 import com.test.service.StudentService;
-import com.zhuozhengsoft.pageoffice.FileSaver;
-import com.zhuozhengsoft.pageoffice.OpenModeType;
-import com.zhuozhengsoft.pageoffice.PageOfficeCtrl;
 
 /**
  * @author Administrator
@@ -72,7 +68,7 @@ public class TeacherController {
         map.put("essays", list1);
         return modelAndView;
     }
-    
+
     @GetMapping("/choosedone")
     public ModelAndView choosedone(Map<String, Object> map, HttpSession session) {
         ModelAndView modelAndView = new ModelAndView("teacher/ChooseDone");
@@ -83,9 +79,9 @@ public class TeacherController {
         if (role == 2) {
             paramMap.put("enTeacherid", teacher.getId());
         } else {
-        	paramMap.put("CNTeacherid", teacher.getId());
+            paramMap.put("CNTeacherid", teacher.getId());
         }
-		List<Essay> list1 = studentService.queryDoneEssay(paramMap);
+        List<Essay> list1 = studentService.queryDoneEssay(paramMap);
         //根据essaycode去重
         list1 = list1.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
                 () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
@@ -125,11 +121,11 @@ public class TeacherController {
         essayDto.setEssayNumber(index);
         Essay essay = studentService.queryEssayList(essayDto).get(0);
         map.put("essay", essay);
-        String titleName = essay.getTitleName();
+        String titlePath = essay.getTitlePath();
         map.put("xiaozuowen", "false");
-        if (titleName.split("/").length == 5) {
+        if (null != titlePath && "" != titlePath) {
             map.put("xiaozuowen", "true");
-            session.setAttribute("titleSrc", titleName);
+            session.setAttribute("titleSrc", titlePath);
         }
         //登录老师
         PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
@@ -177,39 +173,6 @@ public class TeacherController {
     }
 
     /**
-     * 打开word文档
-     *
-     * @param index 文章的编号
-     * @return
-     */
-    @GetMapping(value = "/word")
-    public ModelAndView showWord(HttpServletRequest request, Map<String, Object> map, Integer index, HttpSession session) {
-        PageOfficeCtrl poCtrl = new PageOfficeCtrl(request);
-        poCtrl.setServerPage("/poserver.zz");//设置服务页面
-        poCtrl.addCustomToolButton("保存", "Save", 1);//添加自定义保存按钮
-        poCtrl.setSaveFilePage("/save");//设置处理文件保存的请求方法
-        String docName = (String) session.getAttribute("docName");
-        String stuName = (String) session.getAttribute("stuName");
-        //打开word
-        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
-        poCtrl.webOpen("c:\\word\\" + stuName + "\\" + docName + "_" + index + ".doc", OpenModeType.docAdmin, student.getName());
-        map.put("pageoffice", poCtrl.getHtmlCode("PageOfficeCtrl1"));
-        ModelAndView mv = new ModelAndView("Word");
-        return mv;
-    }
-
-    /**
-     * word文档保存方法
-     */
-    @RequestMapping("/save")
-    public void saveFile(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        FileSaver fs = new FileSaver(request, response);
-        String stuName = (String) session.getAttribute("stuName");
-        fs.saveToFile("c:\\word\\" + stuName + "\\" + fs.getFileName());
-        fs.close();
-    }
-
-    /**
      * 修改文章的状态
      *
      * @param essay 要修改的文章
@@ -221,6 +184,7 @@ public class TeacherController {
         String docName = (String) session.getAttribute("docName");
         EssayDto essayDto = new EssayDto();
         essayDto.setEssayName(docName);
+        essayDto.setVersions(3);
         //该文章对应的学生,拿到学生的邮箱，给学生发送提醒邮件
         PlatformUser student = studentService.queryEssayList(essayDto).get(0).getStudent();
         //登录老师
@@ -254,7 +218,12 @@ public class TeacherController {
         List<Comment> addCommentList = JSON.parseArray(addComments, Comment.class);
         List<Comment> delCommentList = JSON.parseArray(delComments, Comment.class);
         String essayCode = (String) session.getAttribute("docName");
-        addCommentList.forEach(comment -> comment.setEssayCode(essayCode));
+        //登录老师
+        PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
+        addCommentList.forEach(comment -> {
+            comment.setEssayCode(essayCode);
+            comment.setTeacher(teacher);
+        });
         Essay essay = new Essay();
         essay.setEssayContent(content);
         essay.setEssayNumber(index);

@@ -9,18 +9,12 @@ import com.test.util.CodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
-import org.springframework.util.ResourceUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,8 +27,60 @@ public class PlatformUserController {
     @Autowired
     private PlatformUserService userService;
 
+    @Autowired
+    private StudentService studentService;
+
     //一页的默认大小
     private static final Integer NUMS = 10;
+
+    /**
+     * 去到登录页面
+     *
+     * @return
+     */
+    @GetMapping("/login")
+    public ModelAndView login() {
+        return new ModelAndView("Login");
+    }
+
+    /**
+     * 根据角色跳转
+     *
+     * @param phone    电话
+     * @param password 密码
+     * @return
+     */
+    @PostMapping("/login")
+    public ModelAndView login(String phone, String password, HttpSession session,
+                              Map<String, Object> map, HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView("redirect:/stuIndex");
+        if (!CodeUtil.checkVerifyCode(request)) {
+            map.put("msg", "验证码错误");
+            modelAndView.setViewName("Login");
+        } else {
+            PlatformUser student = studentService.queryByPhone(phone);
+            if (Objects.isNull(student) || !student.getPassword().equals(DigestUtils.md5DigestAsHex(password.getBytes()))) {
+                map.put("msg", "用户名或密码错误");
+                modelAndView.setViewName("Login");
+                return modelAndView;
+            }
+            session.setAttribute("loginUser", student);
+            switch (student.getRole()) {
+                case 1:
+                    break;
+                case 2:
+                case 3:
+                    modelAndView.setViewName("redirect:/choose");
+                    break;
+                case 0:
+                    modelAndView.setViewName("redirect:/users");
+                    break;
+                default:
+                    modelAndView.setViewName("Login");
+            }
+        }
+        return modelAndView;
+    }
 
     @GetMapping("/users")
     public String user(Map<String, Object> map, Integer pages, HttpSession session) {

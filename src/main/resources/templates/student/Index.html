@@ -24,7 +24,6 @@
     </thead>
     <tbody>
     <tr th:each="essay,loopStatus : ${essays}">
-        <!--/*@thymesVar id="essay" type="com.test.domain.Essay"*/-->
         <td th:text="${loopStatus.count}"></td>
         <td th:text="${essay.titleName}"></td>
         <td th:switch="${essay.status}">
@@ -34,12 +33,12 @@
         </td>
         <td th:text="${essay.versions}"></td>
         <td>
-            <!--th:onclick="updateEssay([[${essay.name}]],[[${essay.student.name}]],[[${essay.versions}]])"-->
-            <a type="button" class="btn btn-info btn-sm"
+            <a th:if="${essay.status==3}" type="button" class="btn btn-info btn-sm"
                 th:href="@{/stucheck(essayName=${essay.name},stuName=${essay.student.name},versions=${essay.versions})}"
                     >
                 查看
             </a>
+            <p th:if="${essay.status!=3}" style="color: red">处理中...</p>
         </td>
     </tr>
     </tbody>

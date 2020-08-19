@@ -59,12 +59,14 @@ function initComments() {
         type: 'get',
         data: {index:essayNumber},
         success: function (data) {
-            i = data[data.length-1].spanId;
-            for (let i = 0;i<data.length;i++){
-                let spanId = data[i].spanId;
-                $("#pigai"+spanId).on("click", function () {
-                    createTooltip(spanId, data[i].comment,data[i].teacher.name);
-                });
+            if (data.length !== 0){
+                i = data[data.length-1].spanId;
+                for (let j = 0;j<data.length;j++){
+                    let spanId = data[j].spanId;
+                    $("#pigai"+spanId).on("click", function () {
+                        createTooltip(spanId, data[j].comment,data[j].teacher.name);
+                    });
+                }
             }
         }
     });
@@ -192,9 +194,7 @@ function correctDone(index) {
         data: {index: index, content: text,
             addComments: JSON.stringify(addComments),delComments: JSON.stringify(delComments)},
         success: function (data) {
-            if(data=="success"){
-                window.history.back();
-            }
+            window.history.go(-1);
         }
     });
 }

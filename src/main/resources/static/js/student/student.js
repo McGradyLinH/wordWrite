@@ -22,13 +22,15 @@ $(document).ready(function () {
             $("#writeArea").css('display', 'none');
         }
     });
-    $("#myFile1").change(function () {
-        //创建blob对象，浏览器将文件放入内存中，并生成标识
-        var img_src = URL.createObjectURL($(this)[0].files[0]);
-        //给img标检的src赋值
-        document.getElementById("preview_img").src=img_src;
-    });
+
+    $("#controlWrite").click();
 });
+// $("#myFile1").change(function () {
+//     //创建blob对象，浏览器将文件放入内存中，并生成标识
+//     var img_src = URL.createObjectURL($(this)[0].files[0]);
+//     //给img标检的src赋值
+//     document.getElementById("preview_img").src=img_src;
+// });
 // function getTitles(){
 //     $.ajax({
 //         url: '/titles',

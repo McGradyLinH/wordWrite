@@ -1,22 +1,6 @@
 package com.test.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.test.domain.PlatformUser;
-import com.test.domain.Title;
-import com.test.util.AnalyticText;
-import com.test.util.Base64ToFile;
-import com.test.util.DocumentHandler;
-import com.test.util.WebOcr;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.*;
-
 public class Test {
 
     public static void main(String[] args) {
@@ -54,35 +38,35 @@ public class Test {
      *
      * @return
      */
-    @GetMapping("/stuUpload")
-    public ModelAndView imagerotate(Map<String, Object> map) {
-        return new ModelAndView("student/ImageRotate");
-    }
-
-    /**
-     * 上传文章并解析
-     *
-     * @param imageString 图片的base64码
-     * @param session
-     * @return
-     */
-    @PostMapping("/uploadEssay")
-    public String uploadEssay(HttpSession session, String imageString, Title title) {
-        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
-        String fileName = UUID.randomUUID().toString().replaceAll("-", "") + ".jpg";
-        String filePath = "c:/word/uploadImage/" + student.getName() + "/";
-        //保存图片
-        Base64ToFile.base64ToFile(imageString, fileName, filePath);
-        //解析文字
-        try {
-            String jsonString = WebOcr.readFile(filePath + fileName);
-            String content = AnalyticText.analyticText(jsonString);
-//            saveWrite(content, session, title);
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-        return "success";
-    }
+//    @GetMapping("/stuUpload")
+//    public ModelAndView imagerotate(Map<String, Object> map) {
+//        return new ModelAndView("student/ImageRotate");
+//    }
+//
+//    /**
+//     * 上传文章并解析
+//     *
+//     * @param imageString 图片的base64码
+//     * @param session
+//     * @return
+//     */
+//    @PostMapping("/uploadEssay")
+//    public String uploadEssay(HttpSession session, String imageString, Title title) {
+//        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+//        String fileName = UUID.randomUUID().toString().replaceAll("-", "") + ".jpg";
+//        String filePath = "c:/word/uploadImage/" + student.getName() + "/";
+//        //保存图片
+//        Base64ToFile.base64ToFile(imageString, fileName, filePath);
+//        //解析文字
+//        try {
+//            String jsonString = WebOcr.readFile(filePath + fileName);
+//            String content = AnalyticText.analyticText(jsonString);
+////            saveWrite(content, session, title);
+//        } catch (IOException | ParseException e) {
+//            e.printStackTrace();
+//        }
+//        return "success";
+//    }
 
     //下面两个是保留方法
 //    @GetMapping("/toWrite")
@@ -142,6 +126,107 @@ public class Test {
 //                fs.saveToFile(fileName);
 //            }
 //        }
+//        fs.close();
+//    }
+
+    //    @PostMapping("/saveWrite")
+//    public ModelAndView saveWrite(String content, HttpSession session, String titleName,
+//                                  MultipartFile titleImage, Integer teacherId) {
+//        try {
+//            PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+//            //减掉学生的批改数
+//            int i1 = studentService.decrementSurplus(student);
+//            if (i1 == 0) {
+//                return new ModelAndView("redirect:/login");
+//            }
+//            content = content.replaceAll("(\r\n|\n)", "<w:br/>");
+//            content = content.replaceAll(" ","&#160;");
+//            content = content.replaceAll("\t","&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;");
+//            System.err.println(content);
+//            //传入word文档的值
+//            Map<String, Object> map = new HashMap<>(3);
+//            map.put("content", content);
+//            map.put("img", "");
+//            map.put("title", "");
+//            String ftl = "write.ftl";
+//            Essay essay = new Essay();
+//            essay.setTitleName("小作文，无描述");
+//            if (!"".equals(titleName)) {
+//                map.put("title", titleName);
+//                essay.setTitleName(titleName);
+//            }
+//            if (!titleImage.isEmpty()) {
+//                ftl = "upload.ftl";
+//                //上传图片的base64
+//                String base64 = Base64.getEncoder().encodeToString(titleImage.getBytes());
+//                map.put("image", base64);
+//            }
+//            String name = UUID.randomUUID().toString().replace("-", "");
+//            String desSource = "c:/word/" + student.getName();
+//            File desFile = new File(desSource);
+//            if (!desFile.exists()) {
+//                desFile.mkdirs();
+//            }
+//            desSource += "/write.doc";
+//            desFile = new File(desSource);
+//            //创建word文档
+//            DocumentHandler.createDoc(map, desSource, ftl);
+//            File file;
+//            for (int i = 1; i <= 4; i++) {
+//                //要保存的路径
+//                file = new File("c:\\word\\" + student.getName() + "\\" + name + "_" + i + ".doc");
+//                try {
+//                    Files.copy(desFile.toPath(), file.toPath());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            essay.setName(name);
+//            essay.setStudent(student);
+//            PlatformUser enTeacher = new PlatformUser(teacherId);
+//            essay.setEnTeacher(enTeacher);
+//            //保存文件到数据库
+//            studentService.insertEssay(essay);
+//            //更改登录用户session中的文章数
+//            student.setSurplus(student.getSurplus() - 1);
+//            session.setAttribute("loginUser", student);
+//        } catch (RuntimeException | IOException e) {
+//            e.printStackTrace();
+//        }
+//        return new ModelAndView("redirect:/stuIndex");
+//    }
+
+
+    /**
+     * 打开word文档
+     *
+     * @param index 文章的编号
+     * @return
+     */
+//    @GetMapping(value = "/word")
+//    public ModelAndView showWord(HttpServletRequest request, Map<String, Object> map, Integer index, HttpSession session) {
+//        PageOfficeCtrl poCtrl = new PageOfficeCtrl(request);
+//        poCtrl.setServerPage("/poserver.zz");//设置服务页面
+//        poCtrl.addCustomToolButton("保存", "Save", 1);//添加自定义保存按钮
+//        poCtrl.setSaveFilePage("/save");//设置处理文件保存的请求方法
+//        String docName = (String) session.getAttribute("docName");
+//        String stuName = (String) session.getAttribute("stuName");
+//        //打开word
+//        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+//        poCtrl.webOpen("c:\\word\\" + stuName + "\\" + docName + "_" + index + ".doc", OpenModeType.docAdmin, student.getName());
+//        map.put("pageoffice", poCtrl.getHtmlCode("PageOfficeCtrl1"));
+//        ModelAndView mv = new ModelAndView("Word");
+//        return mv;
+//    }
+//
+//    /**
+//     * word文档保存方法
+//     */
+//    @RequestMapping("/save")
+//    public void saveFile(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+//        FileSaver fs = new FileSaver(request, response);
+//        String stuName = (String) session.getAttribute("stuName");
+//        fs.saveToFile("c:\\word\\" + stuName + "\\" + fs.getFileName());
 //        fs.close();
 //    }
 }

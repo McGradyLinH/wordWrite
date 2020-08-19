@@ -21,8 +21,8 @@
     </select>
 
     <insert id="insertComment" parameterType="comment">
-        insert into comments (essayCode,spanId,comment,essayNumber) values
-         (#{essayCode},#{spanId},#{comment},#{essayNumber})
+        insert into comments (essayCode,spanId,comment,essayNumber,teacherId) values
+         (#{essayCode},#{spanId},#{comment},#{essayNumber},#{teacher.id})
     </insert>
 
     <delete id="deleteComment" parameterType="comment">
@@ -30,9 +30,10 @@
     </delete>
 
     <insert id="insertBatchComment" parameterType="comment">
-        insert into comments (essayCode,spanId,comment,essayNumber) values
+        insert into comments (essayCode,spanId,comment,essayNumber,teacherId) values
          <foreach collection="list" separator="," item="comment">
-             (#{comment.essayCode},#{comment.spanId},#{comment.comment},#{comment.essayNumber})
+             (#{comment.essayCode},#{comment.spanId},#{comment.comment},
+                #{comment.essayNumber},#{comment.teacher.id})
          </foreach>
     </insert>
 

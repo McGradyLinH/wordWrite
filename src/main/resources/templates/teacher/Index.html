@@ -13,10 +13,10 @@
 <!--<a href="javascript:POBrowser.openWindowModeless('/word?index=2','width=1200px;height=800px;');">开始批改2 </a>-->
 <!--<a href="javascript:POBrowser.openWindowModeless('/word?index=3','width=1200px;height=800px;');">开始批改3 </a>-->
 <!--<a href="javascript:POBrowser.openWindowModeless('/word?index=4','width=1200px;height=800px;');">开始批改4 </a>-->
-<a th:href="@{/correct/1}" class="btn btn-primary">开始批改1</a>
-<a th:href="@{/correct/2}" class="btn btn-primary">开始批改2</a>
-<a th:href="@{/correct/3}" class="btn btn-primary">开始批改3</a>
-<a th:href="@{/correct/4}" class="btn btn-primary">开始批改4</a>
+<a th:href="@{/correct/1}" class="btn btn-primary">Task Achievement</a>
+<a th:href="@{/correct/2}" class="btn btn-primary">Coherence and Cohesion</a>
+<a th:href="@{/correct/3}" class="btn btn-primary">Grammatical Range and Accuracy</a>
+<a th:href="@{/correct/4}" class="btn btn-primary">Lexical Resource</a>
 <br/>
 <button onclick="pgdone()" style="margin-top: 6px;" class="btn-primary">批改完成</button>
 </body>
@@ -31,7 +31,7 @@
                     type: 'post',
                     data: {_method:'put'},
                     success: function (data) {
-                        window.location.reload();
+                        window.location.href="/choose";
                     }
                 });
             }

@@ -25,6 +25,8 @@ public class Essay {
     private Integer essayNumber;
     //1-小作文，2-大作文
     private Integer essayType;
+    //题目图片的路径
+    private String titlePath;
 
     public Integer getId() {
         return id;
@@ -128,5 +130,13 @@ public class Essay {
 
     public void setEssayType(Integer essayType) {
         this.essayType = essayType;
+    }
+
+    public String getTitlePath() {
+        return titlePath;
+    }
+
+    public void setTitlePath(String titlePath) {
+        this.titlePath = titlePath;
     }
 }

@@ -20,16 +20,16 @@
     </thead>
     <tbody>
     <tr th:each="essay,loopStatus : ${essays}">
-        <!--/*@thymesVar id="essay" type="com.test.domain.Essay"*/-->
         <td th:text="${loopStatus.count}"></td>
         <td th:text="${essay.student.name}"></td>
         <td th:text="${essay.titleName}"></td>
         <td>已完成</td>
         <td>
-            <button type="button" class="btn btn-info btn-sm"
-                    th:onclick="updateEssay([[${essay.name}]],[[${essay.student.name}]])">
-                批改
-            </button>
+            <a type="button" class="btn btn-info btn-sm"
+                    th:href="@{/stucheck(essayName=${essay.name},stuName=${essay.student.name},versions=${essay.versions})}"
+            >
+                查看
+            </a>
         </td>
     </tr>
     </tbody>
@@ -37,17 +37,4 @@
 <!--当无记录时显示-->
 <span style="margin-left: 45%;color: red;" th:if="${#lists.isEmpty(essays)}">暂无记录!</span>
 </body>
-<script>
-    function updateEssay(essayName, stuName) {
-        $.ajax({
-            url: '/index',
-            type: 'get',
-            data: {essayName: essayName, stuName: stuName},
-            dataType: 'html',
-            success: function (data) {
-                $("#changeBody").html(data);
-            }
-        })
-    }
-</script>
 </html>

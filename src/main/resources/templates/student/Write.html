@@ -7,7 +7,6 @@
     <script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
     <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
     <script type="text/javascript" th:src="@{js/fileinput/fileinput.min.js}"></script>
-    <!--     	<script type="text/javascript" src="pageoffice.js" id="po_js_main"></script>-->
     <style>
         #count {
             width: 400px;
@@ -21,10 +20,8 @@
 <h1 th:inline="text">学生写作</h1>
 <button id="controlWrite" class="btn-primary btn-lg">开始写作</button>
 <br>
-<!--<h3 style="margin-left: 45%" id="selectTitle"></h3>-->
 <form th:action="@{/saveWrite}" role="form" enctype="multipart/form-data" method="post" id="writeArea"
       style="display: none;">
-    <!--    <input type="hidden" id="titleCode" name="titleCode"/>-->
     <div id="count" style="margin-bottom: 8px;margin-top: 8px;">
         用时:<span id="id_H">00</span>小时
         <span id="id_M">00</span>分
@@ -48,7 +45,7 @@
     <textarea name="content" id="inputContent" onkeyup="wordStatic(this)" class="form-control" rows="12" wrap="hard">
     </textarea>
     <p>选择教师批改：</p>
-    <div class="card" th:each="teacher,loopStatus : ${teachers}" style="width: 10rem;float: left;">
+    <div class="card" th:each="teacher,loopStatus : ${teachers}" style="width: 10rem;float: left;margin-bottom: 8px;">
         <p th:text="${teacher.name}"></p>
         <img th:src="${(teacher.avatar != null && !#strings.isEmpty(teacher.avatar)) ? '/images/avatar/'+teacher.avatar : '/images/avatar/avatar.png'}"
              style="width: 155px;height: 92px;" class="card-img-top" alt="avatar">

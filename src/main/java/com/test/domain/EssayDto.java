@@ -10,6 +10,7 @@ public class EssayDto {
     private PlatformUser CNTeacher;
     //第几篇文章1，2，3，4
     private Integer essayNumber;
+    private Integer versions;
 
     public Integer getStuId() {
         return stuId;
@@ -58,5 +59,13 @@ public class EssayDto {
 
     public void setEssayNumber(Integer essayNumber) {
         this.essayNumber = essayNumber;
+    }
+
+    public Integer getVersions() {
+        return versions;
+    }
+
+    public void setVersions(Integer versions) {
+        this.versions = versions;
     }
 }

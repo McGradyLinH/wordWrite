@@ -22,6 +22,7 @@
         <result property="versions" column="versions" jdbcType="INTEGER"/>
         <result property="essayNumber" column="essayNumber" jdbcType="INTEGER"/>
         <result property="essayType" column="essayType" jdbcType="INTEGER"/>
+        <result property="titlePath" column="titlePath" jdbcType="VARCHAR"/>
         <collection property="student" resultMap="student">
         </collection>
     </resultMap>
@@ -35,7 +36,10 @@
     <select id="queryEssayList" resultMap="essay" parameterType="essayDto">
         select * from essay e left join platformUser t on e.stuid=t.id
         <where>
-            e.versions != 3
+            1 = 1
+            <if test="versions != 3">
+                and e.versions != 3
+            </if>
             <if test="status != null and status != ''">
                 and e.status = #{status}
             </if>
@@ -66,6 +70,9 @@
             </if>
             <if test="CNTeacherid != null and CNTeacherid != ''">
                 and e.CNTeacher = #{CNTeacherid}
+            </if>
+            <if test="stuId != null and stuId != ''">
+                and t.id = #{stuId}
             </if>
         </where>
     </select>
