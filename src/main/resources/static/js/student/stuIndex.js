@@ -22,11 +22,17 @@ function checkAgain(id) {
             $.ajax({
                 url: '/stuessay',
                 type: 'post',
-                data: {_method: 'put', versions: id},
+                data: {_method: 'put', versions: id,essayContent: $("#content").val()},
                 success: function (data) {
                     window.location.href="/stuIndex"
                 }
             });
         }
     });
+}
+
+function openText() {
+    $("#contentLabel").show();
+    $("#check1").show();
+    $("#check2").hide();
 }

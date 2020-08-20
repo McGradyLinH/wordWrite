@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -166,6 +167,13 @@ public class StudentController {
     @PutMapping("/stuessay")
     public String stuessay(HttpSession session, Essay essay) {
         String docName = session.getAttribute("docName").toString();
+        String content = essay.getEssayContent();
+        if (StringUtils.isEmpty(content)) {
+            content = content.replaceAll("(\r\n|\n)", "<br/>");
+            content = content.replaceAll(" ", "&nbsp;");
+            content = content.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+            essay.setEssayContent(content);
+        }
         essay.setStatus(essay.getVersions());
         essay.setName(docName);
         int i = studentService.updateEssay(essay);

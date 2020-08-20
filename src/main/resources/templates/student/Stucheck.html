@@ -19,7 +19,14 @@
 <a th:href="@{/check/3}" class="btn btn-primary">Grammatical Range and Accuracy</a>
 <a th:href="@{/check/4}" class="btn btn-primary">Lexical Resource</a>
 <br><br>
-<button onclick="checkAgain(2)" th:if="${session.versions==1}" class="btn-primary">再次修改</button>
+<label id="contentLabel" style="width: 100%;display: none;" for="content" th:if="${session.versions==1}">
+<textarea id="content" class="form-control" rows="12" style="width: 100%" wrap="hard">
+
+</textarea>
+</label>
+<br>
+<button onclick="checkAgain(2)" id="check1" th:if="${session.versions==1}" style="display: none;" class="btn-primary">二次批改</button>
+<button onclick="openText()" id="check2" th:if="${session.versions==1}" class="btn-primary">二次编辑</button>
 <button onclick="checkAgain(3)" th:if="${session.versions!=3}" class="btn-primary">批改完成</button>
 </body>
 <script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
