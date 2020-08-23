@@ -5,12 +5,10 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +25,6 @@ import com.test.domain.UserDto;
 import com.test.service.EmailService;
 import com.test.service.PlatformUserService;
 import com.test.service.StudentService;
-import com.test.util.CodeUtil;
 
 @RestController
 public class StudentController {
@@ -120,7 +117,7 @@ public class StudentController {
             if (!file.exists()) {
                 file.mkdirs();
             }
-            String pathName = filePath + filename + "." + titleImage.getOriginalFilename().split("\\.")[1];
+            String pathName = filePath + filename + "." + Objects.requireNonNull(titleImage.getOriginalFilename()).split("\\.")[1];
             file = new File(pathName);
             try {
                 titleImage.transferTo(file);
@@ -131,9 +128,8 @@ public class StudentController {
         }
         String essayCode = UUID.randomUUID().toString().replaceAll("-", "");
         essay.setName(essayCode);
-        content = content.replaceAll("(\r\n|\n)", "<br/>");
-        content = content.replaceAll(" ", "&nbsp;");
-        content = content.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        //格式化文章内容
+        content = changeContent(content);
         essay.setEssayContent(content);
         PlatformUser enTeacher = userService.queryUserById(teacherId);
         essay.setEnTeacher(enTeacher);
@@ -168,10 +164,8 @@ public class StudentController {
     public String stuessay(HttpSession session, Essay essay) {
         String docName = session.getAttribute("docName").toString();
         String content = essay.getEssayContent();
-        if (StringUtils.isEmpty(content)) {
-            content = content.replaceAll("(\r\n|\n)", "<br/>");
-            content = content.replaceAll(" ", "&nbsp;");
-            content = content.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        if (!StringUtils.isEmpty(content)) {
+            content = changeContent(content);
             essay.setEssayContent(content);
         }
         essay.setStatus(essay.getVersions());
@@ -209,5 +203,12 @@ public class StudentController {
         }
         map.put("index", index);
         return modelAndView;
+    }
+
+    private String changeContent(String content){
+        content = content.replaceAll("(\r\n|\n)", "<br/>");
+        content = content.replaceAll(" ", "&nbsp;");
+        content = content.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        return content;
     }
 }
