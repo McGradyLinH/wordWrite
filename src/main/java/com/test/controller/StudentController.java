@@ -165,8 +165,7 @@ public class StudentController {
         String docName = session.getAttribute("docName").toString();
         String content = essay.getEssayContent();
         if (!StringUtils.isEmpty(content)) {
-            content = changeContent(content);
-            essay.setEssayContent(content);
+            essay.setEssayContent(changeContent(content));
         }
         essay.setStatus(essay.getVersions());
         essay.setName(docName);

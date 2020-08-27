@@ -17,7 +17,7 @@ public class MyInterceptor implements HandlerInterceptor {
         if (loginName instanceof PlatformUser){
             return true;
         }
-        response.sendRedirect("/login");
+        response.sendRedirect("/");
         return false;
     }
 
