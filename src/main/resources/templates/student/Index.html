@@ -8,6 +8,7 @@
     <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
 </head>
 <body id="changeBody">
+<div th:replace="common/Common::header"></div>
 <a th:href="@{/stuWrite}" th:if="${session.loginUser.surplus != 0}" class="btn btn-primary">写作</a>
 <label th:text="'剩余批改数:'+${session.loginUser.surplus}"></label>
 <a th:href="@{/stuUpload}" th:if="false" class="btn btn-primary">上传</a>

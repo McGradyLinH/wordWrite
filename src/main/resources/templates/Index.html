@@ -6,13 +6,210 @@
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
-<a th:href="@{/login}" class="btn btn-primary">login</a>
-<div class="accordion" id="accordionExample">
+<!-- header -->
+<div th:replace="common/Common::header"></div>
+<!-- 轮播图 -->
+<div id="carouselExampleCaptions" class="carousel slide text-center" data-ride="carousel" style="width: 1137px;margin: auto;">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img th:src="@{/images/1.jpg}" class="d-block w-100" alt="..." style="height: 18.75rem;">
+            <div class="carousel-caption d-none d-md-block">
+                <h5 style="color: rgb(172, 155, 159);">First slide label</h5>
+                <p style="color: rgb(172, 155, 159);">Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img th:src="@{/images/1.jpg}" class="d-block w-100" alt="..." style="height: 18.75rem;">
+            <div class="carousel-caption d-none d-md-block">
+                <h5 style="color: rgb(172, 155, 159);">Second slide label</h5>
+                <p style="color: rgb(172, 155, 159);">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+<br />
+<!-- 采用考官推荐的全新的批改方式 -->
+<div class="text-center">
+    <h2 style="font-size: 2rem;color: #000;">采用考官推荐的全新的批改方式</h2>
+    <p>系统会自动把你的作文copy四份，外教将会在第一份作文中仅对achievement进行检查和评估，第二份作文仅对coherence and</p>
+    <p>cohesion进行检查和评估，第三和第四份分别是词汇和语法。相对于传统的批改方式，这种方式具有3个明显的优势：</p>
+</div>
+<!-- 3个优势 -->
+<div style="width: 1137px;margin: auto;">
+    <div class="card-deck">
+        <div class="card">
+            <img th:src="@{/images/1200633-150x150.png}" height="150" style="width: 9.375rem;margin: auto;" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title text-center">更深刻理解自己的问题</h5>
+                <p class="card-text">“这种批改方式让我更加清晰的知道自己的问题在哪里，这也让我消化反馈的过程变得很轻松，而不是之前无从下手的感觉。”</p>
+            </div>
+        </div>
+        <div class="card">
+            <img th:src="@{/images/1153813-460x306.png}" height="150" style="width: 9.375rem;margin: auto;" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title text-center">更好的理解评分标准</h5>
+                <p class="card-text">“这让我对雅思写作的四个评分标准的理解更加清楚和深刻”</p>
+            </div>
+        </div>
+        <div class="card">
+            <img th:src="@{/images/1229977-150x150.png}" height="150" style="width: 9.375rem;margin: auto;" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title text-center">更利于学生的提高</h5>
+                <p class="card-text">“这更利于我对自己的问题进行针对性的提高。把所有的批改都集中在一份作文中的方式，密密麻麻的批改痕迹让我很难明白怎样具体的进行提高。”</p>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<!-- 严控批改质量 -->
+<div class="text-center">
+    <h2 style="font-size: 2rem;color: #000;">严控批改质量</h2>
+    <p>30余项检查条目，你需要的不只是改改单词和语法</p>
+</div>
+<!-- 四个要点 -->
+<div style="width: 1137px;margin: auto;">
+    <div class="row row-cols-1 row-cols-md-2">
+        <div class="col mb-4">
+            <div class="card">
+                <div class="card-body" style="background-color: #cee8f2 !important;">
+                    <h5 class="card-title text-center">Task response</h5>
+                    <p class="card-text">Does the student have a clear position (i.e. give a clear answer to the question)?
+                        Check if all questions are answered
+                        Check if the number of words in 2 or 3 body paragraphs is approximate
+                        Is the topic sentence effective, meaningful and relevant?
+                        Does every question fully develop?
+                        Whether the explanation is sufficient and reasonable?
+                        Just repeating ideas without effective explanations and extensions?
+                        Is the example reasonable and make sense?
+                        Does the example support the topic sentence well?
+                        Is every sentence on topic? Check if there are any vocabulary or sentences that off the topic
+                        …</p>
+                </div>
+            </div>
+        </div>
+        <div class="col mb-4">
+            <div class="card">
+                <div class="card-body" style="background-color: #e2f3c9 !important;height: 294px;">
+                    <h5 class="card-title text-center">Coherence and Cohesion</h5>
+                    <p class="card-text">Is there a clear central topic in each paragraph?
+                        Find out all the conjunctions and pronouns in the text, and check whether they are used reasonably and
+                        correctly.
+                        Is there a sense of overall organization and progression? How about progression within each main paragraph?
+                        Whether the logic between sentences is smooth and accurate and whether there are logical errors, unclear
+                        logical progression and other issues?
+                        …</p>
+                </div>
+            </div>
+        </div>
+        <div class="col mb-4">
+            <div class="card">
+                <div class="card-body" style="background-color: #d3cadf !important;height: 244px;">
+                    <h5 class="card-title text-center">Lexical Resource</h5>
+                    <p class="card-text">Is every word used correctly and appropriately?
+                        Check if enough topic words are used
+                        Check the text and find out words that students repeat many times but can easily be replaced.…</p>
+                </div>
+            </div>
+        </div>
+        <div class="col mb-4">
+            <div class="card">
+                <div class="card-body" style="background-color: #f6e9bc !important;">
+                    <h5 class="card-title text-center">Grammar</h5>
+                    <p class="card-text">Go through the essay sentence by sentence and find out all the free-error sentences
+                        Go through the essay sentence by sentence and find out all the easy-to-avoid grammatical errors. Such as:
+                        articles, singular and plural, spelling mistakes, case, possessive, third person singular, etc.
+                        Go through the essay sentence by sentence and find out all the general grammatical errors.
+                        Find out words or sentences that are syntactically correct but can be improved.
+                        …</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<!-- 专业负责的外教 -->
+<div class="text-center">
+    <h2 style="font-size: 2rem;color: #000;">专业负责的外教</h2>
+    <p>不是随便一个母语者都可以做好雅思作文批改</p>
+</div>
+<!-- 外教简介 -->
+<div style="width: 1137px;margin: auto;background-color: #f4eee2 !important;">
+    <div class="card mb-3" style="max-width: 540px;float: left;">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img th:src="@{/images/teacher.jpg}" class="card-img" alt="teacher">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">Garima. S</h5>
+                    <h5 class="card-title">Adelaide, Australia</h5>
+                    <p class="card-text">I have been correcting IELTS writings for last 3 years. Be aware of the standards required
+                        for evaluating IELTS essays, reports and letters.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p class="text-center" style="height: 14.375rem;">
+        硕士学位，除了有过3年批改雅思作文的经历外，还拥有9年的文字编辑和校对工作经验，为全球许多著名的出版商工作过，包括剑桥大学出版社、牛津大学出版社、斯普林格出版社等。文字功底扎实，热情且负责的对待每一篇作文，深受学生的喜爱。
+    </p>
+</div>
+<br />
+<!-- 学生们的评价 -->
+<div class="text-center">
+    <h2 style="font-size: 2rem;color: #000;">学生们的评价</h2>
+</div>
+<!-- 三个评价 -->
+<div style="width: 1137px;margin: auto;">
+    <div class="row row-cols-1 row-cols-md-3">
+        <div class="col mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Chris Cheng</h5>
+                    <p class="card-text">外教的批改很仔细用心，指出了我不少的错误，尤其是逻辑方面，给了我很多有用的反馈。</p>
+                </div>
+            </div>
+        </div>
+        <div class="col mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Andrew</h5>
+                    <p class="card-text">虽然比一般的批改贵一些，但是很值得，一分钱一分货。不管是批改的质量还是对我的实际帮助都超出了我的预期。已经安利给了几个同学。</p>
+                </div>
+            </div>
+        </div>
+        <div class="col mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Yang Zi</h5>
+                    <p class="card-text">特具一格的批改方式真的很棒，外教也很专业，比绝大部分的批改都靠谱，希望你们继续保持下去。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<!-- FAQ -->
+<div class="text-center">
+    <h2 style="font-size: 2rem;color: #000;">FAQ</h2>
+</div>
+<div class="accordion" id="accordionExample" style="width: 1137px;margin: auto;">
     <div class="card">
         <div class="card-header" id="headingOne">
             <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
-                        data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne"
+                        aria-expanded="true" aria-controls="collapseOne">
                     改一篇多少钱？大小作文都是一样的吗？
                 </button>
             </h2>
@@ -27,23 +224,23 @@
     <div class="card">
         <div class="card-header" id="headingTwo">
             <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
-                        data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo"
+                        aria-expanded="false" aria-controls="collapseTwo">
                     微信公众号是多少？
                 </button>
             </h2>
         </div>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
             <div class="card-body">
-                <img width="1000" height="200" th:src="@{/images/answer-310x89.jpg}" alt="qr"/>
+                <img width="1000" height="200" th:src="@{/images/answer-310x89.jpg}" alt="qr" />
             </div>
         </div>
     </div>
     <div class="card">
         <div class="card-header" id="headingThree">
             <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
-                        data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree"
+                        aria-expanded="false" aria-controls="collapseThree">
                     改一篇多少钱？大小作文都是一样的吗？
                 </button>
             </h2>
@@ -57,8 +254,8 @@
     <div class="card">
         <div class="card-header" id="headingFour">
             <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
-                        data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseFour"
+                        aria-expanded="false" aria-controls="collapseFour">
                     批改的价格有优惠吗？
                 </button>
             </h2>
@@ -72,8 +269,8 @@
     <div class="card">
         <div class="card-header" id="headingFive">
             <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
-                        data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseFive"
+                        aria-expanded="false" aria-controls="collapseFive">
                     如果题库里没有我要写的题目怎么办？
                 </button>
             </h2>
@@ -87,8 +284,8 @@
     <div class="card">
         <div class="card-header" id="headingSix">
             <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
-                        data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseSix"
+                        aria-expanded="false" aria-controls="collapseSix">
                     同一篇作文的复改还需要收费吗？
                 </button>
             </h2>
@@ -102,8 +299,8 @@
     <div class="card">
         <div class="card-header" id="headingSeven">
             <h2 class="mb-0">
-                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
-                        data-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseSeven"
+                        aria-expanded="false" aria-controls="collapseSeven">
                     批改的流程是什么样的？
                 </button>
             </h2>
@@ -118,5 +315,4 @@
 </body>
 <script th:src="@{/js/jquery-1.9.1.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
-<script th:src="@{/js/popper.min.js}"></script>
 </html>
