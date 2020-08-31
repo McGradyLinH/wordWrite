@@ -45,6 +45,22 @@ public class StudentController {
     @GetMapping("/stuIndex")
     public ModelAndView stuIndex(HttpSession session, Map<String, Object> map) {
         //登录学生
+//        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+//        Integer studentId = student.getId();
+//        EssayDto essayDto = new EssayDto();
+//        essayDto.setStuId(studentId);
+//        essayDto.setVersions(3);
+//        List<Essay> list = studentService.queryEssayList(essayDto);
+//        //根据essayCode去重
+//        list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
+//                () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
+//        map.put("essays", list);
+        return new ModelAndView("student/Index");
+    }
+
+    @GetMapping("/stuessays")
+    public List<Essay> stuessays(HttpSession session){
+        //登录学生
         PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
         Integer studentId = student.getId();
         EssayDto essayDto = new EssayDto();
@@ -54,8 +70,7 @@ public class StudentController {
         //根据essayCode去重
         list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
                 () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
-        map.put("essays", list);
-        return new ModelAndView("student/Index");
+        return list;
     }
 
     /**

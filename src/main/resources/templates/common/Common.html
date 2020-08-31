@@ -6,12 +6,18 @@
 </head>
 <body>
 <!--公共头部-->
-<div style="width: 1137px;margin: auto;" th:fragment="header">
+<div style="width: 1137px;margin: auto auto 6px;" th:fragment="header">
     <a th:href="@{/}">
         <img th:src="@{/images/logo.jpg}" height="57" width="137" />
     </a>
     <a style="float: right;margin-top: 0.9375rem;" th:if="${#strings.isEmpty(session.loginUser)}" th:href="@{/login}">login</a>
-    <p th:if="${!#strings.isEmpty(session.loginUser)}">[[${session.loginUser.name}]]</p>
+    <p style="float: right;margin-top: 0.9375rem;" th:if="${!#strings.isEmpty(session.loginUser)}" th:switch="${session.loginUser.role}">
+        <a th:case="0" th:href="@{/users}">个人主页</a>
+        <a th:case="1" th:href="@{/stuIndex}">个人主页</a>
+        <a th:case="2" th:href="@{/choose}">个人主页</a>
+        <a th:case="3" th:href="@{/choose}">个人主页</a>
+    </p>
+    <p style="float: right;margin-top: 0.9375rem;" th:if="${!#strings.isEmpty(session.loginUser)}">[[${session.loginUser.name}]]</p>
 </div>
 <!--分页-->
 <div class="panelBar" th:fragment="pagination">
