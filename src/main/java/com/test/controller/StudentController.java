@@ -59,7 +59,8 @@ public class StudentController {
     }
 
     @GetMapping("/stuessays")
-    public List<Essay> stuessays(HttpSession session){
+    public List<Essay> stuessays(HttpSession session, int pageNumber, int pageSize) {
+        System.out.println(pageNumber + "=======" + pageSize);
         //登录学生
         PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
         Integer studentId = student.getId();
@@ -219,7 +220,7 @@ public class StudentController {
         return modelAndView;
     }
 
-    private String changeContent(String content){
+    private String changeContent(String content) {
         content = content.replaceAll("(\r\n|\n)", "<br/>");
         content = content.replaceAll(" ", "&nbsp;");
         content = content.replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
