@@ -5,7 +5,7 @@ $(function () {
 function initTable() {
 //初始化表格
     $('#data').bootstrapTable({
-        url: "/stuessays",
+        url: "/getUsers",
         method: 'GET',                      //请求方式（*）
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
         pagination: true,                   //是否显示分页（*）
@@ -21,33 +21,38 @@ function initTable() {
                 return index + 1;
             }
         }, {
-            field: 'titleName',
-            title: '作文名',
+            field: 'name',
+            title: 'name',
             align: 'center'
         }, {
-            field: 'status',
-            title: '状态',
+            field: 'phone',
+            title: 'phone',
+            align: 'center'
+        }, {
+            field: 'email',
+            title: 'email',
+            align: 'center'
+        }, {
+            field: 'role',
+            title: 'role',
             align: 'center',
             formatter: function (value, row, index) {
-                if (value === 1) {
-                    return "外教修改";
-                } else if (value === 2) {
-                    return "中教修改";
+                if (value === 0) {
+                    return "管理员";
+                } else if (value === 1) {
+                    return "学生";
+                }else if (value === 2) {
+                    return "外教";
                 } else {
-                    return "已完成";
+                    return "中教";
                 }
             }
         }, {
-            field: 'versions',
-            title: '版本',
-            align: 'center'
-        }, {
-            field: 'create_time',
+            field: '',
             title: '操作',
             align: 'center',
             formatter: function (value, row, index) {
-                let a = '<a href="/stucheck?essayName=' + row.name + '&stuName=' + row.student.name + '&versions=' + row.versions + '" class="btn btn-primary">查看</a>';
-                return a;
+                return '<a href="/user/' + row.id + '" class="btn btn-primary">修改</a>';
             }
         }]
     });
@@ -60,16 +65,3 @@ function queryParams(params) {
         pageIndex: params.pageNumber, //当前页面,默认是上面设置的1(pageNumber)
     }
 }
-
-function updateEssay(essayName, stuName, versions) {
-    $.ajax({
-        url: '/stucheck',
-        type: 'get',
-        data: {essayName: essayName, stuName: stuName, versions: versions},
-        dataType: 'html',
-        success: function (data) {
-            $("#changeBody").html(data);
-        }
-    })
-}
-

@@ -1,8 +1,8 @@
 let i = 0;
 let teacherName = $("#teacherName").val();
 let maxId = 0;
-let addComments = new Array();
-let delComments = new Array();
+let addComments = [];
+let delComments = [];
 $(function () {
     initComments();
     $("#content").mouseup(function (e) {

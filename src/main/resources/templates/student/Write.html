@@ -42,7 +42,7 @@
     <!--        <img src="" id="preview_img" width="300px" height="200px" alt="">-->
     <!--    </div>-->
     <label for="inputContent">写作文：</label>
-    <textarea name="content" id="inputContent" onkeyup="wordStatic(this)" class="form-control" rows="12" wrap="hard">
+    <textarea name="content" id="inputContent" style="width: 70%;" onkeyup="wordStatic(this)" class="form-control" rows="12" wrap="hard">
     </textarea>
     <p>选择教师批改：</p>
     <div class="card" th:each="teacher,loopStatus : ${teachers}" style="width: 10rem;float: left;margin-bottom: 8px;">

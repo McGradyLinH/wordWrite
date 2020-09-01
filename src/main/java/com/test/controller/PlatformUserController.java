@@ -11,10 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,9 +31,6 @@ public class PlatformUserController {
 
     @Autowired
     private StudentService studentService;
-
-    //一页的默认大小
-    private static final Integer NUMS = 10;
 
     /**
      * 去到登录页面
@@ -96,16 +95,20 @@ public class PlatformUserController {
                     return "redirect:/login";
             }
         }
-        if (Objects.isNull(pages)) {
-            pages = 1;
-        }
-        PageHelper.startPage(pages, NUMS);
+        return "background/PlatformUser";
+    }
+
+    @GetMapping("/getUsers")
+    @ResponseBody
+    public Map<String, Object> getUsers(int pageSize, int pageIndex) {
+        Map<String, Object> resultMap = new HashMap<>(2);
+        //开始分页
+        PageHelper.startPage(pageIndex, pageSize);
         List<PlatformUser> users = userService.queryUsers();
         PageInfo<PlatformUser> pageInfo = new PageInfo<>(users);
-
-        map.put("users", users);
-        map.put("pages", pageInfo);
-        return "background/PlatformUser";
+        resultMap.put("rows", users);
+        resultMap.put("total", pageInfo.getTotal());
+        return resultMap;
     }
 
     /**

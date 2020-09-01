@@ -5,7 +5,7 @@ $(function () {
 function initTable() {
 //初始化表格
     $('#data').bootstrapTable({
-        url: "/stuessays",
+        url: "/teacheressays",
         method: 'GET',                      //请求方式（*）
         cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
         pagination: true,                   //是否显示分页（*）
@@ -25,6 +25,13 @@ function initTable() {
             title: '作文名',
             align: 'center'
         }, {
+            field: 'student.name',
+            title: '学生姓名',
+            align: 'center',
+            formatter: function (value, row, index) {
+                return row.student.name;
+            }
+        }, {
             field: 'status',
             title: '状态',
             align: 'center',
@@ -38,15 +45,11 @@ function initTable() {
                 }
             }
         }, {
-            field: 'versions',
-            title: '版本',
-            align: 'center'
-        }, {
             field: 'create_time',
             title: '操作',
             align: 'center',
             formatter: function (value, row, index) {
-                let a = '<a href="/stucheck?essayName=' + row.name + '&stuName=' + row.student.name + '&versions=' + row.versions + '" class="btn btn-primary">查看</a>';
+                let a = '<a href="/index?essayName=' + row.name + '&stuName=' + row.student.name + '" class="btn btn-primary">批改</a>';
                 return a;
             }
         }]
@@ -60,16 +63,3 @@ function queryParams(params) {
         pageIndex: params.pageNumber, //当前页面,默认是上面设置的1(pageNumber)
     }
 }
-
-function updateEssay(essayName, stuName, versions) {
-    $.ajax({
-        url: '/stucheck',
-        type: 'get',
-        data: {essayName: essayName, stuName: stuName, versions: versions},
-        dataType: 'html',
-        success: function (data) {
-            $("#changeBody").html(data);
-        }
-    })
-}
-

@@ -50,7 +50,11 @@ public class TeacherController {
 
     @GetMapping("/choose")
     public ModelAndView choose(Map<String, Object> map, HttpSession session) {
-        ModelAndView modelAndView = new ModelAndView("teacher/Choose");
+        return new ModelAndView("teacher/Choose");
+    }
+
+    @GetMapping("/teacheressays")
+    public Map<String, Object> stuessays(HttpSession session, int pageSize, int pageIndex) {
         //登录老师
         PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
         Integer role = teacher.getRole();
@@ -61,12 +65,19 @@ public class TeacherController {
         } else {
             essayDto.setCNTeacher(teacher);
         }
-        List<Essay> list1 = studentService.queryEssayList(essayDto);
+        List<Essay> list = studentService.queryEssayList(essayDto);
         //根据essaycode去重
-        list1 = list1.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
+        list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
                 () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
-        map.put("essays", list1);
-        return modelAndView;
+        return getStringObjectMap(pageSize, pageIndex, list);
+    }
+
+    static Map<String, Object> getStringObjectMap(int pageSize, int pageIndex, List<Essay> list) {
+        List<Essay> result = list.stream().skip((pageIndex - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
+        Map<String, Object> resultMap = new HashMap<>(2);
+        resultMap.put("rows",result);
+        resultMap.put("total",result.size());
+        return resultMap;
     }
 
     @GetMapping("/choosedone")

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,23 +45,11 @@ public class StudentController {
      */
     @GetMapping("/stuIndex")
     public ModelAndView stuIndex(HttpSession session, Map<String, Object> map) {
-        //登录学生
-//        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
-//        Integer studentId = student.getId();
-//        EssayDto essayDto = new EssayDto();
-//        essayDto.setStuId(studentId);
-//        essayDto.setVersions(3);
-//        List<Essay> list = studentService.queryEssayList(essayDto);
-//        //根据essayCode去重
-//        list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
-//                () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
-//        map.put("essays", list);
         return new ModelAndView("student/Index");
     }
 
     @GetMapping("/stuessays")
-    public List<Essay> stuessays(HttpSession session, int pageNumber, int pageSize) {
-        System.out.println(pageNumber + "=======" + pageSize);
+    public Map<String, Object> stuessays(HttpSession session, int pageSize, int pageIndex) {
         //登录学生
         PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
         Integer studentId = student.getId();
@@ -71,7 +60,7 @@ public class StudentController {
         //根据essayCode去重
         list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
                 () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
-        return list;
+        return TeacherController.getStringObjectMap(pageSize, pageIndex, list);
     }
 
     /**

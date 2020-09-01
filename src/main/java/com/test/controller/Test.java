@@ -1,11 +1,96 @@
 package com.test.controller;
 
-import org.springframework.util.DigestUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.test.domain.Text;
+import com.test.domain.TextMessage;
+import com.test.util.HttpHelper;
+import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
+import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
+
 public class Test {
+    //主动发消息url
+    private static final String SEND_CUSTOM_MESSAGE_URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
 
     public static void main(String[] args) {
-        System.out.println(DigestUtils.md5DigestAsHex("123".getBytes()));
+        //1，配置
+        WxMpInMemoryConfigStorage wxStorage = new WxMpInMemoryConfigStorage();
+        //测试appid
+        wxStorage.setAppId("wx7fb8167ff80270a4");
+        wxStorage.setSecret("b97c9fcbeacdb2787e6af3ea3f28a2d7");
+        WxMpService wxMpService = new WxMpServiceImpl();
+        wxMpService.setWxMpConfigStorage(wxStorage);
+        try {
+            String accessToken = wxMpService.getAccessToken();
+            sendTextMessage(accessToken, "oAU7MwEZHQdbVpkYYn1LaKrayghE", "lalalala");
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
     }
+
+    /**
+     * @param accessToken 接口调用凭证
+     * @param touser      接收方帐号（收到的OpenID）
+     * @param content     文本消息内容
+     *                    void
+     * @desc ：4.主动发消息
+     */
+    public static void sendTextMessage(String accessToken, String touser, String content) {
+        //1.封装请求JSON
+        TextMessage textMessage = new TextMessage();
+        textMessage.setTouser(touser);
+        textMessage.setMsgtype("text");
+        Text text = new Text();
+        text.setContent(content);
+        textMessage.setText(text);
+        Object postData = JSON.toJSON(textMessage);
+        //2.拼接请求url
+        String url = SEND_CUSTOM_MESSAGE_URL.replace("ACCESS_TOKEN", accessToken);
+
+        //3.发起POST请求，获取返回结果
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = HttpHelper.doPost(url, postData);
+            if (null != jsonObject) {
+                //4.错误消息处理
+                if (jsonObject.getInteger("errcode") != null && 0 != jsonObject.getInteger("errcode")) {
+                    int errCode = jsonObject.getInteger("errcode");
+                    String errMsg = jsonObject.getString("errmsg");
+                    throw new Exception("error code:" + errCode + ", error message:" + errMsg);
+                    //5.成功发送消息
+                } else {
+                    System.out.println("发送消息成功！");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * 递归查询openId,一次最多拉取10000个关注者的OpenId,可以多次拉取满足需求
+     *
+     * @param openIdList
+     * @param nextOpenId  第一次拉取的openId,不填默认从头开始拉取
+     * @param wxMpService
+     * @return
+     */
+//    public List<String> recursionOpenId(List<String> openIdList, String nextOpenId, WxMpService wxMpService) {
+//        try {
+//            WxMpUserList openList = wxMpService.getUserService().userList(nextOpenId);
+//            for (String strId : openList.getOpenids()) {
+//                openIdList.add(strId);
+//            }
+//            if (openList.getOpenids().size() > 10000) {
+//                recursionOpenId(openIdList, openList.getNextOpenid(), wxMpService);
+//            }
+//        } catch (WxErrorException e) {
+//            e.printStackTrace();
+//        }
+//        return openIdList;
+//    }
+
 
 //    public static void main(String[] args) {
 //        String result = "{\"code\":\"0\",\"data\":{\"block\":[{\"type\":\"text\",\"line\":[{\"confidence\":1,\"word\":[{\"content\":\"The\"},{\"content\":\"terrible\"},{\"content\":\"earthquake\"},{\"content\":\"and\"},{\"content\":\"the\"},{\"content\":\"following\"},{\"content\":\"tsunami\"}]},{\"confidence\":1,\"word\":[{\"content\":\"have\"},{\"content\":\"caused\"},{\"content\":\"so\"},{\"content\":\"many\"},{\"content\":\"people's\"},{\"content\":\"injuries\"},{\"content\":\"and\"},{\"content\":\"deaths.\"}]},{\"confidence\":1,\"word\":[{\"content\":\"Besides,\"},{\"content\":\"many\"},{\"content\":\"citizens\"},{\"content\":\"become\"},{\"content\":\"homeless.\"},{\"content\":\"We\"},{\"content\":\"chinese\"},{\"content\":\"feel\"}]},{\"confidence\":1,\"word\":[{\"content\":\"greatly\"},{\"content\":\"sorry\"},{\"content\":\"for\"},{\"content\":\"the\"},{\"content\":\"pains\"},{\"content\":\"you\"},{\"content\":\"are\"},{\"content\":\"suffering.\"},{\"content\":\"And\"},{\"content\":\"I\"}]},{\"confidence\":1,\"word\":[{\"content\":\"do\"},{\"content\":\"hope\"},{\"content\":\"you\"},{\"content\":\"can\"},{\"content\":\"overcome\"},{\"content\":\"those\"},{\"content\":\"great\"},{\"content\":\"difficulties.\"}]},{\"confidence\":1,\"word\":[{\"content\":\"Please\"},{\"content\":\"remember\"},{\"content\":\"Japan\"},{\"content\":\"isn't\"},{\"content\":\"alone.People\"},{\"content\":\"all\"},{\"content\":\"over\"},{\"content\":\"the\"}]},{\"confidence\":1,\"word\":[{\"content\":\"world\"},{\"content\":\"are\"},{\"content\":\"lending\"},{\"content\":\"hands\"},{\"content\":\"to\"},{\"content\":\"the\"},{\"content\":\"areas\"},{\"content\":\"struck\"},{\"content\":\"by\"},{\"content\":\"tsunam\"}]},{\"confidence\":1,\"word\":[{\"content\":\"and\"},{\"content\":\"earthquake.Now\"},{\"content\":\"that\"},{\"content\":\"the\"},{\"content\":\"disaster\"},{\"content\":\"has\"},{\"content\":\"happened\"}]},{\"confidence\":1,\"word\":[{\"content\":\"we\"},{\"content\":\"should\"},{\"content\":\"face\"},{\"content\":\"it\"},{\"content\":\"bravely\"},{\"content\":\"and\"},{\"content\":\"rebuild\"},{\"content\":\"the\"},{\"content\":\"homes.\"},{\"content\":\"thus\"}]},{\"confidence\":1,\"word\":[{\"content\":\"creating\"},{\"content\":\"a\"},{\"content\":\"stronger\"},{\"content\":\"country.\"},{\"content\":\"Tomorrow\"},{\"content\":\"is\"},{\"content\":\"another\"},{\"content\":\"day.\"}]},{\"confidence\":1,\"word\":[{\"content\":\"All\"},{\"content\":\"the\"},{\"content\":\"things\"},{\"content\":\"will\"},{\"content\":\"be\"},{\"content\":\"better.\"}]}]}]},\"desc\":\"success\",\"sid\":\"wcr0018b0ae@gz6620127b2e6a463000\"}\n";

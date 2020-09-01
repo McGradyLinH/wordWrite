@@ -2,42 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>老师批改</title>
-    <script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
-    <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
-    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/bootstrap-table.css}">
 </head>
-<body id="changeBody">
-<a th:href="@{/choosedone}" class="btn btn-primary">批改完成</a>
-<table class="table">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>学生姓名</th>
-        <th>作文名</th>
-        <th>状态</th>
-        <th>操作</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="essay,loopStatus : ${essays}">
-        <!--/*@thymesVar id="essay" type="com.test.domain.Essay"*/-->
-        <td th:text="${loopStatus.count}"></td>
-        <td th:text="${essay.student.name}"></td>
-        <td th:text="${essay.titleName}"></td>
-        <td th:switch="${essay.status}">
-            <p th:case="1">外教修改</p>
-            <p th:case="2">中教修改</p>
-        </td>
-        <td>
-            <a type="button" class="btn btn-info btn-sm"
-            	th:href="@{/index(essayName=${essay.name},stuName=${essay.student.name})}">
-                批改
-            </a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-<!--当无记录时显示-->
-<span style="margin-left: 45%;color: red;" th:if="${#lists.isEmpty(essays)}">暂无记录!</span>
+<body>
+<a th:href="@{/choosedone}" class="btn btn-primary">已完成</a>
+<!--显示的数据-->
+<table id="data" style="margin-top: 6px;" class="table table-bordered table-hover"></table>
 </body>
+<script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap-table.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap-table-zh-CN.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/teacher/teacherIndex.js}"></script>
 </html>
