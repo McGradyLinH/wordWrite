@@ -35,6 +35,13 @@ public interface StudentDao {
     List<Essay> queryDoneEssay(Map<String, Object> paramMap);
 
     /**
+     * 主要用于查找内容
+     * @param essayDto
+     * @return
+     */
+    Essay queryEssay(EssayDto essayDto);
+
+    /**
      * 添加文章
      * @param essays
      * @return

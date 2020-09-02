@@ -21,5 +21,8 @@ public class MyWebConfig implements WebMvcConfigurer {
         registry.addViewController("/").setViewName("Index");
         registry.addViewController("/correctindex").setViewName("teacher/Index");
         registry.addViewController("/check").setViewName("student/Stucheck");
+        registry.addViewController("/choose").setViewName("teacher/Choose");
+        registry.addViewController("/stuIndex").setViewName("student/Index");
+        registry.addViewController("/choosedone").setViewName("teacher/ChooseDone");
     }
 }

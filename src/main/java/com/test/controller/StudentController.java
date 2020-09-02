@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -38,16 +40,6 @@ public class StudentController {
     @Autowired
     private EmailService emailService;
 
-    /**
-     * 学生首页
-     *
-     * @return
-     */
-    @GetMapping("/stuIndex")
-    public ModelAndView stuIndex(HttpSession session, Map<String, Object> map) {
-        return new ModelAndView("student/Index");
-    }
-
     @GetMapping("/stuessays")
     public Map<String, Object> stuessays(HttpSession session, int pageSize, int pageIndex) {
         //登录学生
@@ -56,11 +48,7 @@ public class StudentController {
         EssayDto essayDto = new EssayDto();
         essayDto.setStuId(studentId);
         essayDto.setVersions(3);
-        List<Essay> list = studentService.queryEssayList(essayDto);
-        //根据essayCode去重
-        list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
-                () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
-        return TeacherController.getStringObjectMap(pageSize, pageIndex, list);
+        return TeacherController.getStringObjectMap(pageSize, pageIndex, essayDto, studentService);
     }
 
     /**
@@ -197,7 +185,7 @@ public class StudentController {
         essayDto.setEssayName(docName);
         essayDto.setEssayNumber(index);
         essayDto.setVersions(3);
-        Essay essay = studentService.queryEssayList(essayDto).get(0);
+        Essay essay = studentService.queryEssay(essayDto);
         map.put("essay", essay);
         String titlePath = essay.getTitlePath();
         map.put("xiaozuowen", "false");

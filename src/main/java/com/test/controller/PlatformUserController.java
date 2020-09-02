@@ -106,7 +106,7 @@ public class PlatformUserController {
         PageHelper.startPage(pageIndex, pageSize);
         List<PlatformUser> users = userService.queryUsers();
         PageInfo<PlatformUser> pageInfo = new PageInfo<>(users);
-        resultMap.put("rows", users);
+        resultMap.put("rows", pageInfo.getList());
         resultMap.put("total", pageInfo.getTotal());
         return resultMap;
     }

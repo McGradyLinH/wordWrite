@@ -100,4 +100,9 @@ public class StudentServiceImpl implements StudentService {
 	public List<Essay> queryDoneEssay(Map<String, Object> paramMap) {
 		return studentDao.queryDoneEssay(paramMap);
 	}
+
+    @Override
+    public Essay queryEssay(EssayDto essayDto) {
+        return studentDao.queryEssay(essayDto);
+    }
 }

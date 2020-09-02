@@ -13,6 +13,7 @@
         <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
     </resultMap>
 
+
     <resultMap id="essay" type="com.test.domain.Essay">
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="name" column="essayName" jdbcType="VARCHAR"/>
@@ -26,15 +27,22 @@
         <collection property="student" resultMap="student">
         </collection>
     </resultMap>
+    <!--查询文章根据状态-->
+    <sql id="abc">
+        e.essayName,e.titlePath,e.titleName,e.`status`,e.versions,e.essayContent
+    </sql>
 
-    <!--查询单个-->
+    <sql id="abcd">
+        e.essayName,t.email,t.stuName,e.titlePath,e.titleName,e.`status`,e.versions
+    </sql>
+
     <select id="queryByPhone" resultMap="student">
         select * from platformUser where phone = #{_parameter}
     </select>
 
-    <!--查询文章根据状态-->
+    <!--查询单个-->
     <select id="queryEssayList" resultMap="essay" parameterType="essayDto">
-        select * from essay e left join platformUser t on e.stuid=t.id
+        select <include refid="abcd"></include> from essay e left join platformUser t on e.stuid=t.id
         <where>
             1 = 1
             <if test="versions != 3">
@@ -59,10 +67,15 @@
                 and e.essayNumber=#{essayNumber}
             </if>
         </where>
+        GROUP BY <include refid="abcd"></include>
+        <if test="essayNumber == null or essayNumber == ''">
+            HAVING count(*) > 1
+        </if>
     </select>
+
     <!-- 查询已批改完成的文章 -->
     <select id="queryDoneEssay" resultMap="essay" parameterType="java.util.Map">
-        select * from essay e left join platformUser t on e.stuid=t.id
+        select <include refid="abcd"></include> from essay e left join platformUser t on e.stuid=t.id
         <where>
         	e.versions=3
         	<if test="enTeacherid != null and enTeacherid != ''">
@@ -73,6 +86,23 @@
             </if>
             <if test="stuId != null and stuId != ''">
                 and t.id = #{stuId}
+            </if>
+        </where>
+        GROUP BY <include refid="abcd"></include> HAVING count(*) > 1
+    </select>
+
+    <select id="queryEssay" resultMap="essay" parameterType="essayDto">
+        select <include refid="abc"></include> from essay e
+        <where>
+            1 = 1
+            <if test="essayNumber != null and essayNumber != ''">
+                and e.essayNumber=#{essayNumber}
+            </if>
+            <if test="essayName != null and essayName != ''">
+                and e.essayName = #{essayName}
+            </if>
+            <if test="versions != 3">
+                and e.versions != 3
             </if>
         </where>
     </select>

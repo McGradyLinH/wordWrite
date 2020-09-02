@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,11 +50,13 @@ public class TeacherController {
     @Autowired
     private PlatformUserService userService;
 
-    @GetMapping("/choose")
-    public ModelAndView choose(Map<String, Object> map, HttpSession session) {
-        return new ModelAndView("teacher/Choose");
-    }
-
+    /**
+     * 查询正在批改的文章
+     * @param session
+     * @param pageSize
+     * @param pageIndex
+     * @return
+     */
     @GetMapping("/teacheressays")
     public Map<String, Object> stuessays(HttpSession session, int pageSize, int pageIndex) {
         //登录老师
@@ -65,39 +69,34 @@ public class TeacherController {
         } else {
             essayDto.setCNTeacher(teacher);
         }
-        List<Essay> list = studentService.queryEssayList(essayDto);
-        //根据essaycode去重
-        list = list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
-                () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
-        return getStringObjectMap(pageSize, pageIndex, list);
+        return getStringObjectMap(pageSize, pageIndex, essayDto, studentService);
     }
 
-    static Map<String, Object> getStringObjectMap(int pageSize, int pageIndex, List<Essay> list) {
-        List<Essay> result = list.stream().skip((pageIndex - 1) * pageSize).limit(pageSize).collect(Collectors.toList());
-        Map<String, Object> resultMap = new HashMap<>(2);
-        resultMap.put("rows",result);
-        resultMap.put("total",result.size());
-        return resultMap;
-    }
-
-    @GetMapping("/choosedone")
-    public ModelAndView choosedone(Map<String, Object> map, HttpSession session) {
-        ModelAndView modelAndView = new ModelAndView("teacher/ChooseDone");
+    /**
+     * 获取已批改完成的文章
+     * @param session
+     * @param pageSize
+     * @param pageIndex
+     * @return
+     */
+    @GetMapping("/teacherDoneEssays")
+    public Map<String, Object> teacherDoneEssays(HttpSession session, int pageSize, int pageIndex) {
         //登录老师
         PlatformUser teacher = (PlatformUser) session.getAttribute("loginUser");
         Integer role = teacher.getRole();
-        Map<String, Object> paramMap = new HashMap<>(2);
+        Map<String, Object> paramMap = new HashMap<>(1);
         if (role == 2) {
             paramMap.put("enTeacherid", teacher.getId());
         } else {
             paramMap.put("CNTeacherid", teacher.getId());
         }
-        List<Essay> list1 = studentService.queryDoneEssay(paramMap);
-        //根据essaycode去重
-        list1 = list1.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
-                () -> new TreeSet<>(Comparator.comparing(Essay::getName))), ArrayList::new));
-        map.put("essays", list1);
-        return modelAndView;
+        Map<String, Object> resultMap = new HashMap<>(2);
+        PageHelper.startPage(pageIndex, pageSize);
+        List<Essay> list = studentService.queryDoneEssay(paramMap);
+        PageInfo<Essay> pageInfo = new PageInfo<>(list);
+        resultMap.put("rows", pageInfo.getList());
+        resultMap.put("total", pageInfo.getTotal());
+        return resultMap;
     }
 
     /**
@@ -130,7 +129,7 @@ public class TeacherController {
         EssayDto essayDto = new EssayDto();
         essayDto.setEssayName(docName);
         essayDto.setEssayNumber(index);
-        Essay essay = studentService.queryEssayList(essayDto).get(0);
+        Essay essay = studentService.queryEssay(essayDto);
         map.put("essay", essay);
         String titlePath = essay.getTitlePath();
         map.put("xiaozuowen", "false");
@@ -223,6 +222,15 @@ public class TeacherController {
         return "fail";
     }
 
+    /**
+     * 批改文章
+     * @param index
+     * @param content
+     * @param session
+     * @param addComments
+     * @param delComments
+     * @return
+     */
     @PostMapping("/correctessay")
     public String correctEssay(Integer index, String content, HttpSession session,
                                String addComments, String delComments) {
@@ -244,6 +252,24 @@ public class TeacherController {
             return "success";
         }
         return "fail";
+    }
+
+    /**
+     * 抽取的公共方法 分页
+     * @param pageSize
+     * @param pageIndex
+     * @param essayDto
+     * @param studentService
+     * @return
+     */
+    static Map<String, Object> getStringObjectMap(int pageSize, int pageIndex, EssayDto essayDto, StudentService studentService) {
+        Map<String, Object> resultMap = new HashMap<>(2);
+        PageHelper.startPage(pageIndex, pageSize);
+        List<Essay> list = studentService.queryEssayList(essayDto);
+        PageInfo<Essay> pageInfo = new PageInfo<>(list);
+        resultMap.put("rows", pageInfo.getList());
+        resultMap.put("total", pageInfo.getTotal());
+        return resultMap;
     }
 }
 

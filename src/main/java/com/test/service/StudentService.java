@@ -19,6 +19,12 @@ public interface StudentService {
     List<Essay> queryEssayList(EssayDto essayDto);
     
     List<Essay> queryDoneEssay(Map<String, Object> paramMap);
+    /**
+     * 主要用于查找内容
+     * @param essayDto
+     * @return
+     */
+    Essay queryEssay(EssayDto essayDto);
 
     Essay insertEssay(Essay essay);
 
