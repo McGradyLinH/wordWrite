@@ -67,7 +67,8 @@
                 and e.essayNumber=#{essayNumber}
             </if>
         </where>
-        GROUP BY <include refid="abcd"></include>
+        GROUP BY
+        <include refid="abcd"></include>
         <if test="essayNumber == null or essayNumber == ''">
             HAVING count(*) > 1
         </if>
@@ -77,8 +78,8 @@
     <select id="queryDoneEssay" resultMap="essay" parameterType="java.util.Map">
         select <include refid="abcd"></include> from essay e left join platformUser t on e.stuid=t.id
         <where>
-        	e.versions=3
-        	<if test="enTeacherid != null and enTeacherid != ''">
+            e.versions=3
+            <if test="enTeacherid != null and enTeacherid != ''">
                 and e.enTeacherId = #{enTeacherid}
             </if>
             <if test="CNTeacherid != null and CNTeacherid != ''">
@@ -120,7 +121,7 @@
     </update>
 
     <update id="incrementSurplus" parameterType="platformUser">
-        update platformUser set surplus=surplus+1 where id=#{id}
+        update platformUser set surplus=surplus+#{surplus} where id=#{id}
     </update>
 
     <update id="updateEssay" parameterType="essay">

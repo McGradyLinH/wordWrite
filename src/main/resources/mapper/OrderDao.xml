@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.dao.OrderDao">
+
+
+    <insert id="insertOrder" parameterType="com.test.pay.pay.entity.dto.NotifyDTO">
+        insert into iw_order (out_trade_no,total_fee) values (#{out_trade_no},#{total_fee})
+    </insert>
+
+    <update id="updateOrder" parameterType="com.test.pay.pay.entity.dto.NotifyDTO">
+        update iw_order set pay_status =1,payjs_order_id=#{payjs_order_id},transaction_id=#{transaction_id},
+        time_end=#{time_end},return_code=1 where out_trade_no=#{out_trade_no}
+    </update>
+
+
+</mapper>

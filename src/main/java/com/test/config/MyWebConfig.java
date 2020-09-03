@@ -13,7 +13,7 @@ public class MyWebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new MyInterceptor()).addPathPatterns("/**").excludePathPatterns("/login",
-                "/js/**", "/css/**", "/images/**", "/fonts/**", "/kaptcha", "/addUser", "/register", "/","/api/pay/**");
+                "/js/**", "/css/**", "/images/**", "/fonts/**", "/kaptcha", "/addUser", "/register", "/");
     }
 
     @Override
@@ -24,5 +24,6 @@ public class MyWebConfig implements WebMvcConfigurer {
         registry.addViewController("/choose").setViewName("teacher/Choose");
         registry.addViewController("/stuIndex").setViewName("student/Index");
         registry.addViewController("/choosedone").setViewName("teacher/ChooseDone");
+        registry.addViewController("/stubuy").setViewName("student/pay");
     }
 }
