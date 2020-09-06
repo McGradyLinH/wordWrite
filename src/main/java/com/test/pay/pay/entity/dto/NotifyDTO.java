@@ -1,5 +1,6 @@
 package com.test.pay.pay.entity.dto;
 
+import com.test.domain.PlatformUser;
 import lombok.Data;
 
 /**
@@ -31,4 +32,6 @@ public class NotifyDTO {
     private String type;
 
     private String sign;
+    //用户
+    private PlatformUser user;
 }

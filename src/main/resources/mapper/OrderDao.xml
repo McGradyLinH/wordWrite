@@ -4,7 +4,8 @@
 
 
     <insert id="insertOrder" parameterType="com.test.pay.pay.entity.dto.NotifyDTO">
-        insert into iw_order (out_trade_no,total_fee) values (#{out_trade_no},#{total_fee})
+        insert into iw_order (out_trade_no,total_fee,user_id)
+         values (#{out_trade_no},#{total_fee},#{user.id})
     </insert>
 
     <update id="updateOrder" parameterType="com.test.pay.pay.entity.dto.NotifyDTO">

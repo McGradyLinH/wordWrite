@@ -6,5 +6,8 @@
 </head>
 <body>
 <img th:src="${qrcode}" alt="qrcode">
+<input th:value="${payjs_order_id}" type="hidden" id="payjs_order_id"/>
 </body>
+<script type="text/javascript" th:src="@{/js/jquery-1.9.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/student/qrcode.js}"></script>
 </html>

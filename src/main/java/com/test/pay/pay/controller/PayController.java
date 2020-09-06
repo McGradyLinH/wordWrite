@@ -20,6 +20,7 @@ import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @CrossOrigin
@@ -41,7 +42,7 @@ public class PayController {
      */
     @RequestMapping("/native")
     @ResponseBody
-    public ModelAndView Native(Integer essayNumber, String coupon) throws IOException {
+    public ModelAndView Native(Integer essayNumber, String coupon, HttpSession session) throws IOException {
         Map<String, String> payData = new HashMap<>();
         BigDecimal num = new BigDecimal("" + essayNumber * 100);
         BigDecimal price = new BigDecimal("69");
@@ -51,15 +52,16 @@ public class PayController {
             totalPrice = totalPrice.multiply(discount).setScale(BigDecimal.ROUND_HALF_UP, 2);
         }
         payData.put("mchid", PayjsConfig.mchid);
-//        payData.put("total_fee", totalPrice.toString());
-        payData.put("total_fee", "1");
+        payData.put("total_fee", totalPrice.toString());
+//        payData.put("total_fee", "1");
         String out_trade_no = "" + System.currentTimeMillis();
         // 订单号
         payData.put("out_trade_no", out_trade_no);
         payData.put("body", "订单标题");
 //        payData.put("type", "alipay");
-        payData.put("attach", ""+essayNumber);
-        payData.put("notify_url", "http://127.0.0.1:8080/api/pay/notify");
+        payData.put("attach", "" + essayNumber);
+        //不能用localhost等，必须是外网可访问的notify_url
+//        payData.put("notify_url", "https://www.ieltswrite.com/api/pay/notify");
         // 进行sign签名
         payData.put("sign", sign(payData, PayjsConfig.key));
         // 请求payjs获取二维码
@@ -71,10 +73,52 @@ public class PayController {
         NotifyDTO notifyDTO = new NotifyDTO();
         notifyDTO.setOut_trade_no(out_trade_no);
         notifyDTO.setTotal_fee(totalPrice.toString());
+        //登录学生
+        PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+        notifyDTO.setUser(student);
         orderService.insertOrder(notifyDTO);
-        System.err.println(jsonObject.toString());
         modelAndView.addObject("qrcode", jsonObject.get("qrcode"));
+        modelAndView.addObject("payjs_order_id", jsonObject.get("payjs_order_id"));
         return modelAndView;
+    }
+
+    /**
+     * check
+     */
+    @RequestMapping("/check")
+    @ResponseBody
+    public String Check(String payjs_order_id, HttpSession session) throws IOException {
+        Map<String, String> payData = new HashMap<>();
+        payData.put("mchid", PayjsConfig.mchid);
+        // payjs订单号
+        payData.put("payjs_order_id", payjs_order_id);
+        // 进行sign签名
+        payData.put("sign", sign(payData, PayjsConfig.key));
+        // 请求payjs
+        String result = HttpsUtils.sendPost(PayjsConfig.checkUrl, JSON.toJSONString(payData), null);
+        // 接口返回数据
+        JSONObject jsonObject = JSON.parseObject(result);
+        String status = jsonObject.get("status").toString();
+        //支付成功，修改订单
+        if ("1".equalsIgnoreCase(status)) {
+            // 验签通过，这里修改订单状态
+            NotifyDTO notifyDTO = new NotifyDTO();
+            notifyDTO.setOut_trade_no(jsonObject.get("out_trade_no").toString());
+            notifyDTO.setPayjs_order_id(payjs_order_id);
+            notifyDTO.setTime_end(jsonObject.get("paid_time").toString());
+            notifyDTO.setTransaction_id(jsonObject.get("transaction_id").toString());
+            orderService.updateOrder(notifyDTO);
+            //登录学生
+            PlatformUser student = (PlatformUser) session.getAttribute("loginUser");
+            Integer surplus = student.getSurplus();
+            Integer essayNumer = Integer.valueOf(jsonObject.get("attach").toString());
+            student.setSurplus(essayNumer);
+            studentService.incrementSurplus(student);
+            student.setSurplus(essayNumer + surplus);
+            session.setAttribute("loginUser", student);
+            return "success";
+        }
+        return "fail";
     }
 
     /**
@@ -102,27 +146,6 @@ public class PayController {
         return JSON.parseObject(result);
     }
 
-    /**
-     * check
-     */
-    @RequestMapping("/check")
-    @ResponseBody
-    public Object Check() throws NoSuchAlgorithmException, KeyManagementException, IOException {
-
-        Map<String, String> payData = new HashMap<>();
-        payData.put("mchid", PayjsConfig.mchid);
-        payData.put("payjs_order_id", "83432749"); // payjs订单号
-
-
-        // 进行sign签名
-        payData.put("sign", sign(payData, PayjsConfig.key));
-
-        // 请求payjs
-        String result = HttpsUtils.sendPost(PayjsConfig.checkUrl, JSON.toJSONString(payData), null);
-
-        // 接口返回数据
-        return JSON.parseObject(result);
-    }
 
     /**
      * close 关闭订单
@@ -250,13 +273,13 @@ public class PayController {
 
     /**
      * 异步通知
+     *
      * @param notifyDTO
      * @return
      */
-    @PostMapping("/notify")
+    @RequestMapping("/notify")
     @ResponseBody
     public Object payjsNotify(NotifyDTO notifyDTO, HttpSession session) {
-        System.out.println(11111);
         Map<String, String> notifyData = new HashMap<>();
         notifyData.put("return_code", notifyDTO.getReturn_code());
         notifyData.put("total_fee", notifyDTO.getTotal_fee());
