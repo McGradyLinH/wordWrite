@@ -42,7 +42,7 @@ $(function () {
                 '<br /><input type="text" style="border: none;" id="text' + i + '" placeholder="write something"/>' +
                 '<br /><button onclick="savepigai(' + i + ')">Save</button><button onclick="removetooltip(' + i +
                 ')">Delete</button></div>';
-            $("body").append(tooltip);
+            $("#correctComments").append(tooltip);
             $("#tooltip" + i).css({
                 "top": (e.pageY + y) + "px",
                 "left": (e.pageX + x) + "px",
@@ -182,7 +182,7 @@ function createTooltip(m, inputtext,tName) {
         'placeholder="write something"/>' +
         '<br /><button onclick="updatepigai(' + m + ')">Update</button><button onclick="removetooltip(' + m +
         ')">Delete</button></div>';
-    $("body").append(tooltip);
+    $("#correctComments").append(tooltip);
     $("#tooltipx" + i).css({
         "float": "left",
     }).show("fast");
@@ -197,7 +197,7 @@ function correctDone(index) {
         data: {index: index, content: text,
             addComments: JSON.stringify(addComments),delComments: JSON.stringify(delComments)},
         success: function (data) {
-            window.history.go(-1);
+            window.location.reload();
         }
     });
 }

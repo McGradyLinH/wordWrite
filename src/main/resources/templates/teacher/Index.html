@@ -13,29 +13,46 @@
 <!--<a href="javascript:POBrowser.openWindowModeless('/word?index=2','width=1200px;height=800px;');">开始批改2 </a>-->
 <!--<a href="javascript:POBrowser.openWindowModeless('/word?index=3','width=1200px;height=800px;');">开始批改3 </a>-->
 <!--<a href="javascript:POBrowser.openWindowModeless('/word?index=4','width=1200px;height=800px;');">开始批改4 </a>-->
-<a th:href="@{/correct/1}" class="btn btn-primary">Task Achievement</a>
-<a th:href="@{/correct/2}" class="btn btn-primary">Coherence and Cohesion</a>
-<a th:href="@{/correct/3}" class="btn btn-primary">Grammatical Range and Accuracy</a>
-<a th:href="@{/correct/4}" class="btn btn-primary">Lexical Resource</a>
+<a href="#" onclick="openCorrect(1)" class="btn btn-primary">Task Achievement</a>
+<a href="#" onclick="openCorrect(2)" class="btn btn-primary">Coherence and Cohesion</a>
+<a href="#" onclick="openCorrect(3)" class="btn btn-primary">Grammatical Range and Accuracy</a>
+<a href="#" onclick="openCorrect(4)" class="btn btn-primary">Lexical Resource</a>
 <br/>
 <button onclick="pgdone()" style="margin-top: 6px;" class="btn-primary">批改完成</button>
+<div id="correctContent">
+
+</div>
 </body>
 <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
 <script type="text/javascript" th:src="@{js/bootbox.min.js}"></script>
 <script>
     function pgdone() {
         bootbox.confirm("确定提交该篇文章到下一个流程吗？", function (result) {
-            if (result){
+            if (result) {
                 $.ajax({
                     url: '/essay',
                     type: 'post',
-                    data: {_method:'put'},
+                    data: {_method: 'put'},
                     success: function (data) {
-                        window.location.href="/choose";
+                        window.location.href = "/choose";
                     }
                 });
             }
         });
     }
+
+    const openCorrect = function (id) {
+        $.ajax({
+            url: '/correct/'+id,
+            type: 'get',
+            dataType: 'html',
+            success: function (data) {
+                $("#correctContent").html(data);
+            }
+        });
+    }
+    $(function (){
+        openCorrect(1);
+    })
 </script>
 </html>

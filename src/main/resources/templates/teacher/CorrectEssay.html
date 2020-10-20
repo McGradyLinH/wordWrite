@@ -14,8 +14,9 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
+<div id="correctComments">
 <input type="hidden" id="teacherName" th:value="${teacherName}"/>
-<button class="btn-primary" th:onclick="correctDone([[${index}]])">修改完成</button>
+<button class="btn-primary" style="margin-top: 8px;" th:onclick="correctDone([[${index}]])">修改完成</button>
 <h1 id="essayTitle" th:if="${xiaozuowen=='false'}" th:text="${essay.titleName}"></h1>
 <div th:if="${xiaozuowen=='true'}" >
     <h1 id="essayTitle1" th:if="${!#strings.isEmpty(essay.titleName)}"
@@ -24,6 +25,7 @@
 </div>
 <div contenteditable="true" id="content" style="width: 70%;float: left;height: 300px;border: 1px solid"
      th:utext="${essay.essayContent}">
+</div>
 </div>
 <input type="hidden" id="essayNumber" th:value="${index}"/>
 </body>

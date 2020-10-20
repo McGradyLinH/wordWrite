@@ -14,6 +14,7 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
+<div id="checkBody">
 <h1 id="essayTitle" th:if="${xiaozuowen=='false'}" th:text="${essay.titleName}"></h1>
 <div th:if="${xiaozuowen=='true'}">
     <h1 id="essayTitle1" th:if="${!#strings.isEmpty(essay.titleName)}"
@@ -22,6 +23,7 @@
 </div>
 <div id="content" style="width: 70%;float: left;height: 300px;border: 1px solid"
      th:utext="${essay.essayContent}">
+</div>
 </div>
 <input type="hidden" id="essayNumber" th:value="${index}"/>
 </body>

@@ -39,7 +39,7 @@ function createTooltip(m, inputtext, tName, role) {
     let tooltip = '<div id="tooltipx' + m + '"><p>' + whoteacher + ':' + tName + '</p >' +
         '<input type="text" style="border: none;" id="text' + m + '" value="' + inputtext + '"' +
         'readonly /></div>';
-    $("body").append(tooltip);
+    $("#checkBody").append(tooltip);
     $("#tooltipx" + m).css({
         "float": "left",
         "border": "1px solid",

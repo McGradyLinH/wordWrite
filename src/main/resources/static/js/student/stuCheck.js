@@ -24,3 +24,18 @@ function openText() {
     $("#check1").show();
     $("#check2").hide();
 }
+
+const openCheck = function (id){
+    $.ajax({
+        url: '/check/'+id,
+        type: 'get',
+        dataType: 'html',
+        success: function (data) {
+            $("#checkContent").html(data)
+        }
+    });
+}
+
+$(function (){
+    openCheck(1);
+})
